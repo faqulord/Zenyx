@@ -1,14 +1,89 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// prisma/schema.prisma
 
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
+  // Itt töröltük a rossz "output" sort!
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// 1. FELHASZNÁLÓ
+model User {
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  email          String    @unique
+  username       String    @unique
+  password       String
+  role           String    @default("USER")
+  
+  virtualBalance Float     @default(10000)
+  points         Int       @default(0)
+  
+  tier           String    @default("STANDARD")
+  isPremium      Boolean   @default(false)
+  affiliateEarnings Float  @default(0)
+  
+  referredBy     String?   
+  referralCode   String    @unique
+  
+  dailyRefills   Int       @default(1)
+  lastLogin      DateTime  @default(now())
+
+  trades         Trade[]
+  transactions   Transaction[]
+  
+  createdAt      DateTime  @default(now())
+}
+
+// 2. KERESKEDÉSEK
+model Trade {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  
+  coin      String
+  amount    Float
+  entryPrice Float
+  exitPrice  Float?
+  pnl        Float?
+  status     String  @default("OPEN")
+  
+  createdAt DateTime @default(now())
+}
+
+// 3. PÉNZÜGYI TRANZAKCIÓK
+model Transaction {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  
+  amount    Float
+  type      String
+  status    String   @default("COMPLETED")
+  timestamp DateTime @default(now())
+}
+
+// 4. HÍREK & TARTALOM
+model NewsPost {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  slug        String   @unique
+  content     String
+  imageUrl    String?
+  isImportant Boolean  @default(false)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}
+
+// 5. RENDSZER BEÁLLÍTÁSOK
+model SystemConfig {
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  breakingNewsText String? 
+  breakingNewsLink String?
+  isTickerActive   Boolean @default(true)
+  globalRefLink    String  @default("https://accounts.binance.com")
+  sponsorBannerUrl String?
+  sponsorLink      String?
 }
