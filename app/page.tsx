@@ -5,7 +5,7 @@ import {
   LayoutDashboard, Server, Wallet, Newspaper, 
   Menu, X, Hexagon, ArrowRight, ShieldCheck, 
   CheckCircle2, AlertCircle, Copy, ArrowUpRight,
-  Activity, TrendingUp, Lock, RefreshCw
+  Activity, TrendingUp, Lock, RefreshCw, Zap
 } from 'lucide-react';
 
 // --- KONFIGURÁCIÓ: A SZINTEK ÉS JÖVEDELMEK ---
@@ -356,4 +356,4 @@ function WalletView({ balance }: any) {
             ) : (
                <div className="space-y-6">
                   <h3 className="text-xl font-bold text-white flex items-center gap-2"><ArrowUpRight className="text-red-400 rotate-180"/> Kifizetés</h3>
-                  <div className="bg-slate-800/50 p-4 rounded-xl text-sm t
+                  <div className="bg-slate-800/50 p-4 rounded-xl text
