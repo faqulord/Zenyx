@@ -7,7 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// 1. A Felhasználó tábla (Ez már megvolt)
+// 1. Felhasználó
 model User {
   id             String    @id @default(cuid())
   name           String?
@@ -27,13 +27,16 @@ model User {
   updatedAt      DateTime  @updatedAt
 }
 
-// 2. AZ ÚJ HÍREK TÁBLA (Ezt kereste a hibaüzenet!)
+// 2. Hírek (JAVÍTOTT VERZIÓ - Hogy passzoljon a kódhoz!)
 model NewsPost {
-  id        String   @id @default(cuid())
-  title     String
-  slug      String   @unique
-  content   String
-  image     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  content     String
+  imageUrl    String?  // Ez hiányzott az előbb!
+  isImportant Boolean  @default(false) // Ez is hiányzott!
+  published   Boolean  @default(true)  // Ez is!
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
