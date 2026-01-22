@@ -1,18 +1,18 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
-import prisma from '@/app/lib/prisma'; // JAVÍTVA: Helyes útvonal
+import prisma from '../../../lib/prisma'; // EZT JAVÍTOTTUK!
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     const { email, username, password } = body;
 
-    // 1. Validáció: Minden mező ki van töltve?
+    // 1. Validáció
     if (!email || !username || !password) {
       return new NextResponse("Hiányzó adatok", { status: 400 });
     }
 
-    // 2. Ellenőrzés: Létezik már ilyen felhasználó?
+    // 2. Ellenőrzés
     const existingUser = await prisma.user.findFirst({
       where: {
         OR: [
@@ -29,12 +29,12 @@ export async function POST(req: Request) {
     // 3. Jelszó titkosítása
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    // 4. Létrehozás az adatbázisban (Javított mezőnevekkel!)
+    // 4. Létrehozás
     const user = await prisma.user.create({
       data: {
         email,
         username,
-        hashedPassword, // A Schema-ban így hívják!
+        hashedPassword,
         virtualBalance: 0,
         points: 0,
         role: "USER",
