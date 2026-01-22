@@ -1,35 +1,39 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '../../../lib/prisma'; // JAVÍTVA: Relatív útvonal
 import bcrypt from 'bcryptjs';
+import prisma from '../../../lib/prisma'; // 3 szintet lépünk vissza
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     const { email, password } = body;
 
-    // Keresés
+    if (!email || !password) {
+      return new NextResponse("Hiányzó adatok", { status: 400 });
+    }
+
+    // Felhasználó keresése
     const user = await prisma.user.findUnique({
-      where: { email: email }
+      where: {
+        email: email
+      }
     });
 
-    if (!user) {
-      return NextResponse.json({ message: 'Nincs ilyen felhasználó!' }, { status: 401 });
+    if (!user || !user.hashedPassword) {
+      return new NextResponse("Nem található felhasználó", { status: 401 });
     }
 
-    // Jelszó ellenőrzés
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    // JELSZÓ ELLENŐRZÉS (ITT VOLT A HIBA: password -> hashedPassword)
+    const isPasswordValid = await bcrypt.compare(password, user.hashedPassword);
 
     if (!isPasswordValid) {
-      return NextResponse.json({ message: 'Hibás jelszó!' }, { status: 401 });
+      return new NextResponse("Hibás jelszó", { status: 401 });
     }
 
-    return NextResponse.json({ 
-      message: 'Sikeres belépés!',
-      user: { id: user.id, username: user.username }
-    }, { status: 200 });
+    // Sikeres belépés válasz (itt később majd cookie/token kell, de most elég ez)
+    return NextResponse.json(user);
 
-  } catch (error) {
-    console.error("Login hiba:", error);
-    return NextResponse.json({ message: 'Szerver hiba.' }, { status: 500 });
+  } catch (error: any) {
+    console.log("LOGIN_ERROR", error);
+    return new NextResponse("Belső hiba: " + error.message, { status: 500 });
   }
 }
