@@ -1,15 +1,13 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma'; // Itt használjuk az új stabilizátort!
 import bcrypt from 'bcryptjs';
-
-const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     const { email, password } = body;
 
-    // 1. Megkeressük a felhasználót email alapján
+    // 1. Felhasználó keresése
     const user = await prisma.user.findUnique({
       where: { email: email }
     });
@@ -18,28 +16,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: 'Nincs ilyen felhasználó!' }, { status: 401 });
     }
 
-    // 2. Összehasonlítjuk a jelszót a titkosítottal
+    // 2. Jelszó ellenőrzés
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
       return NextResponse.json({ message: 'Hibás jelszó!' }, { status: 401 });
     }
 
-    // 3. HA SIKERES:
-    // Itt a valóságban egy "Sütit" (Cookie) küldenénk, de most egyszerűsítve
-    // visszaküldjük, hogy OK, és a felhasználó adatait (kivéve a jelszót).
-    
-    return NextResponse.json({ 
-      message: 'Sikeres belépés!',
-      user: {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        role: user.role
-      }
-    }, { status: 200 });
+    return NextResponse.json({ message: 'Sikeres belépés!' }, { status: 200 });
 
   } catch (error) {
-    return NextResponse.json({ message: 'Szerver hiba.' }, { status: 500 });
+    console.error("Login hiba:", error); // Ez segít látni a hibát a logokban
+    return NextResponse.json({ message: 'Szerver hiba történt.' }, { status: 500 });
   }
 }
