@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/app/lib/prisma'; // JAVÍTVA: Itt keressük a mappádat!
+import { prisma } from '../../../lib/prisma';  // JAVÍTVA: Relatív útvonal (biztosabb!)
 import bcrypt from 'bcryptjs';
 
 export async function POST(req: Request) {
@@ -11,6 +11,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: 'Minden mező kötelező!' }, { status: 400 });
     }
 
+    // Ellenőrzés
     const existingUser = await prisma.user.findFirst({
       where: { OR: [{ email }, { username }] }
     });
@@ -19,8 +20,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: 'Ez a név vagy email már foglalt.' }, { status: 400 });
     }
 
+    // Titkosítás
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Létrehozás
     await prisma.user.create({
       data: {
         email,
@@ -35,7 +38,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: 'Sikeres regisztráció!' }, { status: 201 });
 
   } catch (error) {
-    console.error(error);
+    console.error("Regisztrációs hiba:", error);
     return NextResponse.json({ message: 'Szerver hiba történt.' }, { status: 500 });
   }
 }
