@@ -1,192 +1,167 @@
+import React from 'react';
 import Link from 'next/link';
-import { LucideTrendingUp, LucideAward, LucideZap, LucideUsers, LucideArrowRight } from 'lucide-react';
+import { LayoutDashboard, Wallet, Users, Settings, Bell, TrendingUp, ChevronRight, LogOut, ArrowUpRight } from 'lucide-react';
 
-export default function Home() {
+export default function Dashboard() {
   return (
-    <main className="min-h-screen bg-[#0a0e17] text-white overflow-hidden">
+    <div className="min-h-screen bg-slate-950 text-white font-sans selection:bg-indigo-500 selection:text-white">
       
-      {/* NAVBAR */}
-      <nav className="flex justify-between items-center p-6 max-w-7xl mx-auto">
-        <div className="text-2xl font-bold tracking-wider text-blue-500 flex items-center gap-2">
-          <LucideZap className="w-6 h-6 text-yellow-400" />
-          ZENYX
-        </div>
-        <div className="flex gap-4">
-          <Link href="/login" className="text-gray-300 hover:text-white transition px-4 py-2">
-            Belépés
-          </Link>
-          <Link href="/register" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-bold transition shadow-[0_0_15px_rgba(37,99,235,0.5)]">
-            CSATLAKOZOM
-          </Link>
-        </div>
-      </nav>
-
-      {/* HERO SECTION */}
-      <section className="relative pt-20 pb-32 px-6">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-blue-600/20 rounded-full blur-[120px] -z-10"></div>
-        
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-block mb-4 px-4 py-1 bg-blue-900/30 border border-blue-500/30 rounded-full text-blue-400 text-sm font-medium">
-            🚀 Play-to-Airdrop Kereskedési Szimulátor
-          </div>
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-blue-100 to-gray-400">
-            Trade Risk-Free.<br />
-            <span className="text-blue-500">Earn for Real.</span>
+      {/* --- OLDALSÁV (SIDEBAR) --- */}
+      <aside className="fixed left-0 top-0 h-full w-64 bg-slate-900 border-r border-slate-800 hidden md:flex flex-col z-50">
+        <div className="p-6">
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
+            ZENYX
           </h1>
-          <p className="text-gray-400 text-lg md:text-xl mb-10 max-w-2xl mx-auto">
-            A kezdők 90%-a elveszíti a pénzét. A ZENYX ezt változtatja meg. 
-            Tanulj, versenyezz és szerezz $ZNX tokent kockázat nélkül.
-          </p>
-          
-          <div className="flex flex-col md:flex-row justify-center gap-4">
-            <Link href="/register" className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white text-lg px-8 py-4 rounded-xl font-bold transition transform hover:scale-105 shadow-xl flex items-center justify-center gap-2">
-              Kezdés 10.000 $ Tőkével <LucideArrowRight />
-            </Link>
-            <a href="#features" className="bg-[#121826] border border-gray-700 hover:border-gray-500 text-white text-lg px-8 py-4 rounded-xl font-medium transition flex items-center justify-center">
-              Hogyan működik?
-            </a>
-          </div>
         </div>
-      </section>
 
-      {/* MIÉRT A ZENYX? */}
-      <section id="features" className="py-20 px-6 bg-[#0f1421]">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">MIÉRT A <span className="text-blue-500">ZENYX?</span></h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Kártya 1 */}
-            <div className="bg-[#1a202e] p-8 rounded-2xl border border-gray-800 hover:border-blue-500/50 transition group">
-              <div className="w-12 h-12 bg-blue-900/50 rounded-lg flex items-center justify-center mb-6 group-hover:bg-blue-600 transition">
-                <LucideTrendingUp className="text-blue-400 group-hover:text-white" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">Szimulált Kereskedés</h3>
-              <p className="text-gray-400 text-sm">
-                10.000 USD virtuális tőke. Valós idejű árfolyamok (BTC, ETH, SOL). Kockázatmentes tanulás.
-              </p>
-            </div>
+        <nav className="flex-1 px-4 space-y-2 mt-4">
+          <NavItem icon={<LayoutDashboard size={20} />} label="Áttekintés" active />
+          <NavItem icon={<Wallet size={20} />} label="Pénztárca" />
+          <NavItem icon={<Users size={20} />} label="Referral" />
+          <NavItem icon={<TrendingUp size={20} />} label="Piac" />
+          <NavItem icon={<Settings size={20} />} label="Beállítások" />
+        </nav>
 
-            {/* Kártya 2 */}
-            <div className="bg-[#1a202e] p-8 rounded-2xl border border-gray-800 hover:border-blue-500/50 transition group">
-              <div className="w-12 h-12 bg-purple-900/50 rounded-lg flex items-center justify-center mb-6 group-hover:bg-purple-600 transition">
-                <LucideAward className="text-purple-400 group-hover:text-white" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">Play-to-Airdrop</h3>
-              <p className="text-gray-400 text-sm">
-                A profitos kereskedésekért és ranglista helyezésért Pontokat kapsz. Ez a "csali", amiért megéri játszani.
-              </p>
-            </div>
+        <div className="p-4 border-t border-slate-800">
+          <button className="flex items-center gap-3 text-slate-400 hover:text-white transition-colors w-full p-2 rounded-lg hover:bg-slate-800">
+            <LogOut size={20} />
+            <span>Kijelentkezés</span>
+          </button>
+        </div>
+      </aside>
 
-            {/* Kártya 3 */}
-            <div className="bg-[#1a202e] p-8 rounded-2xl border border-gray-800 hover:border-blue-500/50 transition group">
-              <div className="w-12 h-12 bg-yellow-900/50 rounded-lg flex items-center justify-center mb-6 group-hover:bg-yellow-600 transition">
-                <LucideZap className="text-yellow-400 group-hover:text-white" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">$ZNX Token</h3>
-              <p className="text-gray-400 text-sm">
-                A megszerzett pontok a jövőbeni Token Generálás (TGE) során valódi kriptovalutára válthatók.
-              </p>
-            </div>
-
-            {/* Kártya 4 */}
-            <div className="bg-[#1a202e] p-8 rounded-2xl border border-gray-800 hover:border-blue-500/50 transition group">
-              <div className="w-12 h-12 bg-green-900/50 rounded-lg flex items-center justify-center mb-6 group-hover:bg-green-600 transition">
-                <LucideUsers className="text-green-400 group-hover:text-white" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">Közösségi Versenyek</h3>
-              <p className="text-gray-400 text-sm">
-                Influenszer bajnokságok. A Te követőid mérhetik össze tudásukat más közösségekkel.
-              </p>
+      {/* --- FŐ TARTALOM (MAIN CONTENT) --- */}
+      <main className="md:ml-64 p-4 md:p-8">
+        
+        {/* FEJLÉC */}
+        <header className="flex justify-between items-center mb-8">
+          <div>
+            <h2 className="text-2xl font-bold">Üdvözöllek újra! 👋</h2>
+            <p className="text-slate-400">Itt a mai pénzügyi áttekintésed.</p>
+          </div>
+          <div className="flex gap-4 items-center">
+            <button className="p-2 bg-slate-900 rounded-full border border-slate-800 hover:border-indigo-500 transition-colors relative">
+              <Bell size={20} />
+              <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+            </button>
+            <div className="w-10 h-10 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-full flex items-center justify-center font-bold">
+              F
             </div>
           </div>
+        </header>
+
+        {/* STATISZTIKA KÁRTYÁK */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <StatCard 
+            title="Egyenleg" 
+            value="$12,450.00" 
+            change="+2.5%" 
+            icon={<Wallet className="text-indigo-400" />} 
+          />
+          <StatCard 
+            title="Zenyx Pontok" 
+            value="850 ZP" 
+            change="+120 ma" 
+            icon={<TrendingUp className="text-emerald-400" />} 
+          />
+          <StatCard 
+            title="Referral Jutalék" 
+            value="$450.00" 
+            change="3 új tag" 
+            icon={<Users className="text-purple-400" />} 
+          />
         </div>
-      </section>
 
-      {/* PARTNER PROGRAM */}
-      <section className="py-20 px-6 border-t border-gray-800 relative overflow-hidden">
-        <div className="absolute right-0 top-0 w-1/3 h-full bg-blue-600/5 blur-[100px]"></div>
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-12">
-          
-          <div className="flex-1">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">PARTNERI PROGRAM <br /><span className="text-blue-500">INFLUENCEREKNEK</span></h2>
-            <p className="text-gray-400 mb-8 text-lg">
-              Segíts a követőidnek megtanulni kereskedni anélkül, hogy elveszítenék a fizetésüket. Hálásak lesznek érte.
-            </p>
-            
-            <ul className="space-y-4">
-              <li className="flex items-start gap-3">
-                <div className="min-w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center text-sm font-bold">✓</div>
-                <div><strong className="text-white">Tartalomgyártó Eszköz:</strong> Szervezz saját bajnokságokat.</div>
-              </li>
-              <li className="flex items-start gap-3">
-                <div className="min-w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center text-sm font-bold">✓</div>
-                <div><strong className="text-white">Revenue Share:</strong> 30% jutalék minden VIP előfizetés után.</div>
-              </li>
-              <li className="flex items-start gap-3">
-                <div className="min-w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center text-sm font-bold">✓</div>
-                <div><strong className="text-white">Korai Airdrop Allokáció:</strong> Extra szorzó neked és a top követőidnek.</div>
-              </li>
-            </ul>
-
-            <button className="mt-8 bg-white text-black hover:bg-gray-200 px-8 py-3 rounded-lg font-bold transition">
-              Partner Jelentkezés
+        {/* REKLÁM / CTA BANNER */}
+        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 md:p-8 mb-8 relative overflow-hidden shadow-2xl shadow-indigo-900/20">
+          <div className="relative z-10 max-w-lg">
+            <h3 className="text-2xl font-bold mb-2">Hívd meg barátaidat és keress pénzt! 🚀</h3>
+            <p className="text-indigo-100 mb-6">Minden VIP feliratkozás után 20% jutalékot kapsz azonnal az egyenlegedre.</p>
+            <button className="bg-white text-indigo-600 px-6 py-2 rounded-lg font-bold hover:bg-indigo-50 transition-colors flex items-center gap-2">
+              Referral Link Másolása <ArrowUpRight size={18} />
             </button>
           </div>
-
-          <div className="flex-1 bg-[#121826] p-8 rounded-2xl border border-gray-800 shadow-2xl relative">
-            <div className="absolute -top-4 -right-4 bg-yellow-500 text-black font-bold px-4 py-1 rounded-full transform rotate-12">
-              Jutalék: 30%
-            </div>
-            <h3 className="text-gray-500 font-bold text-sm mb-4 tracking-wider">BEVÉTEL SZIMULÁTOR</h3>
-            <div className="space-y-6">
-              <div className="flex justify-between items-center border-b border-gray-800 pb-4">
-                <span>100 VIP Felhasználó</span>
-                <span className="text-green-400 font-bold font-mono">+ $1,500 / hó</span>
-              </div>
-              <div className="flex justify-between items-center border-b border-gray-800 pb-4">
-                <span>500 VIP Felhasználó</span>
-                <span className="text-green-400 font-bold font-mono">+ $7,500 / hó</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span>1000 VIP Felhasználó</span>
-                <span className="text-green-400 font-bold font-mono text-xl">+ $15,000 / hó</span>
-              </div>
-            </div>
-          </div>
-
+          {/* Háttér dekoráció */}
+          <div className="absolute right-0 top-0 w-64 h-64 bg-white/10 rounded-full -mr-16 -mt-16 blur-3xl"></div>
         </div>
-      </section>
 
-      {/* ROADMAP */}
-      <section className="py-20 px-6 bg-[#0a0e17]">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">ÜTEMTERV</h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-             <div className="bg-[#121826] p-6 rounded-xl border-l-4 border-blue-500">
-                <h3 className="text-blue-500 font-bold mb-2">Q1 - Launch</h3>
-                <p className="text-sm text-gray-400">Platform indulása (Web & PWA), Regisztrációk megnyitása.</p>
-             </div>
-             <div className="bg-[#121826] p-6 rounded-xl border-l-4 border-gray-700 opacity-70">
-                <h3 className="text-gray-300 font-bold mb-2">Q2 - Competitions</h3>
-                <p className="text-sm text-gray-500">Globális kereskedési versenyek, Ranglisták élesítése.</p>
-             </div>
-             <div className="bg-[#121826] p-6 rounded-xl border-l-4 border-gray-700 opacity-50">
-                <h3 className="text-gray-300 font-bold mb-2">Q3 - Education</h3>
-                <p className="text-sm text-gray-500">Prémium oktatóanyagok és AI alapú elemzések.</p>
-             </div>
-             <div className="bg-[#121826] p-6 rounded-xl border-l-4 border-gray-700 opacity-30">
-                <h3 className="text-gray-300 font-bold mb-2">Q4 - TGE & Airdrop</h3>
-                <p className="text-sm text-gray-500">A $ZNX token kibocsátása és a pontok beváltása.</p>
-             </div>
+        {/* AKTIVITÁS LISTA */}
+        <div>
+          <h3 className="text-xl font-bold mb-4">Legutóbbi tevékenységek</h3>
+          <div className="bg-slate-900/50 border border-slate-800 rounded-xl overflow-hidden">
+            <ActivityItem 
+              title="Sikeres belépés" 
+              date="Ma, 14:30" 
+              amount="" 
+              status="Kész" 
+            />
+            <ActivityItem 
+              title="Referral jutalék jóváírás" 
+              date="Tegnap, 09:15" 
+              amount="+$25.00" 
+              status="Bevétel" 
+              isPositive 
+            />
+             <ActivityItem 
+              title="VIP Előfizetés vásárlás" 
+              date="Jan 20, 18:00" 
+              amount="-$99.00" 
+              status="Kiadás" 
+            />
           </div>
         </div>
-      </section>
 
-      {/* FOOTER */}
-      <footer className="py-8 text-center text-gray-600 text-sm border-t border-gray-800">
-        <p>&copy; 2026 ZENYX Platform. Minden jog fenntartva.</p>
-      </footer>
+      </main>
+    </div>
+  );
+}
 
-    </main>
+// --- KISEBB KOMPONENSEK (hogy tiszta legyen a kód) ---
+
+function NavItem({ icon, label, active = false }: { icon: React.ReactNode, label: string, active?: boolean }) {
+  return (
+    <Link href="#" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${active ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-900/50' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}>
+      {icon}
+      <span className="font-medium">{label}</span>
+      {active && <ChevronRight size={16} className="ml-auto opacity-50" />}
+    </Link>
+  );
+}
+
+function StatCard({ title, value, change, icon }: { title: string, value: string, change: string, icon: React.ReactNode }) {
+  return (
+    <div className="bg-slate-900 p-6 rounded-xl border border-slate-800 hover:border-slate-700 transition-colors group">
+      <div className="flex justify-between items-start mb-4">
+        <div>
+          <p className="text-slate-400 text-sm font-medium mb-1">{title}</p>
+          <h3 className="text-2xl font-bold text-white group-hover:text-indigo-400 transition-colors">{value}</h3>
+        </div>
+        <div className="p-3 bg-slate-950 rounded-lg border border-slate-800">
+          {icon}
+        </div>
+      </div>
+      <div className="flex items-center gap-2 text-sm">
+        <span className="text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded text-xs font-bold">{change}</span>
+        <span className="text-slate-500">az elmúlt 24 órában</span>
+      </div>
+    </div>
+  );
+}
+
+function ActivityItem({ title, date, amount, status, isPositive }: any) {
+  return (
+    <div className="p-4 border-b border-slate-800 last:border-0 flex justify-between items-center hover:bg-slate-800/50 transition-colors">
+      <div className="flex items-center gap-4">
+        <div className={`w-2 h-2 rounded-full ${isPositive ? 'bg-emerald-500' : 'bg-slate-500'}`}></div>
+        <div>
+          <p className="font-medium text-white">{title}</p>
+          <p className="text-sm text-slate-500">{date}</p>
+        </div>
+      </div>
+      <div className="text-right">
+        <p className={`font-bold ${isPositive ? 'text-emerald-400' : amount.startsWith('-') ? 'text-red-400' : 'text-white'}`}>{amount}</p>
+        <p className="text-xs text-slate-500">{status}</p>
+      </div>
+    </div>
   );
 }
