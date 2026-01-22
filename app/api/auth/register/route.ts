@@ -1,19 +1,16 @@
-import prisma from '../../../lib/prisma';
-
+import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
-import prisma from '../../../lib/prisma'; // EZT JAVÍTOTTUK!
+import prisma from '../../../lib/prisma';
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     const { email, username, password } = body;
 
-    // 1. Validáció
     if (!email || !username || !password) {
       return new NextResponse("Hiányzó adatok", { status: 400 });
     }
 
-    // 2. Ellenőrzés
     const existingUser = await prisma.user.findFirst({
       where: {
         OR: [
@@ -27,10 +24,8 @@ export async function POST(req: Request) {
       return new NextResponse("Ez az email vagy felhasználónév már foglalt", { status: 409 });
     }
 
-    // 3. Jelszó titkosítása
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    // 4. Létrehozás
     const user = await prisma.user.create({
       data: {
         email,
