@@ -1,11 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
-  LayoutDashboard, Server, Wallet, Newspaper, 
-  Menu, X, Hexagon, ArrowRight, ShieldCheck, 
-  CheckCircle2, AlertCircle, Copy, ArrowUpRight,
-  Activity, TrendingUp, Lock, RefreshCw, Zap
+  Server, Wallet, Newspaper, Menu, X, Hexagon, 
+  ArrowRight, ShieldCheck, CheckCircle2, AlertCircle, 
+  Copy, ArrowUpRight, Activity
 } from 'lucide-react';
 
 // --- KONFIGURÁCIÓ: A SZINTEK ÉS JÖVEDELMEK ---
@@ -245,11 +244,12 @@ function PackagesView({ currentLevel, onUpgrade, balance }: any) {
 }
 
 // ==============================================================================
-// 3. MUNKAÁLLOMÁS (VALIDÁLÁS)
+// 3. MUNKAÁLLOMÁS
 // ==============================================================================
 function WorkStation({ level, isMining, progress, taskCompleted, onStart }: any) {
    return (
       <div className="max-w-2xl mx-auto space-y-6 animate-in fade-in">
+         {/* INFO BOX */}
          <div className="text-center mb-8">
             <h2 className="text-3xl font-black text-white mb-2">Validációs Terminál</h2>
             <p className="text-slate-400">
@@ -258,6 +258,7 @@ function WorkStation({ level, isMining, progress, taskCompleted, onStart }: any)
          </div>
 
          <div className="bg-[#111827] border border-slate-700 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
+            {/* TERMINAL UI */}
             <div className="bg-black rounded-xl border border-slate-800 p-6 h-48 font-mono text-xs flex flex-col justify-end mb-8 relative">
                {!level && <span className="text-red-500">ERROR: Node not found. Please purchase a package.</span>}
                {level && !isMining && !taskCompleted && <span className="text-emerald-500 animate-pulse">System Ready. Waiting for user input...</span>}
@@ -306,7 +307,7 @@ function WorkStation({ level, isMining, progress, taskCompleted, onStart }: any)
 }
 
 // ==============================================================================
-// 4. PÉNZTÁRCA (BEFIZETÉS / KIFIZETÉS)
+// 4. PÉNZTÁRCA
 // ==============================================================================
 function WalletView({ balance }: any) {
    const [mode, setMode] = useState('deposit'); 
@@ -314,6 +315,7 @@ function WalletView({ balance }: any) {
    return (
       <div className="max-w-3xl mx-auto space-y-8 animate-in fade-in">
          
+         {/* BALANCE CARD */}
          <div className="bg-gradient-to-br from-[#1e1b4b] to-[#111827] border border-indigo-500/30 rounded-2xl p-8 text-center relative overflow-hidden">
             <div className="absolute -top-10 -right-10 w-40 h-40 bg-indigo-500/20 rounded-full blur-3xl"></div>
             <p className="text-slate-400 text-sm font-bold uppercase tracking-widest mb-2">Teljes Egyenleg</p>
@@ -324,6 +326,7 @@ function WalletView({ balance }: any) {
             </div>
          </div>
 
+         {/* ACTION AREA */}
          <div className="bg-[#111827] border border-slate-700 rounded-2xl p-6 md:p-8">
             {mode === 'deposit' ? (
                <div className="space-y-6">
@@ -356,4 +359,4 @@ function WalletView({ balance }: any) {
             ) : (
                <div className="space-y-6">
                   <h3 className="text-xl font-bold text-white flex items-center gap-2"><ArrowUpRight className="text-red-400 rotate-180"/> Kifizetés</h3>
-                  <div className="bg-slate-800/50 p-4 rounded-xl text
+                  <div className="bg-slate-800/50 p-
