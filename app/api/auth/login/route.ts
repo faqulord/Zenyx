@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/app/lib/prisma'; // JAVÍTVA
+import { prisma } from '../../../lib/prisma'; // JAVÍTVA: Relatív útvonal
 import bcrypt from 'bcryptjs';
 
 export async function POST(req: Request) {
@@ -7,6 +7,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { email, password } = body;
 
+    // Keresés
     const user = await prisma.user.findUnique({
       where: { email: email }
     });
@@ -15,6 +16,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: 'Nincs ilyen felhasználó!' }, { status: 401 });
     }
 
+    // Jelszó ellenőrzés
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
@@ -27,7 +29,7 @@ export async function POST(req: Request) {
     }, { status: 200 });
 
   } catch (error) {
-    console.error(error);
+    console.error("Login hiba:", error);
     return NextResponse.json({ message: 'Szerver hiba.' }, { status: 500 });
   }
 }
