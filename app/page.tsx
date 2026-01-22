@@ -12,7 +12,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-[#0B0E11] text-slate-200 font-sans selection:bg-indigo-500/30 selection:text-indigo-200 pb-24 md:pb-0">
       
-      {/* --- PROFESSZIONÁLIS HÁTTÉR (Subtle Grid & Glow) --- */}
+      {/* --- PROFESSZIONÁLIS HÁTTÉR --- */}
       <div className="fixed inset-0 z-0 pointer-events-none">
          <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
          <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-indigo-600/10 rounded-full blur-[120px]"></div>
@@ -27,7 +27,6 @@ export default function Dashboard() {
           {/* LOGÓ SZEKCIÓ */}
           <div className="p-6 border-b border-white/5">
             <div className="flex items-center gap-3 text-white">
-               {/* ÚJ PROFI LOGÓ (SVG alapú) */}
                <div className="w-10 h-10 relative">
                   <Hexagon className="w-10 h-10 text-indigo-600 fill-indigo-600/20" strokeWidth={1.5} />
                   <div className="absolute inset-0 flex items-center justify-center font-bold text-xs tracking-tighter">ZNX</div>
@@ -334,3 +333,4 @@ function MarketRow({ coin, symbol, price, change, vol, isDown, highlight }: any)
                <p className="text-xs text-slate-500">{symbol}</p>
             </div>
          </div>
+         <div className="text-right text-sm font-medium text-white">$
