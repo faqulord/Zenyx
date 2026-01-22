@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   LayoutDashboard, Server, Wallet, Newspaper, 
   Menu, X, Hexagon, ArrowRight, ShieldCheck, 
-  CheckCircle2, AlertCircle, Copy, Upload, ArrowUpRight,
-  Lock, TrendingUp, DollarSign, Activity
+  CheckCircle2, AlertCircle, Copy, ArrowUpRight,
+  Activity, TrendingUp
 } from 'lucide-react';
 
 // --- KONFIGURÁCIÓ: A SZINTEK ÉS JÖVEDELMEK ---
@@ -21,12 +21,12 @@ const LEVELS = [
 const MY_WALLET_ADDRESS = "TL9t1WpL7H8m4K3gR5X2jF9c1vB7n4x3Z1"; 
 
 export default function Dashboard() {
-  const [activeTab, setActiveTab] = useState('news'); // Alapértelmezett: HÍREK
+  const [activeTab, setActiveTab] = useState('news'); 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   // Felhasználó adatok (Szimulált)
-  const [balance, setBalance] = useState(0.00); // Üres egyenleg
-  const [currentLevel, setCurrentLevel] = useState<any>(null); // Nincs aktív csomagja
+  const [balance, setBalance] = useState(0.00); 
+  const [currentLevel, setCurrentLevel] = useState<any>(null); 
   const [taskCompleted, setTaskCompleted] = useState(false);
   const [isMining, setIsMining] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -48,7 +48,7 @@ export default function Dashboard() {
         clearInterval(interval);
         setIsMining(false);
         setTaskCompleted(true);
-        setBalance(prev => prev + currentLevel.daily); // A szintnek megfelelő pénzt kapja
+        setBalance((prev: number) => prev + currentLevel.daily); 
       }
     }, 50);
   };
@@ -172,14 +172,11 @@ function NewsView() {
 function PackagesView({ currentLevel, onUpgrade, balance }: any) {
    const handleBuy = (level: any) => {
       if (balance >= level.price) {
-         // Ha van pénze (szimulált), megveszi
          onUpgrade(level);
          alert(`Sikeres aktiválás! Mostantól a ${level.name} szinten vagy.`);
       } else {
-         // Ha nincs pénze, a tárcához küldjük
          const confirm = window.confirm(`Nincs elegendő egyenleged ($${balance}). A ${level.name} aktiválásához $${level.price} szükséges. Szeretnél befizetni?`);
          if(confirm) {
-            // Itt elvileg átirányítanánk a Wallet fülre, de most csak üzenünk
             alert("Kérlek menj a Pénztárca menüpontra és töltsd fel az egyenleged!");
          }
       }
@@ -355,4 +352,11 @@ function WalletView({ balance }: any) {
                   <div className="space-y-2 pt-4 border-t border-slate-800">
                      <label className="text-xs text-slate-400 uppercase font-bold">Tranzakció Azonosító (TXID / Hash)</label>
                      <input type="text" placeholder="Másold be ide a tranzakció hash-t..." className="w-full bg-[#0b0f19] border border-slate-700 p-4 rounded-xl text-white outline-none focus:border-indigo-500" />
-                     <button className="w-full bg-emerald-600 hover:bg-emerald-500 py-4 rounded-xl font
+                     <button className="w-full bg-emerald-600 hover:bg-emerald-500 py-4 rounded-xl font-bold text-white mt-4">
+                        Befizetés Igazolása
+                     </button>
+                  </div>
+               </div>
+            ) : (
+               <div className="space-y-6">
+                  <h3 className="text-xl font-bold text-white flex ite
