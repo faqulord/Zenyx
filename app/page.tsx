@@ -4,339 +4,303 @@ import {
   LayoutDashboard, Wallet, Users, Settings, Bell, 
   Trophy, LogOut, ArrowUpRight, BookOpen, Gift, 
   ShieldCheck, ArrowRight, Hexagon, TrendingUp, 
-  CreditCard, Lock, CheckCircle2, Search, CandlestickChart, Crown
+  CreditCard, Lock, CheckCircle2, Search, 
+  CandlestickChart, Crown, Flame, Newspaper, 
+  ChevronRight, Star
 } from 'lucide-react';
 
 export default function Dashboard() {
   return (
-    <div className="min-h-screen bg-[#0B0E11] text-slate-200 font-sans selection:bg-indigo-500/30 selection:text-indigo-200 pb-24 md:pb-0">
+    <div className="min-h-screen bg-[#0f172a] text-slate-200 font-sans pb-24 md:pb-0">
       
-      {/* --- HÁTTÉR --- */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
-         <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-indigo-600/10 rounded-full blur-[120px]"></div>
-         <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-emerald-600/5 rounded-full blur-[100px]"></div>
-      </div>
-
-      <div className="flex relative z-10">
-        
-        {/* --- SIDEBAR --- */}
-        <aside className="hidden md:flex flex-col w-72 h-screen sticky top-0 border-r border-white/5 bg-[#0B0E11]/95 backdrop-blur-xl z-50">
+      {/* --- FELSŐ SÁV (NAVBAR) --- */}
+      <nav className="sticky top-0 z-50 bg-[#1e293b]/90 backdrop-blur-md border-b border-slate-700 shadow-lg">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
           
-          <div className="p-6 border-b border-white/5">
-            <div className="flex items-center gap-3 text-white">
-               <div className="w-10 h-10 relative text-indigo-600">
-                  <Hexagon size={40} fill="currentColor" fillOpacity={0.2} strokeWidth={1.5} />
-                  <div className="absolute inset-0 flex items-center justify-center font-bold text-xs tracking-tighter text-white">ZNX</div>
-               </div>
-               <div>
-                  <h1 className="text-xl font-bold tracking-tight leading-none">ZENYX<span className="text-indigo-500">PRO</span></h1>
-                  <p className="text-[10px] text-slate-500 uppercase tracking-widest mt-1">Trading Platform</p>
-               </div>
+          {/* LOGO */}
+          <div className="flex items-center gap-3">
+            <div className="bg-indigo-600 p-2 rounded-lg">
+              <Hexagon className="text-white fill-white" size={24} />
+            </div>
+            <span className="text-xl font-black tracking-tight text-white">ZENYX<span className="text-indigo-400">.GG</span></span>
+          </div>
+
+          {/* DESKTOP MENU (Középen) */}
+          <div className="hidden md:flex items-center gap-1 bg-slate-800/50 p-1 rounded-xl border border-slate-700">
+            <TopNavLink icon={<LayoutDashboard size={18}/>} label="Főoldal" active />
+            <TopNavLink icon={<Newspaper size={18}/>} label="Hírek" />
+            <TopNavLink icon={<CandlestickChart size={18}/>} label="Tőzsde" />
+            <TopNavLink icon={<Trophy size={18}/>} label="Bajnokság" />
+            <TopNavLink icon={<BookOpen size={18}/>} label="Akadémia" />
+          </div>
+
+          {/* RIGHT SIDE (Profile) */}
+          <div className="flex items-center gap-4">
+            <button className="hidden md:flex bg-gradient-to-r from-amber-500 to-yellow-600 text-black px-4 py-2 rounded-lg font-bold text-sm items-center gap-2 hover:scale-105 transition-transform shadow-lg shadow-amber-500/20">
+              <Crown size={16} fill="black" /> VIP Tagság
+            </button>
+            <div className="w-10 h-10 rounded-full bg-slate-700 border-2 border-slate-600 flex items-center justify-center font-bold text-white relative">
+              FS
+              <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-slate-800"></div>
             </div>
           </div>
+        </div>
+      </nav>
+
+      {/* --- FŐ TARTALOM (GRID SYSTEM) --- */}
+      <main className="max-w-7xl mx-auto p-4 md:p-8 space-y-8">
+
+        {/* 1. HERO SZEKCIÓ (Üdvözlés + VIP) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
-          <nav className="flex-1 overflow-y-auto py-6 px-3 space-y-1">
-            <MenuSection title="MARKETS & TRADE" />
-            <NavItem icon={<LayoutDashboard size={18} />} label="Dashboard" active />
-            <NavItem icon={<CandlestickChart size={18} />} label="Exchange (Spot)" highlight="LIVE" />
-            <NavItem icon={<TrendingUp size={18} />} label="Derivatives" />
-            
-            <MenuSection title="ASSETS & FINANCE" />
-            <NavItem icon={<Wallet size={18} />} label="Wallet Overview" />
-            <NavItem icon={<CreditCard size={18} />} label="Deposit / Fiat" />
-            <NavItem icon={<Gift size={18} />} label="Staking & Earn" highlight="APY 12%" />
-
-            <MenuSection title="ECOSYSTEM" />
-            <NavItem icon={<Trophy size={18} />} label="Championships" />
-            <NavItem icon={<Users size={18} />} label="Affiliate Program" />
-            <NavItem icon={<Crown size={18} />} label="VIP Membership" gold />
-            
-            <MenuSection title="LEARNING" />
-            <NavItem icon={<BookOpen size={18} />} label="Academy" />
-          </nav>
-
-          <div className="p-4 border-t border-white/5 bg-white/[0.02]">
-            <div className="flex items-center gap-3 mb-3">
-               <div className="w-10 h-10 rounded-full bg-slate-700 border border-white/10 flex items-center justify-center text-sm font-bold text-white">FS</div>
-               <div className="flex-1 overflow-hidden">
-                  <p className="text-sm font-bold text-white truncate">Faqu Style</p>
-                  <p className="text-xs text-emerald-400 flex items-center gap-1"><CheckCircle2 size={10} /> Verified</p>
+          {/* BAL: Üdvözlés & Statisztika */}
+          <div className="md:col-span-2 bg-slate-800 rounded-2xl p-8 border border-slate-700 shadow-xl relative overflow-hidden">
+             <div className="absolute right-0 top-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl"></div>
+             <div className="relative z-10">
+               <h1 className="text-3xl font-bold text-white mb-2">Szia, Faqu! 👋</h1>
+               <p className="text-slate-400 mb-6">Íme a mai piaci helyzet és a portfóliód állapota.</p>
+               
+               <div className="grid grid-cols-3 gap-4">
+                 <StatBox label="Egyenleged" value="$12,450" change="+4.2%" color="text-emerald-400" />
+                 <StatBox label="Zenyx Pontok" value="8,540 XP" change="+120 ma" color="text-indigo-400" />
+                 <StatBox label="Ranglista" value="#142" change="Top 5%" color="text-amber-400" />
                </div>
-               <Settings size={16} className="text-slate-500 hover:text-white cursor-pointer" />
+             </div>
+          </div>
+
+          {/* JOBB: PRÉMIUM VIP (Kiemelt) */}
+          <div className="bg-gradient-to-br from-amber-900/40 to-slate-900 border border-amber-500/30 rounded-2xl p-6 flex flex-col justify-between relative group overflow-hidden">
+            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+            <div>
+              <div className="flex justify-between items-start mb-4">
+                <span className="bg-amber-500/20 text-amber-400 text-xs font-bold px-3 py-1 rounded-full border border-amber-500/20">PRÉMIUM</span>
+                <Crown className="text-amber-500 animate-pulse" size={28} />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-2">Legyél VIP Tag! 🚀</h3>
+              <p className="text-sm text-slate-300 mb-4">
+                Szerezz 30% jutalékot, 0% kereskedési díjat és exkluzív Airdropokat.
+              </p>
             </div>
-            <button className="flex items-center justify-center gap-2 text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-all w-full py-2 rounded-lg text-xs font-bold uppercase tracking-wider">
-              <LogOut size={14} /> Kijelentkezés
+            <button className="w-full bg-amber-500 hover:bg-amber-400 text-black font-bold py-3 rounded-xl transition-colors shadow-lg shadow-amber-900/20 flex items-center justify-center gap-2">
+              Előfizetés - $29 / hó <ArrowRight size={18} />
             </button>
           </div>
-        </aside>
+        </div>
 
-        {/* --- MAIN CONTENT --- */}
-        <main className="flex-1 p-4 md:p-8 max-w-[1600px] mx-auto w-full overflow-hidden">
+        {/* 2. TARTALOM GRID: HÍREK, AKADÉMIA, RANGLISTA */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
-          {/* HEADER */}
-          <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
-            <div>
-              <h2 className="text-2xl md:text-3xl font-bold text-white">Portfolio Overview</h2>
-              <div className="flex items-center gap-2 text-sm text-slate-500 mt-1">
-                <span>Last login: 2024.01.22 14:30</span>
-                <span className="w-1 h-1 bg-slate-600 rounded-full"></span>
-                <span className="text-emerald-500 flex items-center gap-1"><Lock size={12} /> Secure Connection</span>
+          {/* --- BAL OSZLOP (8 egység): HÍREK & AKADÉMIA --- */}
+          <div className="lg:col-span-8 space-y-8">
+            
+            {/* HÍREK SZEKCIÓ */}
+            <div className="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden">
+              <div className="p-6 border-b border-slate-700 flex justify-between items-center bg-slate-800/50">
+                <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                  <Newspaper className="text-blue-400" /> Friss Hírek & Elemzések
+                </h2>
+                <Link href="#" className="text-sm text-indigo-400 hover:text-white">Összes hír</Link>
+              </div>
+              <div className="divide-y divide-slate-700">
+                <NewsItem 
+                  category="PIACI ELEMZÉS" 
+                  title="A Bitcoin áttörte a $42,000 szintet - Mi jön most?" 
+                  desc="A technikai elemzők szerint a következő ellenállás $45k-nál található. Olvasd el a részleteket."
+                  date="2 órája"
+                  imageColor="bg-orange-500"
+                />
+                <NewsItem 
+                  category="PLATFORM UPDATE" 
+                  title="Megérkezett az új Referral Rendszer!" 
+                  desc="Mostantól minden meghívott barátod után 20% örök jutalékot kapsz. Itt vannak a szabályok."
+                  date="5 órája"
+                  imageColor="bg-indigo-500"
+                />
+                <NewsItem 
+                  category="AIRDROP" 
+                  title="Zenyx Token Airdrop: Indul a 2. fázis" 
+                  desc="Készítsd elő a tárcádat, mert holnap indul a snapshot. Ne maradj le az ingyen tokenekről."
+                  date="Tegnap"
+                  imageColor="bg-emerald-500"
+                />
               </div>
             </div>
 
-            <div className="flex items-center gap-4 w-full md:w-auto">
-               <div className="relative flex-1 md:w-64">
-                  <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
-                  <input type="text" placeholder="Search coin, pair or news..." className="w-full bg-[#0B0E11] border border-white/10 rounded-lg pl-10 pr-4 py-2.5 text-sm text-white focus:border-indigo-500 outline-none transition-colors" />
-               </div>
-               
-               <button className="relative p-2.5 rounded-lg border border-white/10 hover:bg-white/5 transition-colors text-slate-400 hover:text-white">
-                  <Bell size={20} />
-                  <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-[#0B0E11]"></span>
-               </button>
-               
-               <button className="hidden md:flex bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white px-6 py-2.5 rounded-lg font-bold text-sm transition-all shadow-lg shadow-indigo-900/20 items-center gap-2">
-                  <Wallet size={16} /> Deposit
-               </button>
-            </div>
-          </header>
-
-          {/* --- HERO SECTION --- */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
-            
-            <div className="lg:col-span-8 rounded-2xl bg-[#15191E] border border-white/5 p-6 md:p-8 relative overflow-hidden group">
-               <div className="absolute right-0 top-0 w-64 h-64 bg-indigo-500/5 rounded-full blur-3xl group-hover:bg-indigo-500/10 transition-all"></div>
-               
-               <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 relative z-10">
-                  <div>
-                     <p className="text-slate-400 font-medium text-sm mb-2 flex items-center gap-2">Estimated Balance <ShieldCheck size={14} className="text-emerald-500"/></p>
-                     <h3 className="text-4xl md:text-5xl font-bold text-white tracking-tight flex items-baseline gap-2">
-                        $ 12,450.<span className="text-2xl text-slate-500">00</span>
-                        <span className="text-sm px-2 py-1 bg-emerald-500/10 text-emerald-400 rounded-md font-bold ml-2 flex items-center">+4.25%</span>
-                     </h3>
-                     <p className="text-sm text-slate-500 mt-2">≈ 0.2854 BTC</p>
-                  </div>
-                  <div className="flex gap-3 mt-6 md:mt-0">
-                     <ActionButton icon={<ArrowUpRight size={18} />} label="Withdraw" secondary />
-                     <ActionButton icon={<ArrowRight size={18} />} label="Transfer" secondary />
-                     <ActionButton icon={<CandlestickChart size={18} />} label="Trade Now" primary />
-                  </div>
-               </div>
-
-               <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden flex">
-                  <div className="h-full bg-indigo-500 w-[45%]"></div>
-                  <div className="h-full bg-purple-500 w-[30%]"></div>
-                  <div className="h-full bg-amber-500 w-[15%]"></div>
-               </div>
-               <div className="flex gap-6 mt-3 text-xs font-medium text-slate-400">
-                  <span className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-indigo-500"></div> BTC 45%</span>
-                  <span className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-purple-500"></div> ETH 30%</span>
-                  <span className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-amber-500"></div> ZNX 15%</span>
-               </div>
+            {/* AKADÉMIA SZEKCIÓ (Kezdőknek) */}
+            <div>
+              <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <BookOpen className="text-pink-400" /> Tudástár <span className="text-sm font-normal text-slate-500">(Kezdőknek)</span>
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <AcademyCard 
+                  title="Mi az az Airdrop?" 
+                  desc="Ingyen pénz? Majdnem. Ismerd meg a mechanikát." 
+                  icon={<Gift size={24} className="text-purple-400"/>} 
+                />
+                <AcademyCard 
+                  title="Hogyan Kereskedj?" 
+                  desc="Gyertyák, stop-loss és a profit realizálás alapjai." 
+                  icon={<CandlestickChart size={24} className="text-emerald-400"/>} 
+                />
+                <AcademyCard 
+                  title="Biztonság 101" 
+                  desc="Így védd meg a tárcádat a hackerektől." 
+                  icon={<ShieldCheck size={24} className="text-blue-400"/>} 
+                />
+                <AcademyCard 
+                  title="A Zenyx Token" 
+                  desc="Mire jó a platform saját coinja? Utility leírás." 
+                  icon={<Hexagon size={24} className="text-indigo-400"/>} 
+                />
+              </div>
             </div>
 
-            <div className="lg:col-span-4 rounded-2xl bg-[#1E1B15] border border-amber-500/20 p-6 relative overflow-hidden flex flex-col justify-between group cursor-pointer hover:border-amber-500/40 transition-all">
-               <div className="absolute -right-10 -top-10 text-amber-500/10 rotate-12">
-                  <Crown size={180} />
-               </div>
-               <div className="relative z-10">
-                  <div className="flex justify-between items-start mb-4">
-                     <span className="px-3 py-1 rounded bg-amber-500/20 text-amber-400 border border-amber-500/20 text-xs font-bold tracking-wider">PREMIUM</span>
-                     <Crown size={24} className="text-amber-500 animate-pulse" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-white mb-2">Upgrade to VIP</h3>
-                  <p className="text-sm text-amber-200/60 leading-relaxed mb-6">
-                     Csökkentett díjak, 30% referral jutalék és exkluzív Airdrop hozzáférés.
-                  </p>
-               </div>
-               <button className="relative z-10 w-full bg-amber-600 hover:bg-amber-500 text-black font-bold py-3 rounded-lg shadow-lg shadow-amber-900/20 transition-all flex items-center justify-center gap-2">
-                  Vásárlás - $29 / hó <ArrowRight size={16} />
-               </button>
-            </div>
           </div>
 
-          {/* --- CONTENT GRID --- */}
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+          {/* --- JOBB OSZLOP (4 egység): RANGLISTA & STATUS --- */}
+          <div className="lg:col-span-4 space-y-6">
             
-            <div className="xl:col-span-2 space-y-8">
-               <div className="bg-[#15191E] border border-white/5 rounded-2xl overflow-hidden">
-                  <div className="p-5 border-b border-white/5 flex justify-between items-center">
-                     <h3 className="font-bold text-white flex items-center gap-2"><TrendingUp size={18} className="text-indigo-500"/> Market Trend</h3>
-                     <button className="text-xs text-indigo-400 hover:text-white transition-colors">View All</button>
-                  </div>
-                  <div>
-                     <MarketRow coin="Bitcoin" symbol="BTC" price="42,150.20" change="+1.24%" vol="24B" />
-                     <MarketRow coin="Ethereum" symbol="ETH" price="2,240.80" change="-0.45%" vol="12B" isDown />
-                     <MarketRow coin="Zenyx Token" symbol="ZNX" price="1.05" change="+5.12%" vol="500K" highlight />
-                     <MarketRow coin="Solana" symbol="SOL" price="98.40" change="+2.30%" vol="3B" />
-                  </div>
-               </div>
-
-               <div>
-                  <div className="flex justify-between items-end mb-4 px-1">
-                     <h3 className="font-bold text-lg text-white">Zenyx Academy</h3>
-                     <Link href="#" className="text-sm text-indigo-400 hover:underline">All courses</Link>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                     <CourseCard 
-                        title="Crypto Trading Alapjai" 
-                        desc="Tanuld meg a gyertyadiagramok olvasását és a technikai elemzés alapjait."
-                        level="Beginner"
-                        time="45 min"
-                        icon={<CandlestickChart className="text-indigo-400" />}
-                     />
-                     <CourseCard 
-                        title="Airdrop Stratégiák" 
-                        desc="Hogyan maximalizáld a hozamot likviditás biztosítással és stakinggel."
-                        level="Advanced"
-                        time="60 min"
-                        icon={<Gift className="text-purple-400" />}
-                     />
-                  </div>
-               </div>
+            {/* ÉLŐ STATUS WIDGET */}
+            <div className="bg-slate-800 rounded-2xl border border-slate-700 p-5">
+              <h3 className="font-bold text-white mb-4 flex items-center gap-2">
+                <TrendingUp className="text-emerald-400" size={20} /> Piaci Körkép
+              </h3>
+              <div className="space-y-3">
+                <MarketRow coin="Bitcoin" price="$42,150" change="+1.2%" isUp />
+                <MarketRow coin="Ethereum" price="$2,240" change="-0.5%" isUp={false} />
+                <MarketRow coin="Zenyx Token" price="$1.05" change="+5.2%" isUp highlight />
+              </div>
+              <button className="w-full mt-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-sm font-bold transition-colors">
+                Tőzsde Megnyitása
+              </button>
             </div>
 
-            <div className="space-y-6">
-               <div className="bg-[#1E2329] border border-white/5 rounded-2xl p-6 relative">
-                  <div className="flex items-center gap-4 mb-4">
-                     <div className="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20 text-white">
-                        <Hexagon fill="currentColor" size={24} />
-                     </div>
-                     <div>
-                        <h4 className="font-bold text-white text-lg">Zenyx Token</h4>
-                        <p className="text-xs text-slate-400">Utility & Governance</p>
-                     </div>
-                  </div>
-                  <div className="flex justify-between items-end mb-4">
-                     <div className="text-3xl font-bold text-white">1.05 <span className="text-sm text-slate-500">USDT</span></div>
-                     <div className="text-emerald-400 text-sm font-bold bg-emerald-500/10 px-2 py-1 rounded">+5.12%</div>
-                  </div>
-                  <button className="w-full bg-white/5 hover:bg-white/10 border border-white/10 text-white py-2 rounded-lg text-sm font-bold transition-colors">
-                     Buy ZNX Token
-                  </button>
-               </div>
+            {/* RANGLISTA WIDGET */}
+            <div className="bg-slate-800 rounded-2xl border border-slate-700 p-5">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="font-bold text-white flex items-center gap-2">
+                  <Trophy className="text-amber-400" size={20} /> Top Kereskedők
+                </h3>
+                <span className="text-xs text-slate-500">Heti nézet</span>
+              </div>
+              
+              <div className="space-y-4">
+                <LeaderRow rank={1} name="CryptoKing" profit="+450%" />
+                <LeaderRow rank={2} name="SatoshiFan" profit="+320%" />
+                <LeaderRow rank={3} name="WhaleHunter" profit="+210%" />
+                <div className="h-px bg-slate-700 my-2"></div>
+                <LeaderRow rank={142} name="Faqu (Te)" profit="+12%" isUser />
+              </div>
 
-               <div className="bg-[#15191E] border border-white/5 rounded-2xl p-5">
-                  <h3 className="font-bold text-white mb-4 text-sm uppercase tracking-wider flex items-center gap-2">
-                     <Trophy size={16} className="text-amber-500" /> Top Traders
-                  </h3>
-                  <div className="space-y-3">
-                     <LeaderRow rank="1" name="WhaleHunter" profit="+420%" />
-                     <LeaderRow rank="2" name="SatoshiFan" profit="+315%" />
-                     <div className="border-t border-white/5 pt-3 mt-2">
-                        <LeaderRow rank="142" name="You (Faqu)" profit="+12%" isUser />
-                     </div>
-                  </div>
-               </div>
+              <div className="mt-4 p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+                <p className="text-xs text-amber-200 text-center">
+                  Lépj be a <strong>Top 100</strong>-ba és nyerj VIP tagságot!
+                </p>
+              </div>
             </div>
+
           </div>
-        </main>
-      </div>
-      
-      {/* MOBILE NAV */}
-      <div className="md:hidden fixed bottom-0 left-0 w-full bg-[#15191E]/95 backdrop-blur-xl border-t border-white/10 p-2 pb-6 flex justify-around z-50">
-         <MobileNavItem icon={<LayoutDashboard size={20} />} label="Home" active />
-         <MobileNavItem icon={<CandlestickChart size={20} />} label="Trade" />
+        </div>
+
+      </main>
+
+      {/* MOBILE BOTTOM NAV */}
+      <div className="md:hidden fixed bottom-0 left-0 w-full bg-slate-900 border-t border-slate-800 p-2 pb-6 flex justify-around z-50">
+         <MobileNavItem icon={<LayoutDashboard size={20} />} label="Főoldal" active />
+         <MobileNavItem icon={<Newspaper size={20} />} label="Hírek" />
          <div className="relative -top-5">
-            <div className="bg-indigo-600 rounded-full p-4 shadow-lg shadow-indigo-600/40 text-white">
-               <Hexagon fill="currentColor" size={24} />
+            <div className="bg-indigo-600 rounded-full p-4 shadow-lg border-4 border-slate-900">
+               <Hexagon className="text-white" size={24} />
             </div>
          </div>
-         <MobileNavItem icon={<Wallet size={20} />} label="Wallet" />
-         <MobileNavItem icon={<Users size={20} />} label="Profile" />
+         <MobileNavItem icon={<BookOpen size={20} />} label="Tudás" />
+         <MobileNavItem icon={<Settings size={20} />} label="Profil" />
       </div>
 
     </div>
   );
 }
 
-// --- HELPER COMPONENTS ---
+// --- KOMPONENSEK (Hogy tiszta legyen a kód) ---
 
-function MenuSection({ title }: { title: string }) {
-   return <div className="px-4 mt-6 mb-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest">{title}</div>;
-}
-
-function NavItem({ icon, label, active, highlight, gold }: any) {
-  const c = `flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all group text-sm font-medium mb-1 ${
-    gold ? "text-amber-400 hover:bg-amber-500/10 hover:text-amber-300" :
-    active ? "bg-indigo-600/10 text-indigo-400 border border-indigo-500/20" :
-    "text-slate-400 hover:bg-white/5 hover:text-white"
-  }`;
-  
+function TopNavLink({ icon, label, active }: any) {
   return (
-    <Link href="#" className={c}>
-      <span className={gold ? "text-amber-500" : active ? "text-indigo-400" : "text-slate-500 group-hover:text-white transition-colors"}>{icon}</span>
+    <Link href="#" className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${active ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-slate-700'}`}>
+      {icon}
       <span>{label}</span>
-      {highlight && <span className="ml-auto text-[9px] font-bold bg-indigo-500 text-white px-1.5 py-0.5 rounded shadow-lg shadow-indigo-500/20">{highlight}</span>}
     </Link>
-  );
+  )
 }
 
-function ActionButton({ icon, label, primary, secondary }: any) {
-   const style = primary 
-      ? 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-900/20' 
-      : 'bg-[#0B0E11] hover:bg-white/5 border border-white/10 text-slate-300 hover:text-white';
-   return (
-      <button className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-bold text-sm transition-all active:scale-95 ${style}`}>
-         {icon} {label}
-      </button>
-   );
+function StatBox({ label, value, change, color }: any) {
+  return (
+    <div className="bg-slate-900/50 p-4 rounded-xl border border-slate-700">
+      <p className="text-xs text-slate-500 uppercase font-bold mb-1">{label}</p>
+      <p className="text-xl md:text-2xl font-black text-white">{value}</p>
+      <p className={`text-xs font-bold ${color}`}>{change}</p>
+    </div>
+  )
 }
 
-function MarketRow({ coin, symbol, price, change, vol, isDown, highlight }: any) {
-   const bg = highlight ? 'bg-indigo-900/10' : '';
-   return (
-      <div className={`grid grid-cols-4 items-center p-4 border-b border-white/5 hover:bg-white/[0.02] transition-colors cursor-pointer ${bg}`}>
-         <div className="flex items-center gap-3 col-span-1">
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${highlight ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-400'}`}>
-               {symbol[0]}
-            </div>
-            <div>
-               <p className={`font-bold text-sm ${highlight ? 'text-indigo-400' : 'text-white'}`}>{coin}</p>
-               <p className="text-xs text-slate-500">{symbol}</p>
-            </div>
-         </div>
-         <div className="text-right text-sm font-medium text-white">${price}</div>
-         <div className={`text-right text-sm font-bold ${isDown ? 'text-red-400' : 'text-emerald-400'}`}>{change}</div>
-         <div className="text-right text-xs text-slate-500 hidden md:block">Vol: {vol}</div>
+function NewsItem({ category, title, desc, date, imageColor }: any) {
+  return (
+    <div className="p-6 hover:bg-slate-700/30 transition-colors cursor-pointer flex gap-4">
+      {/* Kép helyőrző */}
+      <div className={`w-24 h-24 ${imageColor} rounded-xl flex-shrink-0 hidden sm:flex items-center justify-center opacity-80`}>
+        <Newspaper className="text-white/50" size={32} />
       </div>
-   );
+      
+      <div>
+        <div className="flex items-center gap-3 mb-2">
+          <span className="text-[10px] font-bold bg-slate-700 text-slate-300 px-2 py-0.5 rounded uppercase">{category}</span>
+          <span className="text-xs text-slate-500 flex items-center gap-1"><Star size={10} /> {date}</span>
+        </div>
+        <h3 className="text-lg font-bold text-white mb-2 leading-tight hover:text-indigo-400 transition-colors">{title}</h3>
+        <p className="text-sm text-slate-400 leading-relaxed line-clamp-2">{desc}</p>
+      </div>
+    </div>
+  )
 }
 
-function CourseCard({ title, desc, level, time, icon }: any) {
-   return (
-      <div className="p-4 rounded-xl bg-[#15191E] border border-white/5 hover:border-indigo-500/30 hover:bg-[#1A1F26] transition-all cursor-pointer group">
-         <div className="flex justify-between items-start mb-3">
-            <div className="p-2 bg-slate-800 rounded-lg group-hover:bg-indigo-500/20 transition-colors">{icon}</div>
-            <span className="text-[10px] font-bold bg-slate-800 px-2 py-1 rounded text-slate-400">{level}</span>
-         </div>
-         <h4 className="font-bold text-white text-sm mb-1 group-hover:text-indigo-400 transition-colors">{title}</h4>
-         <p className="text-xs text-slate-400 leading-relaxed mb-3">{desc}</p>
-         <div className="flex items-center gap-1 text-[10px] text-slate-500 font-medium">
-            <CreditCard size={10} /> {time} • Start Lesson
-         </div>
+function AcademyCard({ title, desc, icon }: any) {
+  return (
+    <div className="bg-slate-800 border border-slate-700 p-4 rounded-xl hover:border-indigo-500 transition-all cursor-pointer group">
+      <div className="mb-3 p-2 bg-slate-900 w-fit rounded-lg group-hover:scale-110 transition-transform">{icon}</div>
+      <h4 className="font-bold text-white mb-1 group-hover:text-indigo-400">{title}</h4>
+      <p className="text-xs text-slate-400 leading-relaxed">{desc}</p>
+    </div>
+  )
+}
+
+function MarketRow({ coin, price, change, isUp, highlight }: any) {
+  return (
+    <div className={`flex justify-between items-center p-3 rounded-lg ${highlight ? 'bg-indigo-900/20 border border-indigo-500/20' : 'bg-slate-900/50'}`}>
+      <span className={`font-bold text-sm ${highlight ? 'text-indigo-300' : 'text-slate-300'}`}>{coin}</span>
+      <div className="text-right">
+        <div className="text-white font-bold text-sm">{price}</div>
+        <div className={`text-xs font-bold ${isUp ? 'text-emerald-400' : 'text-red-400'}`}>{change}</div>
       </div>
-   );
+    </div>
+  )
 }
 
 function LeaderRow({ rank, name, profit, isUser }: any) {
-   return (
-      <div className={`flex items-center justify-between ${isUser ? 'text-indigo-300' : 'text-slate-300'}`}>
-         <div className="flex items-center gap-3">
-            <span className={`text-xs font-bold w-4 ${rank === "1" ? "text-amber-500" : "text-slate-500"}`}>#{rank}</span>
-            <span className="text-sm font-medium">{name} {isUser && '(You)'}</span>
-         </div>
-         <span className={`text-sm font-bold ${profit.startsWith('+') ? 'text-emerald-400' : 'text-red-400'}`}>{profit}</span>
+  return (
+    <div className={`flex items-center justify-between p-2 rounded ${isUser ? 'bg-indigo-600/20 border border-indigo-500/30' : ''}`}>
+      <div className="flex items-center gap-3">
+        <span className={`font-bold w-6 text-center ${rank === 1 ? 'text-amber-400' : 'text-slate-500'}`}>#{rank}</span>
+        <span className={`text-sm font-medium ${isUser ? 'text-white' : 'text-slate-300'}`}>{name} {isUser && '(Te)'}</span>
       </div>
-   );
+      <span className="text-emerald-400 font-bold text-sm">{profit}</span>
+    </div>
+  )
 }
 
 function MobileNavItem({ icon, label, active }: any) {
-   return (
-      <button className={`flex flex-col items-center gap-1 p-2 rounded-lg ${active ? 'text-indigo-400' : 'text-slate-500'}`}>
-         {icon}
-         <span className="text-[10px] font-medium">{label}</span>
-      </button>
-   );
+  return (
+     <button className={`flex flex-col items-center gap-1 p-2 rounded-lg ${active ? 'text-indigo-400' : 'text-slate-500'}`}>
+        {icon}
+        <span className="text-[10px] font-medium">{label}</span>
+     </button>
+  )
 }
