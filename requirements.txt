@@ -10,3 +10,5 @@ requests
 pypdf
 python-jose[cryptography]
 passlib[bcrypt]
+selenium
+webdriver-manager
