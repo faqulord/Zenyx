@@ -5,98 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZENYX DASHBOARD</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* STORE KÁRTYÁK */
-        .store-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 20px; }
-        .node-card { background: #111; border: 1px solid #333; padding: 15px; border-radius: 8px; text-align: left; position: relative; overflow: hidden; }
-        .node-card h3 { color: #fff; margin: 0 0 5px 0; }
-        .node-card .price { font-size: 20px; color: #00ff41; font-weight: bold; }
-        .node-card .profit { font-size: 12px; color: #888; }
-        .node-card button { float: right; margin-top: -30px; padding: 8px 15px; font-size: 12px; }
-        .node-card.active-node { border-color: #00ff41; box-shadow: 0 0 10px rgba(0,255,65,0.2); }
-        .badge { background: #00ff41; color: #000; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; }
-    </style>
 </head>
 <body>
     <div class="dashboard">
         <div class="header">
-            <span>👤 <span id="usernameDisplay">...</span></span>
-            <button onclick="logout()" class="btn-small">KILÉPÉS</button>
+            <span>👋 Üdv, <span id="usernameDisplay" style="color:#00f3ff; font-weight:bold;">...</span></span>
+            <button onclick="logout()" style="background:none; border:none; color:#aaa;">Kilépés ❌</button>
         </div>
+
+        <button id="adminBtn" class="btn-main admin-btn" style="display:none;" onclick="location.href='/admin.html'">
+            👑 TULAJDONOSI PANEL MEGNYITÁSA
+        </button>
 
         <div class="balance-card">
-            <p>ELÉRHETŐ EGYENLEG</p>
-            <h1 class="green">$<span id="balanceDisplay">0.00</span> USDT</h1>
-            <p>Jelenlegi csomagod: <span id="vipDisplay" class="badge">INAKTÍV</span></p>
-            <button class="btn-big" onclick="startMining()">⛏️ NAPI BÁNYÁSZAT START</button>
+            <p style="color:#aaa; font-size:12px;">ELÉRHETŐ EGYENLEG (USDT)</p>
+            <h1 style="font-size:36px; margin:10px 0;">$<span id="balanceDisplay">0.00</span></h1>
+            <p>Aktív Csomag: <span id="vipDisplay" style="color:#bc13fe;">Nincs</span></p>
         </div>
 
-        <div class="auth-box" style="padding: 10px;">
-            <p style="margin:0; font-size:12px; color:#888;">Hívd meg barátaidat és keress 10%-ot!</p>
-            <div class="row">
-                <input type="text" id="myLink" readonly value="..." style="margin:5px 0;">
-                <button class="btn-secondary" onclick="copyRef()" style="width:30%; margin-top:5px;">MÁSOL</button>
-            </div>
-        </div>
-
-        <h3 style="margin-top:30px; border-bottom:1px solid #333; padding-bottom:10px;">ZENYX MINING STORE</h3>
+        <h3 style="margin-top:30px; text-align:left;">🚀 NODE VÁSÁRLÁS</h3>
         <div class="store-grid">
             <div class="node-card">
-                <h3>v1 START NODE</h3>
-                <div class="profit">Napi profit: $1.66</div>
+                <h3>v1 START</h3>
                 <div class="price">$50</div>
+                <p style="font-size:12px; color:#aaa;">Profit: $1.66 / nap</p>
                 <button class="btn-main" onclick="buyNode(1)">VÁSÁRLÁS</button>
             </div>
             <div class="node-card">
                 <h3>v2 ADVANCED</h3>
-                <div class="profit">Napi profit: $3.33</div>
                 <div class="price">$100</div>
+                <p style="font-size:12px; color:#aaa;">Profit: $3.33 / nap</p>
                 <button class="btn-main" onclick="buyNode(2)">VÁSÁRLÁS</button>
             </div>
-            <div class="node-card">
-                <h3>v3 PRO NODE</h3>
-                <div class="profit">Napi profit: $16.65</div>
-                <div class="price">$500</div>
-                <button class="btn-main" onclick="buyNode(3)">VÁSÁRLÁS</button>
-            </div>
-             <div class="node-card" style="border:1px solid gold;">
-                <h3>v4 BUSINESS <span style="color:gold">★</span></h3>
-                <div class="profit">Napi profit: $33.30</div>
-                <div class="price">$1000</div>
-                <button class="btn-main" onclick="buyNode(4)" style="background:gold;">VÁSÁRLÁS</button>
+            <div class="node-card" style="border-color:#bc13fe;">
+                <h3>v3 PRO (Ajánlott)</h3>
+                <div class="price" style="color:#bc13fe;">$500</div>
+                <p style="font-size:12px; color:#aaa;">Profit: $16.65 / nap</p>
+                <button class="btn-main" onclick="buyNode(3)" style="background:#bc13fe;">VÁSÁRLÁS</button>
             </div>
         </div>
-        
-        <div id="logArea" style="margin-top:20px; color:#666; font-size:12px;"></div>
     </div>
 
     <script src="script.js"></script>
-    <script>
-        // Csomag vásárlás logika
-        async function buyNode(tier) {
-            const userId = localStorage.getItem('userId');
-            if(!confirm(`Biztosan megveszed a v${tier} csomagot? Az ár levonódik az egyenlegedből.`)) return;
-
-            const res = await fetch('/api/buy-node', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ userId, tier })
-            });
-            const data = await res.json();
-            
-            if(data.success) {
-                alert(data.message);
-                loadUserData(); // Frissítés
-            } else {
-                alert("HIBA: " + data.error);
-            }
-        }
-
-        // Link betöltése
-        setTimeout(() => {
-            const u = document.getElementById('usernameDisplay').innerText;
-            document.getElementById('myLink').value = window.location.origin + "/?ref=" + u;
-        }, 1000);
-    </script>
 </body>
 </html>
