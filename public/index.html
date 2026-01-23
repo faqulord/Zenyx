@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZENYX PLATFORM | Next Gen Mining</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="logo-area">
+            <h1>ZENYX <span class="green">NODE</span></h1>
+            <p>Automatizált Kripto Bányászat & AI Profit</p>
+        </div>
+
+        <div class="auth-box">
+            <div class="tabs">
+                <button onclick="showLogin()" class="active">BELÉPÉS</button>
+                <button onclick="showRegister()">REGISZTRÁCIÓ</button>
+            </div>
+
+            <div id="loginForm">
+                <input type="text" id="l_username" placeholder="Felhasználónév">
+                <input type="password" id="l_password" placeholder="Jelszó">
+                <button class="btn-main" onclick="login()">BELÉPÉS A RENDSZERBE</button>
+            </div>
+
+            <div id="regForm" style="display:none;">
+                <input type="text" id="r_username" placeholder="Válassz Felhasználónevet">
+                <input type="password" id="r_password" placeholder="Jelszó">
+                <label style="color:#666; font-size:12px;">Meghívó kód (Referral):</label>
+                <input type="text" id="r_refCode" readonly style="background:#222; color:#0f0;">
+                <button class="btn-main" onclick="register()">FIÓK LÉTREHOZÁSA</button>
+            </div>
+            
+            <p id="statusMsg"></p>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
