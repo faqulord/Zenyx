@@ -4,11 +4,8 @@ python-dotenv
 python-multipart
 openai
 jinja2
-motor
-fake-useragent
-requests
-pypdf
+duckduckgo-search
+pydantic
 python-jose[cryptography]
 passlib[bcrypt]
-selenium
-webdriver-manager
+aiofiles
