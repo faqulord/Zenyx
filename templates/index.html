@@ -3,169 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI PROJECT MANAGER | ELITE</title>
+    <title>Profit Agent AI - Private Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #000000; --panel: #111; --border: #333; --accent: #00ff41; --text: #eee; }
-        body { margin: 0; font-family: 'Courier New', monospace; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
+        :root { --bg: #0f1117; --sidebar: #161b22; --input: #21262d; --accent: #238636; --text: #c9d1d9; --user-msg: #1f6feb; }
+        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
         
-        /* LOGIN */
-        #login-screen { position: fixed; width: 100%; height: 100%; background: var(--bg); z-index: 99; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .box { border: 1px solid var(--accent); padding: 30px; background: var(--panel); width: 300px; text-align: center; box-shadow: 0 0 15px var(--accent); }
-        input, textarea { width: 90%; background: #000; border: 1px solid var(--border); color: var(--accent); padding: 10px; margin: 10px 0; font-family: inherit; }
-        button { width: 100%; background: var(--accent); color: #000; font-weight: bold; padding: 10px; border: none; cursor: pointer; margin-top: 5px; }
-        button:hover { opacity: 0.8; }
+        /* SIDEBAR (Eszközök) */
+        .sidebar { width: 300px; background: var(--sidebar); padding: 20px; display: flex; flex-direction: column; border-right: 1px solid #30363d; }
+        .sidebar h2 { color: #fff; font-size: 18px; margin-bottom: 20px; display: flex; align-items: center; }
+        .tool-box { background: var(--input); padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #30363d; }
+        .tool-box h3 { margin: 0 0 10px 0; font-size: 14px; color: #8b949e; text-transform: uppercase; }
+        .sidebar input { width: 100%; padding: 10px; background: #0d1117; border: 1px solid #30363d; color: white; border-radius: 4px; box-sizing: border-box; margin-bottom: 10px; }
+        .btn-tool { width: 100%; padding: 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .btn-learn { background: #d29922; color: #000; }
+        .btn-deploy { background: #8957e5; color: #fff; }
+        .btn-tool:hover { opacity: 0.9; }
 
-        /* APP LAYOUT */
-        #app-screen { display: none; width: 100%; height: 100%; }
-        .sidebar { width: 300px; background: var(--panel); border-right: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; gap: 20px; }
-        .main { flex: 1; display: flex; flex-direction: column; padding: 20px; }
+        /* CHAT AREA */
+        .chat-container { flex: 1; display: flex; flex-direction: column; position: relative; }
+        .chat-window { flex: 1; padding: 40px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; scroll-behavior: smooth; }
         
-        .section-title { color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 5px; margin-bottom: 10px; text-transform: uppercase; }
+        .message { max-width: 80%; padding: 15px 20px; border-radius: 12px; line-height: 1.5; font-size: 15px; }
+        .msg-ai { align-self: flex-start; background: #161b22; border: 1px solid #30363d; color: #e6edf3; }
+        .msg-user { align-self: flex-end; background: var(--user-msg); color: white; }
         
-        #chat-box { flex: 1; overflow-y: auto; border: 1px solid var(--border); padding: 15px; margin-bottom: 15px; background: #050505; }
-        .msg { padding: 10px; margin-bottom: 10px; border-radius: 4px; white-space: pre-wrap; }
-        .msg.user { background: #222; border-left: 3px solid #fff; }
-        .msg.ai { background: #0a1a0a; border-left: 3px solid var(--accent); color: #cfc; }
-        
-        .status-ok { color: var(--accent); }
-        .status-err { color: red; }
+        .code-block { background: #000; padding: 15px; border-radius: 6px; font-family: monospace; overflow-x: auto; margin-top: 10px; border: 1px solid #30363d; color: #0f0; }
+
+        /* INPUT AREA */
+        .input-area { padding: 20px; background: var(--sidebar); border-top: 1px solid #30363d; display: flex; gap: 10px; }
+        textarea { flex: 1; background: var(--input); border: 1px solid #30363d; color: white; padding: 15px; border-radius: 8px; resize: none; font-family: inherit; outline: none; height: 50px; }
+        .btn-send { background: var(--accent); color: white; border: none; padding: 0 25px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; }
+        .btn-send:hover { background: #2ea043; }
+
+        /* Token Input (Hidden logic) */
+        #tokenInput { display: none; }
     </style>
 </head>
 <body>
 
-    <div id="login-screen">
-        <h1 style="color:var(--accent)">SYSTEM ACCESS</h1>
-        <div class="box">
-            <input type="text" id="u" placeholder="Admin ID">
-            <input type="password" id="p" placeholder="Password">
-            <button onclick="login()">INITIALIZE</button>
+    <div class="sidebar">
+        <h2>🚀 PROFIT AGENT</h2>
+        
+        <div class="tool-box" id="loginBox">
+            <h3>🔑 Rendszer Belépés</h3>
+            <button class="btn-tool" style="background:#238636; color:#fff;" onclick="login()">Rendszer Indítása</button>
+        </div>
+
+        <div class="tool-box">
+            <h3>🧠 Tudásbázis (Web)</h3>
+            <input type="text" id="learnUrl" placeholder="URL (pl. tőzsde hírek)...">
+            <button class="btn-tool btn-learn" onclick="learn()">Tanuld meg!</button>
+        </div>
+
+        <div class="tool-box">
+            <h3>📦 GitHub Deploy</h3>
+            <input type="text" id="repoName" placeholder="Projekt neve...">
+            <input type="text" id="fileName" placeholder="Fájl (pl. main.py)...">
+            <button class="btn-tool btn-deploy" onclick="deploy()">Kód Feltöltése</button>
+        </div>
+        
+        <div style="margin-top:auto; font-size:12px; color:#666;">
+            Target: 3000€/hó<br>
+            Status: <span style="color:#0f0">ONLINE</span>
         </div>
     </div>
 
-    <div id="app-screen">
-        <div class="sidebar">
-            <div>
-                <div class="section-title">PROJECT SETTINGS</div>
-                <label>GitHub Repo Neve (Amit létrehoztál):</label>
-                <input type="text" id="repo-name" value="my-new-project">
-                <label>Fájlnév (pl. main.py):</label>
-                <input type="text" id="filename" value="main.py">
-            </div>
-
-            <div>
-                <div class="section-title">RESEARCH & LEARN</div>
-                <p style="font-size:0.8em; color:#888">Küldj be egy linket, hogy megtanulja!</p>
-                <input type="text" id="learn-url" placeholder="https://...">
-                <button onclick="learnUrl()">OLVASD EL ÉS TANULD MEG</button>
-                <div id="learn-status" style="font-size:0.8em; margin-top:5px;"></div>
-            </div>
-            
-            <div style="margin-top:auto">
-                <button onclick="logout()" style="background:#cc0000; color:white">SHUTDOWN</button>
+    <div class="chat-container">
+        <div class="chat-window" id="chatWindow">
+            <div class="message msg-ai">
+                👋 Szia! Én vagyok a privát fejlesztő társad. <br>
+                Mire fókuszáljunk ma? Banki rendszer, Weboldal, vagy keressek "kiskapukat" a neten?
             </div>
         </div>
-
-        <div class="main">
-            <div id="chat-box">
-                <div class="msg ai">Rendszer Online. Várom a parancsokat, Project Manager.</div>
-            </div>
-            <div style="display:flex; gap:10px;">
-                <textarea id="prompt" rows="3" placeholder="Írd le a feladatot... (pl: Készíts egy webshopot a megtanult trendek alapján)"></textarea>
-                <button style="width:100px" onclick="generate()">EXECUTE</button>
-            </div>
+        
+        <div class="input-area">
+            <textarea id="userInput" placeholder="Írd le a feladatot vagy kérdezz bármit..."></textarea>
+            <button class="btn-send" onclick="sendMessage()">KÜLDÉS</button>
         </div>
     </div>
 
     <script>
-        let token = localStorage.getItem('token');
-        let lastCode = "";
-
-        if(token) showApp();
+        let token = "";
+        let lastGeneratedCode = ""; // Itt tároljuk a legutóbbi kódot a deployhoz
 
         async function login() {
-            let u = document.getElementById('u').value;
-            let p = document.getElementById('p').value;
-            let fd = new FormData(); fd.append('username',u); fd.append('password',p);
+            const formData = new FormData();
+            formData.append("username", "faqu");
+            formData.append("password", "admin123");
             
-            let r = await fetch('/token', {method:'POST', body:fd});
-            if(r.ok) {
-                let d = await r.json();
-                localStorage.setItem('token', d.access_token);
-                token = d.access_token;
-                showApp();
-            } else alert('Access Denied');
+            try {
+                const res = await fetch("/token", { method: "POST", body: formData });
+                const data = await res.json();
+                token = data.access_token;
+                document.getElementById("loginBox").innerHTML = "<h3 style='color:#0f0'>✅ Csatlakozva</h3>";
+                addMessage("Rendszer sikeresen hitelesítve. Hozzáférésem van az adatbázisokhoz.", "ai");
+            } catch(e) { alert("Hiba a belépésnél!"); }
         }
 
-        function showApp() {
-            document.getElementById('login-screen').style.display='none';
-            document.getElementById('app-screen').style.display='flex';
+        async function sendMessage() {
+            if(!token) { alert("Előbb indítsd el a rendszert (Bal oldalt)!"); return; }
+            
+            const input = document.getElementById("userInput");
+            const text = input.value;
+            if(!text) return;
+
+            addMessage(text, "user");
+            input.value = "";
+
+            // Betöltés jelző
+            const loadingId = addMessage("Gondolkodom...", "ai");
+
+            try {
+                const res = await fetch("/generate", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+                    body: JSON.stringify({ prompt: text, project_name: "chat_session" })
+                });
+                const data = await res.json();
+                
+                // Frissítjük az üzenetet a válasszal
+                document.getElementById(loadingId).innerHTML = formatResponse(data.response);
+                
+                // Ha van kód a válaszban, elmentjük, hogy fel lehessen tölteni
+                if(data.response.includes("```")) {
+                    lastGeneratedCode = extractCode(data.response);
+                }
+
+            } catch(e) {
+                document.getElementById(loadingId).innerText = "Hiba történt: " + e;
+            }
         }
 
-        async function learnUrl() {
-            let url = document.getElementById('learn-url').value;
-            document.getElementById('learn-status').innerText = "Tanulás folyamatban...";
+        async function learn() {
+            if(!token) return alert("Jelentkezz be!");
+            const url = document.getElementById("learnUrl").value;
+            addMessage("Kezdem a tanulást: " + url, "ai");
             
-            let r = await fetch('/learn', {
-                method:'POST', headers:{'Content-Type':'application/json', 'Authorization':`Bearer ${token}`},
-                body: JSON.stringify({url: url})
-            });
-            let d = await r.json();
-            document.getElementById('learn-status').innerText = d.message;
-            log("SYSTEM", `Megtanultam a linket: ${d.summary}`);
+            try {
+                const res = await fetch("/learn", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+                    body: JSON.stringify({ url: url })
+                });
+                const data = await res.json();
+                addMessage("✅ MEGTANULTAM! Összefoglaló: " + data.summary, "ai");
+            } catch(e) { addMessage("Hiba a tanulásban.", "ai"); }
         }
 
-        async function generate() {
-            let txt = document.getElementById('prompt').value;
-            let repo = document.getElementById('repo-name').value;
-            if(!txt) return;
+        async function deploy() {
+            if(!token) return alert("Jelentkezz be!");
+            if(!lastGeneratedCode) return alert("Még nem generáltam kódot amit feltölthetnék!");
             
-            log("YOU", txt);
-            document.getElementById('prompt').value = "";
-            log("AI", "Generálás folyamatban... (Keresés a memóriában...)");
+            const repo = document.getElementById("repoName").value || "profit-agent-auto";
+            const file = document.getElementById("fileName").value || "main.py";
 
-            let r = await fetch('/generate', {
-                method:'POST', headers:{'Content-Type':'application/json', 'Authorization':`Bearer ${token}`},
-                body: JSON.stringify({prompt: txt, project_name: repo})
-            });
-            let d = await r.json();
-            
-            lastCode = d.response;
-            
-            // Itt jelenítjük meg a választ és a GITHUB gombot
-            let div = document.createElement('div');
-            div.className = 'msg ai';
-            div.innerHTML = `<div>${d.response}</div><br><button onclick="pushToGit()">🚀 UPLOAD TO GITHUB (${repo})</button>`;
-            document.getElementById('chat-box').appendChild(div);
-            document.getElementById('chat-box').scrollTop = 99999;
+            addMessage(`Feltöltés a GitHubra (${repo}/${file})...`, "ai");
+
+            try {
+                const res = await fetch("/deploy-github", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+                    body: JSON.stringify({ project_name: repo, file_name: file, code_content: lastGeneratedCode })
+                });
+                const data = await res.json();
+                addMessage(`🚀 SIKERES FELTÖLTÉS! Elérhető itt: <a href="${data.url}" target="_blank" style="color:#fff">Megnyitás</a>`, "ai");
+            } catch(e) { addMessage("Hiba a feltöltésnél: " + e, "ai"); }
         }
 
-        async function pushToGit() {
-            let repo = document.getElementById('repo-name').value;
-            let fname = document.getElementById('filename').value;
-            
-            if(!confirm(`Feltöltöd a kódot a '${repo}' repository '${fname}' fájljába?`)) return;
-
-            log("SYSTEM", "Kapcsolódás a GitHubhoz...");
-            
-            let r = await fetch('/deploy-github', {
-                method:'POST', headers:{'Content-Type':'application/json', 'Authorization':`Bearer ${token}`},
-                body: JSON.stringify({project_name: repo, file_name: fname, code_content: lastCode})
-            });
-            
-            let d = await r.json();
-            if(r.ok) log("SYSTEM", `✅ SIKER! Megtekintés: ${d.url}`);
-            else log("ERROR", `Hiba: ${d.detail}`);
+        // Segédfüggvények
+        function addMessage(text, sender) {
+            const div = document.createElement("div");
+            div.className = `message msg-${sender}`;
+            div.id = "msg-" + Date.now();
+            div.innerHTML = sender === 'ai' ? formatResponse(text) : text;
+            document.getElementById("chatWindow").appendChild(div);
+            document.getElementById("chatWindow").scrollTop = document.getElementById("chatWindow").scrollHeight;
+            return div.id;
         }
 
-        function log(who, text) {
-            let div = document.createElement('div');
-            div.className = `msg ${who === 'YOU' ? 'user' : 'ai'}`;
-            div.innerText = `[${who}] ${text}`;
-            document.getElementById('chat-box').appendChild(div);
-            document.getElementById('chat-box').scrollTop = 99999;
+        function formatResponse(text) {
+            // Sortörések és Kódblokkok formázása
+            let formatted = text.replace(/\n/g, "<br>");
+            formatted = formatted.replace(/```([\s\S]*?)```/g, "<div class='code-block'>$1</div>");
+            return formatted;
         }
 
-        function logout() { localStorage.clear(); location.reload(); }
+        function extractCode(text) {
+            const match = text.match(/```([\s\S]*?)```/);
+            return match ? match[1] : text;
+        }
     </script>
 </body>
 </html>
