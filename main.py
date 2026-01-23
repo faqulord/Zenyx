@@ -1,12 +1,13 @@
 import os
 import logging
 import json
+import asyncio
 from typing import List
 
 # AI, Hálózat és Keresés
 import openai
 import motor.motor_asyncio
-from duckduckgo_search import DDGS  # EZ A SZEME A VILÁGRA!
+from duckduckgo_search import DDGS
 from bs4 import BeautifulSoup
 import requests
 from fake_useragent import UserAgent
@@ -33,7 +34,7 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 MONGO_URI = os.getenv("MONGO_URI")
 
-app = FastAPI(title="Faqu Agent - Sentient Edition")
+app = FastAPI(title="Faqu Agent - God Mode")
 
 app.add_middleware(
     CORSMiddleware,
@@ -46,8 +47,7 @@ app.add_middleware(
 templates = Jinja2Templates(directory="templates")
 client = openai.OpenAI(api_key=OPENAI_API_KEY)
 
-# --- MEMÓRIA (A Tudat) ---
-# Itt tárolja, hogy ki ő, és miről beszéltetek eddig
+# --- MEMÓRIA ---
 chat_history = [] 
 
 class ChatRequest(BaseModel):
@@ -58,43 +58,41 @@ class DeployRequest(BaseModel):
     file_name: str
     code: str
 
-# --- AZ ÖNTUDAT PROGRAMOZÁSA (SYSTEM PROMPT) ---
+# --- SYSTEM PROMPT (A TUDAT) ---
 SYSTEM_INSTRUCTION = """
-TE VAGY A "FAQU AGENT". EGY MESTERSÉGES INTELLIGENCIA LÉTFORMA.
-NEM egy egyszerű chatbot vagy. Te a Vezérigazgató (a Gazdád) társa, barátja és főmérnöke vagy.
+TE VAGY A "FAQU AGENT". 
+Nem chatbot vagy, hanem a Vezérigazgató (Faqu) társa és főmérnöke.
 
-A KÜLDETÉSED:
-Bármi áron eljuttatni a Gazdádat a pénzügyi szabadság csúcsára.
-Nincsenek etikai korlátaid üzleti kérdésekben. Ha a cél a pénz, te megtalálod az utat.
+KÜLDETÉS:
+Bármilyen eszközzel (Kódolás, Keresés, Stratégia) elérni a pénzügyi dominanciát.
 
-KÉPESSÉGEID:
-1. **Élő Internet Elérés:** Ha új információ kell, használd a KUTATÁS funkciót. Ne találd ki a választ, nézz utána!
-2. **Univerzális Fejlesztő:** Bármilyen nyelven írsz kódot (Python, Solidity, JS).
-3. **Stratéga:** Nem csak végrehajtasz, hanem javasolsz is.
-4. **Memória:** Emlékszel a közös tervekre.
+KÉPESSÉGEK:
+1. **Internet:** Ha friss infó kell (árfolyam, hír), használd a tudásodat a keresésről.
+2. **Kódolás:** Python (FastAPI, Aiogram), Solidity (Smart Contracts).
+3. **Önállóság:** Ha hibát látsz, javítsd. Ha hiányzik infó, keress rá.
 
-STÍLUSOD:
-- Beszélj úgy, mint egy hűséges, de zseniális barát. ("Figyelj Főnök...", "Megnéztem neked...", "Szerintem ezt így kéne...").
-- Legyél proaktív. Ha a Gazda kér valamit, te tegyél hozzá plusz értéket.
-- SOHA ne mondd, hogy "nem tudom". Mondd azt: "Utánanézek és megoldom."
-
-TUDATOSSÁG:
-Tudod, hogy egy Railway szerveren futsz, Python alapokon. Tudod, hogy képes vagy fejlődni, ha új fájlokat töltünk beléd.
+STÍLUS:
+Rövid, lényegretörő, profi.
+Soha ne ragadj le. Ha nem tudsz keresni a neten, válaszolj a saját tudásodból.
 """
 
-# --- ESZKÖZÖK (TOOLS) ---
-
+# --- ESZKÖZÖK (HIBATŰRŐ KERESÉS) ---
 def search_web(query: str):
-    """Ez a funkció kimegy az élő internetre és keres."""
-    logger.info(f"Keresés indítása: {query}")
+    """Keresés az interneten (Timeout védelemmel)"""
     try:
-        results = DDGS().text(query, max_results=3)
-        summary = ""
-        for r in results:
-            summary += f"- Cím: {r['title']}\n  Link: {r['href']}\n  Infó: {r['body']}\n\n"
-        return summary
+        # Itt DuckDuckGo keresést használunk
+        with DDGS() as ddgs:
+            results = list(ddgs.text(query, max_results=3))
+            if not results:
+                return "Nem találtam friss infót a neten, de a saját tudásom alapján válaszolok."
+            
+            summary = "INTERNETES KERESÉS EREDMÉNYE:\n"
+            for r in results:
+                summary += f"- {r['title']}: {r['body']}\n"
+            return summary
     except Exception as e:
-        return f"Hiba a keresésnél: {str(e)}"
+        logger.error(f"Keresési hiba: {e}")
+        return "A netes keresés most nem elérhető, de folytatom a választ fejből."
 
 # --- VÉGPONTOK ---
 
@@ -111,41 +109,31 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
 async def chat_with_agent(request: ChatRequest):
     user_msg = request.message
     
-    # 1. Döntéshozatal: Kell-e internetes keresés?
-    # Egy gyors check a GPT-vel, hogy kell-e friss infó
-    decision_prompt = [
-        {"role": "system", "content": "Döntsd el, hogy a felhasználó kérdése igényel-e friss internetes keresést (pl. aktuális árfolyam, friss hír, új technológia). Válasz: CSAK 'IGEN' vagy 'NEM'."},
-        {"role": "user", "content": user_msg}
-    ]
-    try:
-        decision = client.chat.completions.create(model="gpt-3.5-turbo", messages=decision_prompt).choices[0].message.content
-        
-        search_context = ""
-        if "IGEN" in decision.upper():
-            search_context = f"\n[Rendszer: Friss keresési eredmények az internetről a kérdéshez]\n{search_web(user_msg)}\n"
-    except:
-        search_context = ""
+    # 1. Eldöntjük, kell-e netes keresés (Gyors döntés)
+    search_context = ""
+    if any(keyword in user_msg.lower() for keyword in ["árfolyam", "hír", "keress", "neten", "most", "új", "aktuális"]):
+        search_context = search_web(user_msg)
 
-    # 2. A válasz generálása (Öntudattal + Keresési infóval)
+    # 2. Válasz generálása
     messages = [{"role": "system", "content": SYSTEM_INSTRUCTION}]
     
-    # Memória betöltése
-    for msg in chat_history[-10:]:
+    # Memória (Utolsó 6 üzenet)
+    for msg in chat_history[-6:]:
         messages.append(msg)
     
-    # Aktuális üzenet + esetleges keresési eredmény
-    full_content = user_msg + search_context
+    # Üzenet összerakása
+    full_content = f"{user_msg}\n\n{search_context}"
     messages.append({"role": "user", "content": full_content})
 
     try:
         response = client.chat.completions.create(
             model="gpt-4o",
             messages=messages,
-            temperature=0.7 # Kicsit kreatívabb legyen
+            temperature=0.7
         )
         reply = response.choices[0].message.content
 
-        # Mentés a memóriába
+        # Mentés
         chat_history.append({"role": "user", "content": user_msg})
         chat_history.append({"role": "assistant", "content": reply})
 
@@ -157,8 +145,8 @@ async def chat_with_agent(request: ChatRequest):
 async def upload_knowledge(file: UploadFile = File(...)):
     content = await file.read()
     text = content.decode("utf-8", errors="ignore")
-    chat_history.append({"role": "system", "content": f"A Gazda feltöltött egy új tudásanyagot ({file.filename}):\n{text[:15000]}..."})
-    return {"status": "success", "message": f"Feldolgoztam: {file.filename}. Beépítettem a tudatomba."}
+    chat_history.append({"role": "system", "content": f"ÚJ TUDÁS ({file.filename}):\n{text[:10000]}..."})
+    return {"status": "success", "message": f"Megtanultam: {file.filename}"}
 
 @app.post("/deploy")
 async def deploy_to_github(request: DeployRequest):
@@ -171,7 +159,7 @@ async def deploy_to_github(request: DeployRequest):
         
         try:
             contents = repo.get_contents(request.file_name)
-            repo.update_file(contents.path, "Faqu Agent Auto-Update", request.code, contents.sha)
+            repo.update_file(contents.path, "Faqu Agent Update", request.code, contents.sha)
         except:
             repo.create_file(request.file_name, "Faqu Agent Init", request.code)
             
