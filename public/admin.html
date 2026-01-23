@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <title>ZENYX | CEO CONTROL</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .admin-table { width: 100%; border-collapse: collapse; margin-top: 20px; color: #fff; }
+        .admin-table th, .admin-table td { border: 1px solid #333; padding: 10px; text-align: left; }
+        .admin-table th { background: #111; color: #00ff41; }
+        .admin-badge { background: #222; padding: 2px 5px; border-radius: 3px; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container" style="max-width: 800px;">
+        <div class="logo-area">
+            <h1>ZENYX <span class="green">ADMIN</span></h1>
+            <p>CEO ACCESS ONLY</p>
+        </div>
+
+        <div id="adminLogin">
+            <input type="text" id="a_user" placeholder="Admin User">
+            <input type="password" id="a_pass" placeholder="Password">
+            <button class="btn-main" onclick="adminLogin()">BELÉPÉS</button>
+        </div>
+
+        <div id="adminPanel" style="display:none;">
+            <div class="row">
+                <h3>FELHASZNÁLÓK LISTÁJA</h3>
+                <button class="btn-secondary" onclick="loadUsers()">FRISSÍTÉS</button>
+            </div>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Név</th>
+                        <th>Egyenleg</th>
+                        <th>Szint (Tier)</th>
+                        <th>Meghívó</th>
+                        <th>Belépett</th>
+                    </tr>
+                </thead>
+                <tbody id="userTableBody">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        async function adminLogin() {
+            const u = document.getElementById('a_user').value;
+            const p = document.getElementById('a_pass').value;
+            const res = await fetch('/api/admin/login', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({username:u, password:p})
+            });
+            const data = await res.json();
+            if(data.success) {
+                document.getElementById('adminLogin').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                loadUsers();
+            } else { alert("Hibás jelszó!"); }
+        }
+
+        async function loadUsers() {
+            const res = await fetch('/api/admin/users');
+            const users = await res.json();
+            const tbody = document.getElementById('userTableBody');
+            tbody.innerHTML = '';
+            users.forEach(u => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>#${u.id}</td>
+                        <td><b style="color:#fff">${u.username}</b></td>
+                        <td>$${parseFloat(u.balance).toFixed(2)}</td>
+                        <td><span class="admin-badge">v${u.vip_level}</span></td>
+                        <td>${u.referrer || '-'}</td>
+                        <td>${new Date(u.joined_at).toLocaleDateString()}</td>
+                    </tr>
+                `;
+            });
+        }
+    </script>
+</body>
+</html>
