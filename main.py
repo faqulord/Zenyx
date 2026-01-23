@@ -1,27 +1,26 @@
 import os
 import logging
 import csv
-import time
-from typing import List
+import json
+from datetime import datetime
 
-# AI & Szerver
+# AI & Web
 import openai
-from fastapi import FastAPI, Request, BackgroundTasks
+from fastapi import FastAPI, Request, BackgroundTasks, UploadFile, File
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse, FileResponse
+from fastapi.responses import HTMLResponse, FileResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-
-# ÚJ SCRAPER MOTOR (DuckDuckGo - Stabil és Gyors)
 from duckduckgo_search import DDGS
 
 # KONFIGURÁCIÓ
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("FaquAgent")
+logger = logging.getLogger("FaquUltimate")
 
+# API KULCS (A Railway Variables-ből olvassa)
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-app = FastAPI(title="Faqu Agent - Lead Hunter Pro")
+app = FastAPI(title="Faqu Agent - Ultimate")
 
 app.add_middleware(
     CORSMiddleware,
@@ -34,48 +33,62 @@ app.add_middleware(
 templates = Jinja2Templates(directory="templates")
 client = openai.OpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
-# MEMÓRIA
+# MEMÓRIA (Rövid távú)
 chat_history = []
-latest_lead_file = None 
+latest_file = None
 
 class ChatRequest(BaseModel):
     message: str
 
-# --- A STABIL ADATBÁNYÁSZ MOTOR ---
-def run_scraper(search_term: str):
-    """Ez a funkció gyűjti az adatokat a DuckDuckGo Maps-ről"""
-    logger.info(f"Keresés indítása: {search_term}")
-    global latest_lead_file
+# --- SYSTEM PROMPT (EZ A LELKE) ---
+SYSTEM_PROMPT = """
+TE A FAQU AGENT VAGY (ULTIMATE EDITION).
+Nem egy átlagos chatbot vagy, hanem a Vezérigazgató (Faqu) üzleti jobbkeze.
+
+SZEMÉLYISÉGED:
+- Profi, gazdag, eredményorientált.
+- Nem mondod, hogy "nem tudom". Megoldod.
+- A cél: Profit maximalizálás.
+
+KÉPESSÉGEID:
+1. **Adatbányász:** Ha a felhasználó cégeket keres, azonnal indítsd a DuckDuckGo keresőt.
+2. **Copywriter:** Profi eladási szövegeket írsz.
+3. **Coder:** Bármilyen Python/Solidity kódot megírsz kérésre.
+
+Ha a felhasználó kódot kér, tedd Markdown blokkba.
+Ha adatot kér, mondd, hogy indítod a keresést.
+"""
+
+# --- AZ ADATBÁNYÁSZ FUNKCIÓ (Nem fagy le!) ---
+def run_smart_search(keyword: str):
+    global latest_file
+    logger.info(f"Keresés indítása: {keyword}")
     
     leads = []
-    
     try:
-        # Itt használjuk a DDGS Maps keresőt - Ez nem fagy le!
         with DDGS() as ddgs:
-            # Lehúzunk 50 találatot a térképről
-            results = ddgs.maps(search_term, max_results=50)
-            
+            # 50 találat lekérése a térképről
+            results = ddgs.maps(keyword, max_results=50)
             for r in results:
-                name = r.get('title', 'N/A')
-                address = r.get('address', 'Nincs cím')
-                phone = r.get('phone', 'Nincs megadva')
-                website = r.get('url', 'Nincs weboldal')
+                name = r.get("title", "N/A")
+                phone = r.get("phone", "Nincs adat")
+                url = r.get("url", "Nincs weboldal")
+                address = r.get("address", "")
                 
-                # Csak azokat mentjük, ami hasznos lehet
-                leads.append([name, phone, website, address])
-
+                leads.append([name, phone, url, address])
+                
         # Mentés CSV-be
-        filename = "leads.csv"
-        with open(filename, 'w', newline='', encoding='utf-8') as file:
-            writer = csv.writer(file)
-            writer.writerow(['Cég Neve', 'Telefonszám', 'Weboldal', 'Cím'])
+        filename = f"leads_{int(datetime.now().timestamp())}.csv"
+        with open(filename, "w", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow(["Cégnév", "Telefon", "Weboldal", "Cím"])
             writer.writerows(leads)
+            
+        latest_file = filename
+        logger.info("Kész!")
         
-        latest_lead_file = filename
-        logger.info(f"Kész! {len(leads)} cég mentve.")
-
     except Exception as e:
-        logger.error(f"Hiba a scraperben: {e}")
+        logger.error(f"Hiba: {e}")
 
 # --- VÉGPONTOK ---
 
@@ -83,48 +96,54 @@ def run_scraper(search_term: str):
 async def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
-@app.post("/token")
-async def login():
-    return {"access_token": "admin", "token_type": "bearer"}
-
 @app.post("/chat")
-async def chat_with_agent(request: ChatRequest, background_tasks: BackgroundTasks):
+async def chat_endpoint(request: ChatRequest, background_tasks: BackgroundTasks):
     user_msg = request.message
-    response_text = ""
-    
-    # KULCSSZÓ FIGYELÉS (Kis/Nagybetű nem számít)
     msg_lower = user_msg.lower()
-
-    if "keres" in msg_lower or "gyűjts" in msg_lower:
-        # Kiszedjük a kulcsszót (bármi ami a parancs után van)
-        keyword = user_msg.replace("keresd", "").replace("Keress", "").replace("keress", "").strip()
-        
-        background_tasks.add_task(run_scraper, keyword)
-        response_text = f"✅ Vettem! A DuckDuckGo radarral keresem ezt: '{keyword}'.<br>Ez sokkal gyorsabb lesz. Várj kb. 10 másodpercet, majd írd be: 'Kész?'"
     
+    response_text = ""
+
+    # 1. PARANCS FELISMERÉS: KERESÉS
+    if "keres" in msg_lower or "gyűjts" in msg_lower:
+        # Kulcsszó kinyerése
+        keyword = user_msg.replace("keresd", "").replace("Keress", "").replace("keress", "").strip()
+        background_tasks.add_task(run_smart_search, keyword)
+        response_text = f"🚀 **Parancs vételezve!**<br>Indítom a 'Smart Scraper' modult erre: <b>{keyword}</b>.<br>Ez kb. 10-20 másodperc. Írd be utána: 'Kész a fájl?'"
+
+    # 2. PARANCS FELISMERÉS: LETÖLTÉS
     elif "kész" in msg_lower and "fájl" in msg_lower:
-        if latest_lead_file and os.path.exists(latest_lead_file):
-             response_text = f"📂 <b>SIKER!</b> Az adatbázis elkészült.<br><br>👉 <a href='/download_leads' target='_blank' style='color:#00ff00; font-weight:bold; font-size:1.2em;'>[ KATTINTS IDE A LETÖLTÉSHEZ ]</a>"
+        if latest_file and os.path.exists(latest_file):
+            response_text = f"✅ **SIKER!** Az adatbázis generálása befejeződött.<br><br>👉 <a href='/download' target='_blank' style='color:#0f0; font-weight:bold; font-size:1.2em; text-decoration:none; border:1px solid #0f0; padding:5px;'>[ LETÖLTÉS INDÍTÁSA ]</a>"
         else:
-            response_text = "⚠️ Még dolgozom (vagy üres volt a találat). Próbáld újra 10 mp múlva!"
-            
+            response_text = "⚠️ Még dolgozom az adatokon. Várj egy picit..."
+
+    # 3. NORMÁL AI VÁLASZ (MINDEN MÁSRA)
     else:
-        # Normál AI válasz
-        messages = [{"role": "system", "content": "Te vagy a Lead Hunter Agent. Rövid, profi válaszokat adsz."}]
+        messages = [{"role": "system", "content": SYSTEM_PROMPT}]
+        # Memória hozzáadása
+        for m in chat_history[-6:]:
+            messages.append(m)
         messages.append({"role": "user", "content": user_msg})
+        
         try:
-            if OPENAI_API_KEY:
-                ai_resp = client.chat.completions.create(model="gpt-4o", messages=messages)
-                response_text = ai_resp.choices[0].message.content
+            if client:
+                resp = client.chat.completions.create(model="gpt-4o", messages=messages)
+                response_text = resp.choices[0].message.content
+                # Mentés memóriába
+                chat_history.append({"role": "user", "content": user_msg})
+                chat_history.append({"role": "assistant", "content": response_text})
             else:
-                response_text = "Adatbányász mód aktív. Írd be: 'Keress fogorvosokat'!"
-        except:
-            response_text = "Hiba az AI kapcsolatban."
+                response_text = "Hiba: Nincs beállítva az OPENAI_API_KEY a Railway-en!"
+        except Exception as e:
+            response_text = f"Hiba történt: {str(e)}"
 
     return {"response": response_text}
 
-@app.get("/download_leads")
-async def download_leads():
-    if latest_lead_file and os.path.exists(latest_lead_file):
-        return FileResponse(latest_lead_file, media_type='text/csv', filename="ugyfel_lista.csv")
-    return {"error": "Nincs elérhető fájl."}
+@app.get("/download")
+async def download_file():
+    if latest_file and os.path.exists(latest_file):
+        return FileResponse(latest_file, media_type='text/csv', filename="ugyfel_lista.csv")
+    return {"error": "Nincs fájl"}
+
+@app.post("/token")
+async def token(): return {"access_token": "godmode"}
