@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZENYX DASHBOARD</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <span>👤 <span id="usernameDisplay">User</span></span>
+            <button onclick="logout()" class="btn-small">KILÉPÉS</button>
+        </div>
+
+        <div class="balance-card">
+            <h3>EGYENLEG</h3>
+            <h1 class="green">$<span id="balanceDisplay">0.00</span> USDT</h1>
+            <p>VIP Szint: <span id="vipDisplay">v0 (Inaktív)</span></p>
+        </div>
+
+        <div class="actions">
+            <button class="btn-big" onclick="startMining()">⛏️ BÁNYÁSZAT INDÍTÁSA</button>
+            <div class="row">
+                <button class="btn-secondary" onclick="alert('Kifizetés hamarosan!')">KIFIZETÉS</button>
+                <button class="btn-secondary" onclick="copyRef()">🔗 REF LINK MÁSOLÁS</button>
+            </div>
+        </div>
+
+        <div class="logs">
+            <h3>LOGS</h3>
+            <div id="logArea">Rendszer online...</div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
