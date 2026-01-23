@@ -6,7 +6,7 @@ aiofiles
 openai
 jinja2
 tiktoken
-duckduckgo-search
+duckduckgo-search>=5.0
 aiogram
 solana
 web3
