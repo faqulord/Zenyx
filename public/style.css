@@ -1,0 +1,24 @@
+body { background-color: #050505; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+.container, .dashboard { width: 100%; max-width: 400px; padding: 20px; text-align: center; }
+
+/* TYPOGRAPHY */
+h1 { margin: 0; letter-spacing: 2px; }
+.green { color: #00ff41; text-shadow: 0 0 10px rgba(0, 255, 65, 0.5); }
+
+/* FORMS */
+input { width: 90%; padding: 15px; margin: 10px 0; background: #111; border: 1px solid #333; color: #fff; border-radius: 5px; outline: none; }
+input:focus { border-color: #00ff41; }
+
+/* BUTTONS */
+.btn-main, .btn-big { width: 100%; padding: 15px; background: #00ff41; color: #000; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px; font-size: 16px; transition: 0.3s; }
+.btn-main:hover { box-shadow: 0 0 20px #00ff41; }
+.btn-secondary { width: 48%; padding: 10px; background: #222; color: #fff; border: 1px solid #444; cursor: pointer; }
+
+/* CARDS */
+.auth-box, .balance-card { background: #0a0a0a; padding: 20px; border-radius: 10px; border: 1px solid #222; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-top: 20px; }
+.tabs { display: flex; justify-content: space-around; margin-bottom: 20px; }
+.tabs button { background: none; border: none; color: #666; font-size: 14px; cursor: pointer; padding-bottom: 5px; }
+.tabs button.active { color: #00ff41; border-bottom: 2px solid #00ff41; }
+
+.row { display: flex; justify-content: space-between; margin-top: 10px; }
+#statusMsg { color: #ff4444; margin-top: 10px; font-size: 12px; }
