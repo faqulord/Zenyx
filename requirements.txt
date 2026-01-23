@@ -1,14 +1,33 @@
-
+# --- Alap Rendszer (FastAPI mag) ---
 fastapi
 uvicorn
-openai
-motor
 python-dotenv
 python-multipart
-python-jose[cryptography]
-passlib[bcrypt]
-jinja2
 aiofiles
-PyGithub
+
+# --- Az Agy (AI & Logika) ---
+openai
+jinja2
+
+# --- Hacker & Scraper Eszközök (Adatbányászat) ---
 requests
 beautifulsoup4
+httpx                 # Sokkal gyorsabb, aszinkron kérések (szkenneléshez)
+fake-useragent        # Hogy ne ismerjék fel, hogy bot vagy (rejtőzködés)
+
+# --- Banki & Pénzügyi Modul (A Pénzcsináló) ---
+pandas                # Adataelemzés, Excel kezelés, Tőzsdei adatok
+numpy                 # Brutális matek (MLM mátrixokhoz, kamatszámításhoz)
+
+# --- Adatbázisok (Memória & Széf) ---
+motor                 # MongoDB (AI Memóriának tökéletes)
+sqlalchemy            # SQL (Banki tranzakciókhoz ez KELL)
+psycopg2-binary       # PostgreSQL driver (A Railway-en ez a standard banki adatbázis)
+
+# --- Biztonság (Hacker védelem) ---
+python-jose[cryptography]
+passlib[bcrypt]
+cryptography          # AES titkosítás a tárolt adatokhoz
+
+# --- Kézbesítés ---
+PyGithub
