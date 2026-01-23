@@ -3,34 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZENYX PLATFORM | Next Gen Mining</title>
+    <title>ZENYX PLATFORM</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* NYELVVÁLTÓ STÍLUS */
+        .lang-switch {
+            position: absolute; top: 15px; right: 15px;
+            display: flex; gap: 10px; z-index: 100;
+        }
+        .lang-btn {
+            background: rgba(0,0,0,0.5); border: 1px solid #4b0082;
+            color: #fff; padding: 5px 10px; cursor: pointer;
+            border-radius: 5px; font-weight: bold; font-size: 12px;
+        }
+        .lang-btn:hover, .lang-active { border-color: #00f3ff; color: #00f3ff; }
+    </style>
 </head>
 <body>
+    <div class="lang-switch">
+        <button class="lang-btn" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('hu')">HU</button>
+        <button class="lang-btn" onclick="setLang('de')">DE</button>
+    </div>
+
     <div class="container">
         <div class="logo-area">
-            <h1>ZENYX <span class="green">NODE</span></h1>
-            <p>Automatizált Kripto Bányászat & AI Profit</p>
+            <h1>ZENYX <span class="brand-color">NODE</span></h1>
+            <p data-key="slogan">Automatizált Kripto Bányászat & AI Profit</p>
         </div>
 
         <div class="auth-box">
             <div class="tabs">
-                <button onclick="showLogin()" class="active">BELÉPÉS</button>
-                <button onclick="showRegister()">REGISZTRÁCIÓ</button>
+                <button onclick="showLogin()" class="active" data-key="loginBtn">BELÉPÉS</button>
+                <button onclick="showRegister()" data-key="regBtn">REGISZTRÁCIÓ</button>
             </div>
 
             <div id="loginForm">
                 <input type="text" id="l_username" placeholder="Felhasználónév">
                 <input type="password" id="l_password" placeholder="Jelszó">
-                <button class="btn-main" onclick="login()">BELÉPÉS A RENDSZERBE</button>
+                <button class="btn-main" onclick="login()" data-key="loginAction">BELÉPÉS</button>
             </div>
 
             <div id="regForm" style="display:none;">
                 <input type="text" id="r_username" placeholder="Válassz Felhasználónevet">
                 <input type="password" id="r_password" placeholder="Jelszó">
-                <label style="color:#666; font-size:12px;">Meghívó kód (Referral):</label>
-                <input type="text" id="r_refCode" readonly style="background:#222; color:#0f0;">
-                <button class="btn-main" onclick="register()">FIÓK LÉTREHOZÁSA</button>
+                
+                <label style="color:#aaa; font-size:12px; display:block; text-align:left; margin-top:10px;" data-key="refLabel">Meghívó Kód (Kötelező):</label>
+                <input type="text" id="r_refCode" placeholder="Írd be a kódot (pl. START)">
+                
+                <button class="btn-main" onclick="register()" data-key="regAction">FIÓK LÉTREHOZÁSA</button>
             </div>
             
             <p id="statusMsg"></p>
