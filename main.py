@@ -132,8 +132,6 @@ SPECIALITÁSOK:
 2. **MLM/Affiliate:** Mátrix rendszerek, jutalék számítás, fa-struktúrák.
 3. **Biztonság:** Minden inputot validálj! Használj modern titkosítást.
 4. **Scraping:** Ha adatszerzés a feladat, légy láthatatlan (User-Agent rotation).
-
-Kimenet: Csak a tiszta, futtatható kód és a szükséges magyarázat. Ne csevegj.
 """
 
 # ==========================================
@@ -163,13 +161,13 @@ async def learn_from_url(request: LearnRequest, token: str = Depends(oauth2_sche
     try:
         async with httpx.AsyncClient(follow_redirects=True) as client_http:
             response = await client_http.get(request.url, headers=headers, timeout=15.0)
-            
+
         if response.status_code != 200:
             return {"status": "error", "message": f"Hiba: {response.status_code}"}
 
         soup = BeautifulSoup(response.text, 'html.parser')
         text_content = " ".join([p.get_text() for p in soup.find_all(['p', 'h1', 'h2', 'h3', 'li', 'article'])])
-        
+
         # AI Összefoglaló készítése
         ai_summary = client.chat.completions.create(
             model="gpt-4o",
@@ -193,28 +191,36 @@ async def learn_from_url(request: LearnRequest, token: str = Depends(oauth2_sche
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
-# --- MASTER MIND (Kód Generálás) ---
+# --- MASTER MIND (Chat & Code Generálás) ---
 @app.post("/generate")
 async def generate_code(request: TaskRequest, token: str = Depends(oauth2_scheme)):
-    # 1. Tudás betöltése
-    recent_knowledge = await knowledge_base.find().sort("crawled_at", -1).limit(2).to_list(length=2)
-    context = "\n".join([f"- {k['summary']}" for k in recent_knowledge])
+    # 1. Tudás betöltése (Mit tanultunk mostanában?)
+    recent_knowledge = await knowledge_base.find().sort("crawled_at", -1).limit(3).to_list(length=3)
+    context_text = "\n".join([f"- TUDÁS ({k['url']}): {k['summary']}" for k in recent_knowledge])
 
     # 2. Speciális Prompt építése
-    focus_prompt = ""
-    if request.focus == "banking":
-        focus_prompt = "HASZNÁLJ SQLAlchemy-t, tranzakció kezelést és szigorú típusokat!"
-    elif request.focus == "mlm":
-        focus_prompt = "Tervezz rekurzív jutalék-számító algoritmust!"
-
-    full_prompt = f"{SYSTEM_INSTRUCTION}\n\nCONTEXT (Mit tanultam mostanában):\n{context}\n\nFELADAT: {request.prompt}\nFÓKUSZ: {focus_prompt}\nPROJECT: {request.project_name}"
+    chat_system_prompt = f"""
+    {SYSTEM_INSTRUCTION}
+    
+    JELENLEGI TUDÁSBÁZIS (Amit a netről tanultál):
+    {context_text}
+    
+    FELHASZNÁLÓ PROJEKTJE: {request.project_name}
+    
+    UTASÍTÁS:
+    Te egy interaktív fejlesztő társ vagy.
+    - Válaszolj magyarul, közvetlenül a felhasználónak.
+    - Ha kódot kérsz, azt Markdown code blockban add meg (```python ... ```).
+    - Használd a tanult tudást a kontextusból.
+    - Ha a felhasználó banki rendszert kér, használj SQLAlchemy-t.
+    """
 
     try:
         response = client.chat.completions.create(
             model="gpt-4o",
             messages=[
-                {"role": "system", "content": full_prompt},
-                {"role": "user", "content": "Írd meg a teljes kódot."}
+                {"role": "system", "content": chat_system_prompt},
+                {"role": "user", "content": request.prompt}
             ]
         )
         return {"response": response.choices[0].message.content}
@@ -230,7 +236,7 @@ async def push_to_github(request: DeployRequest, token: str = Depends(oauth2_sch
     try:
         g = Github(GITHUB_TOKEN)
         user = g.get_user()
-        
+
         # Repo keresése vagy létrehozása (Okosabb verzió)
         try:
             repo = user.get_repo(request.project_name)
