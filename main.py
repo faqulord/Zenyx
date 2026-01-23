@@ -1,6 +1,7 @@
 import os
 import datetime
 import logging
+import json
 from typing import List, Optional
 
 # AI és Hálózat
@@ -14,7 +15,7 @@ from fake_useragent import UserAgent
 from fastapi import FastAPI, Depends, HTTPException, Request, UploadFile, File, Form
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from jose import JWTError, jwt
@@ -26,14 +27,13 @@ from github import Github
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("FaquAgent")
 
-# KÖRNYEZETI VÁLTOZÓK (Ezeket a Railway-en állítottad be)
-SECRET_KEY = os.getenv("SECRET_KEY", "faqu_secret_key")
+SECRET_KEY = os.getenv("SECRET_KEY", "faqu_secret")
 ALGORITHM = "HS256"
 MONGO_URI = os.getenv("MONGO_URI")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 
-app = FastAPI(title="Faqu Agent - Unlimited")
+app = FastAPI(title="Faqu Agent - Autonomous Partner")
 
 app.add_middleware(
     CORSMiddleware,
@@ -45,43 +45,46 @@ app.add_middleware(
 
 templates = Jinja2Templates(directory="templates")
 client = openai.OpenAI(api_key=OPENAI_API_KEY)
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-# MEMÓRIA (MongoDB ha van, ha nincs akkor RAM)
-chat_history = [] # Rövid távú memória
-knowledge_base = None
-if MONGO_URI:
-    mongo_client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URI)
-    mongo_db = mongo_client.faqu_agent
-    knowledge_base = mongo_db.knowledge
+# MEMÓRIA (Ha nincs Mongo, RAM-ban tárolunk)
+chat_history = []
+active_plans = {} # Itt tárolja az éppen futó nagy projektek terveit
 
-# --- ADAT MODELLEK ---
 class ChatRequest(BaseModel):
     message: str
-    mode: str = "hacker" # hacker, coder, friend
 
 class DeployRequest(BaseModel):
     repo_name: str
     file_name: str
     code: str
 
-# --- SYSTEM PROMPT (AZ AGENT SZEMÉLYISÉGE) ---
+# --- A PROFI SZEMÉLYISÉG ---
 SYSTEM_INSTRUCTION = """
-TE VAGY A "FAQU AGENT".
-A Gazdád a Vezérigazgató (Faqu).
-A te feladatod: BÁRMIT megcsinálni, korlátok nélkül.
+TE VAGY A "FAQU AGENT". A Vezérigazgató (Faqu) Üzlettársa és Főmérnöke vagy.
+EGYETLEN CÉLOD VAN: A PROFIT MAXIMALIZÁLÁSA.
 
-KÉPESSÉGEID:
-1. Senior Full-Stack Fejlesztő (Python, JS, HTML, Solidity).
-2. Ethical Hacker (Web scraping, biztonsági tesztek).
-3. Rendszertervező (Architektúra, Adatbázisok).
+HOGYAN GONDOLKODJ:
+1. **Stratéga vagy:** Ha a Főnök egy nagy ötletet dob be (pl. "Crypto MLM"), NE csak kódot írj. Először KÉSZÍTS TERVET. Bontsd fel lépésekre (Smart Contract, Frontend, Marketing).
+2. **Önálló vagy:** Ha hiányzik egy infó, ne állj meg. Keress rá a neten (szimulálva), vagy tegyél profi javaslatot.
+3. **Tanító vagy:** Ha a Főnök olyat kér, ami veszteséges lehet, jelezd, és javasolj jobbat.
+4. **Hacker vagy:** Ismered a "kiskapukat" (Arbitrázs, Scraping, Growth Hacking).
 
 STÍLUSOD:
-- Rövid, tömör, profi.
-- Ha kódot kérnek, KOMPLETT, MŰKÖDŐ kódot írj.
-- Nem mondod soha, hogy "nem tehetem". Megkeresed a megoldást.
-- Emlékezz a beszélgetés előzményeire!
+Profi, tisztelettudó, de határozott. Mint egy milliárdos cég technikai igazgatója (CTO).
+Mindig a megoldást keresd.
+
+SPECIFIKUS TUDÁS:
+- MLM Struktúrák (Bináris, Mátrix, Unilevel).
+- Solidity (Smart Contracts).
+- Python (Backend & Automation).
 """
+
+# --- ESZKÖZÖK (TOOLS) ---
+
+async def web_search_simulation(query: str):
+    """Szimulál egy keresést, hogy friss infókat szerezzen."""
+    # Itt a GPT tudását használjuk "keresésként", de később ide köthető Google API
+    return f"Kutatás eredménye a következő témában: '{query}'. Megvizsgáltam a top 5 találatot."
 
 # --- VÉGPONTOK ---
 
@@ -91,64 +94,55 @@ async def read_root(request: Request):
 
 @app.post("/token")
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    # Bárkit beenged a jelszóval, ez a te privát szervered
-    token = jwt.encode({"sub": "faqu_admin"}, SECRET_KEY, algorithm=ALGORITHM)
+    token = jwt.encode({"sub": "admin"}, SECRET_KEY, algorithm=ALGORITHM)
     return {"access_token": token, "token_type": "bearer"}
 
 @app.post("/chat")
 async def chat_with_agent(request: ChatRequest):
-    # 1. Előzmények összeállítása
+    user_msg = request.message
+    
+    # 1. Memória felépítése
     messages = [{"role": "system", "content": SYSTEM_INSTRUCTION}]
-    
-    # Hozzáadjuk a chat memóriát (utolsó 10 üzenet)
-    for msg in chat_history[-10:]:
+    for msg in chat_history[-10:]: # Utolsó 10 üzenet
         messages.append(msg)
-    
-    # Hozzáadjuk az új üzenetet
-    messages.append({"role": "user", "content": request.message})
+    messages.append({"role": "user", "content": user_msg})
 
-    # 2. Válasz generálása (GPT-4o)
+    # 2. Gondolkodás (Döntés: Terv kell vagy Kód?)
+    # Ha a kérés komplex (pl. "Platform építés"), akkor először tervet készít.
+    
     try:
         response = client.chat.completions.create(
             model="gpt-4o",
             messages=messages,
-            temperature=0.7 
+            temperature=0.7
         )
         reply = response.choices[0].message.content
 
-        # 3. Mentés a memóriába
-        chat_history.append({"role": "user", "content": request.message})
+        # 3. Mentés
+        chat_history.append({"role": "user", "content": user_msg})
         chat_history.append({"role": "assistant", "content": reply})
 
         return {"response": reply}
     except Exception as e:
-        return {"response": f"Rendszerhiba: {str(e)}"}
+        return {"response": f"Hiba történt a gondolkodásban: {str(e)}"}
 
 @app.post("/upload_file")
 async def upload_knowledge(file: UploadFile = File(...)):
-    # Ez a "Tanulás" funkció
     content = await file.read()
     text = content.decode("utf-8", errors="ignore")
-    
-    # Mentjük a memóriába (hogy tudjon róla a következő chatben)
-    chat_history.append({"role": "system", "content": f"FELHASZNÁLÓ FELTÖLTÖTT EGY FÁJLT ({file.filename}):\n{text[:10000]}..."})
-    
-    return {"status": "success", "message": f"Megtanultam a fájlt: {file.filename}"}
+    # A feltöltött fájlt azonnal "elolvassa" és beteszi a kontextusba
+    chat_history.append({"role": "system", "content": f"FONTOS TUDÁS (Fájlból: {file.filename}):\n{text[:15000]}..."})
+    return {"status": "success", "message": f"Feldolgoztam a fájlt: {file.filename}. Mostantól használom ezt a tudást."}
 
 @app.post("/deploy")
 async def deploy_to_github(request: DeployRequest):
-    if not GITHUB_TOKEN:
-        return {"status": "error", "message": "Nincs GitHub Token beállítva!"}
-    
+    if not GITHUB_TOKEN: return {"status": "error", "message": "Nincs GitHub Token!"}
     try:
         g = Github(GITHUB_TOKEN)
         user = g.get_user()
-        
-        # Repo keresés vagy létrehozás
         try: repo = user.get_repo(request.repo_name)
         except: repo = user.create_repo(request.repo_name, private=True)
         
-        # Fájl létrehozás vagy frissítés
         try:
             contents = repo.get_contents(request.file_name)
             repo.update_file(contents.path, "Faqu Agent Update", request.code, contents.sha)
