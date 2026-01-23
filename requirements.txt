@@ -1,46 +1,29 @@
-# --- Alap Rendszer (FastAPI mag) ---
 fastapi
 uvicorn
 python-dotenv
-python-multipart      # Fájl feltöltéshez
-aiofiles              # Aszinkron fájlkezelés
-
-# --- Az Agy (AI & Logika) ---
+python-multipart
+aiofiles
 openai
 jinja2
-tiktoken              # Memória optimalizálás
-
-# --- A MINDENT LÁTÓ SZEM (ÉLŐ NET) ---
-duckduckgo-search     # << EZ AZ ÚJ! Ezzel keres a neten ingyen (nem kell Google API)
-
-# --- TELEGRAM & KRIPTO BIRODALOM (ÚJ!) ---
-aiogram               # << EZ KELL a Telegram Botok építéséhez!
-solana                # << Solana Blokklánc kezelés (Sniperhez)
-web3                  # << Ethereum/BSC Smart Contract kezelés
-
-# --- Hacker & Scraper Eszközök ---
+tiktoken
+duckduckgo-search
+aiogram
+solana
+web3
 requests
 beautifulsoup4
-httpx                 # Gyors szkennelés
-fake-useragent        # Rejtőzködés
-pypdf                 # Szakkönyv olvasó
-
-# --- Banki & Pénzügyi Modul ---
+httpx
+fake-useragent
+pypdf
 pandas
 numpy
 openpyxl
-ccxt                  # Tőzsde motor
-
-# --- Adatbázisok ---
-motor                 # MongoDB
+ccxt
+motor
 sqlalchemy
 psycopg2-binary
-asyncpg               # Gyors SQL
-
-# --- Biztonság ---
+asyncpg
 python-jose[cryptography]
 passlib[bcrypt]
 cryptography
-
-# --- Kézbesítés ---
 PyGithub
