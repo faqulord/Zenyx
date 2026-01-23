@@ -2,37 +2,45 @@
 fastapi
 uvicorn
 python-dotenv
-python-multipart      # Fájl feltöltéshez (Könyvek, PDF-ek)
+python-multipart      # Fájl feltöltéshez
 aiofiles              # Aszinkron fájlkezelés
 
 # --- Az Agy (AI & Logika) ---
 openai
 jinja2
-tiktoken              # Token számlálás (Hogy pontosabb legyen a memória)
+tiktoken              # Memória optimalizálás
 
-# --- Hacker & Scraper Eszközök (Adatbányászat) ---
+# --- A MINDENT LÁTÓ SZEM (ÉLŐ NET) ---
+duckduckgo-search     # << EZ AZ ÚJ! Ezzel keres a neten ingyen (nem kell Google API)
+
+# --- TELEGRAM & KRIPTO BIRODALOM (ÚJ!) ---
+aiogram               # << EZ KELL a Telegram Botok építéséhez!
+solana                # << Solana Blokklánc kezelés (Sniperhez)
+web3                  # << Ethereum/BSC Smart Contract kezelés
+
+# --- Hacker & Scraper Eszközök ---
 requests
 beautifulsoup4
-httpx                 # Sokkal gyorsabb, aszinkron kérések (szkenneléshez)
-fake-useragent        # Hogy ne ismerjék fel, hogy bot vagy (rejtőzködés)
-pypdf                 # PDF OLVASÓ (Hogy be tudja "falni" a szakkönyveket!)
+httpx                 # Gyors szkennelés
+fake-useragent        # Rejtőzködés
+pypdf                 # Szakkönyv olvasó
 
-# --- Banki & Pénzügyi Modul (A Pénzcsináló) ---
-pandas                # Adataelemzés, Excel kezelés, Tőzsdei adatok
-numpy                 # Brutális matek (MLM mátrixokhoz, kamatszámításhoz)
-openpyxl              # Excel generálás (Jelentésekhez)
-ccxt                  # KRIPTO TŐZSDE MOTOR (A világ összes tőzsdéjét kezeli)
+# --- Banki & Pénzügyi Modul ---
+pandas
+numpy
+openpyxl
+ccxt                  # Tőzsde motor
 
-# --- Adatbázisok (Memória & Széf) ---
-motor                 # MongoDB (AI Memóriának tökéletes)
-sqlalchemy            # SQL (Banki tranzakciókhoz ez KELL)
-psycopg2-binary       # PostgreSQL driver (Standard)
-asyncpg               # ASZINKRON SQL (Ez teszi banki sebességűvé az adatbázist)
+# --- Adatbázisok ---
+motor                 # MongoDB
+sqlalchemy
+psycopg2-binary
+asyncpg               # Gyors SQL
 
-# --- Biztonság (Hacker védelem) ---
+# --- Biztonság ---
 python-jose[cryptography]
 passlib[bcrypt]
-cryptography          # AES titkosítás a tárolt adatokhoz
+cryptography
 
 # --- Kézbesítés ---
 PyGithub
