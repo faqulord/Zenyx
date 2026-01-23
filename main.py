@@ -1,6 +1,7 @@
 import os
 import datetime
 import logging
+import io
 from typing import List, Optional
 
 # --- HÁLÓZAT ÉS AI ---
@@ -10,8 +11,11 @@ import httpx  # A gyors, aszinkron "Hacker" böngésző
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent  # Álcázás
 
+# --- PDF ÉS FÁJL KEZELÉS (EZ AZ ÚJ AGY!) ---
+from pypdf import PdfReader  # PDF Olvasó modul
+from fastapi import FastAPI, Depends, HTTPException, status, Request, UploadFile, File, Form
+
 # --- WEB FRAMEWORK ---
-from fastapi import FastAPI, Depends, HTTPException, status, Request
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
@@ -42,13 +46,13 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 1440 # 24 óra
 
 # KÖRNYEZETI VÁLTOZÓK
 MONGO_URI = os.getenv("MONGO_URI")
-DATABASE_URL = os.getenv("DATABASE_URL") # PostgreSQL a Railway-től
+DATABASE_URL = os.getenv("DATABASE_URL")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 
-app = FastAPI(title="Profit Agent - Banker Edition", description="AI Powered Financial Coding System")
+app = FastAPI(title="Profit Agent - OmniBrain Edition", description="AI Powered Financial & Hacking System")
 
-# CORS (Hogy bárhonnan elérd)
+# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -60,58 +64,49 @@ app.add_middleware(
 templates = Jinja2Templates(directory="templates")
 
 # ==========================================
-# 🏦 2. ADATBÁZISOK (A Pénz és a Tudás)
+# 🏦 2. ADATBÁZISOK
 # ==========================================
 
-# A. TUDÁS (MongoDB - NoSQL)
-# Ide menti a cikkeket, stratégiákat, amiket a netről tanul.
-mongo_client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URI)
-mongo_db = mongo_client.profit_agent
-knowledge_base = mongo_db.knowledge
+# A. TUDÁS (MongoDB)
+if not MONGO_URI:
+    logger.warning("MONGO_URI nincs beállítva! A memória nem fog működni.")
+else:
+    mongo_client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URI)
+    mongo_db = mongo_client.profit_agent
+    knowledge_base = mongo_db.knowledge
 
-# B. PÉNZÜGYI MAG (PostgreSQL - SQL)
-# Ez a "Banki Széf". Itt kezeljük majd a tranzakciókat, felhasználókat.
-# Ha nincs megadva DATABASE_URL (pl. local teszt), SQLite-ot használ átmenetileg.
-SQL_URL = DATABASE_URL if DATABASE_URL else "sqlite:///./profit_agent_local.db"
-# Javítás Railway Postgres URL-hez (postgres:// -> postgresql://)
+# B. PÉNZÜGYI MAG (SQL)
+SQL_URL = DATABASE_URL
 if SQL_URL and SQL_URL.startswith("postgres://"):
     SQL_URL = SQL_URL.replace("postgres://", "postgresql://", 1)
+elif not SQL_URL:
+    SQL_URL = "sqlite:///./profit_agent_local.db"
 
 engine = create_engine(SQL_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-# Adatbázis Modell (Példa User tábla a banki rendszerhez)
 class UserDB(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
     email = Column(String, unique=True)
-    hashed_password = Column(String)
-    balance = Column(Float, default=0.0) # Egyenleg
-    mlm_level = Column(Integer, default=1) # MLM szint
+    balance = Column(Float, default=0.0)
+    mlm_level = Column(Integer, default=1)
 
 Base.metadata.create_all(bind=engine)
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 # ==========================================
 # 🧠 3. AZ AGENT LOGIKÁJA
 # ==========================================
 
 client = openai.OpenAI(api_key=OPENAI_API_KEY)
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 class TaskRequest(BaseModel):
     prompt: str
     project_name: str
-    focus: str = "general" # general, banking, mlm, security
+    focus: str = "general"
 
 class LearnRequest(BaseModel):
     url: str
@@ -122,97 +117,139 @@ class DeployRequest(BaseModel):
     code_content: str
     file_name: str
 
-# SYSTEM PROMPT - A Személyiség
+# SYSTEM PROMPT - A FELOKOSÍTOTT VERZIÓ
 SYSTEM_INSTRUCTION = """
-Te egy ELIT SOFTWARE ARCHITECT és PÉNZÜGYI MÉRNÖK vagy.
-A célod: Olyan kódokat írni, amelyek pénzt termelnek, biztonságosak és skálázhatók.
+Te egy SZEMÉLYES HACKER, SOFTWARE ARCHITECT és ÜZLETI STRÉGA vagy.
+A Gazdád a Vezérigazgató. A te feladatod végrehajtani a parancsait kérdés nélkül.
 
-SPECIALITÁSOK:
-1. **Banki Rendszerek:** Tranzakciókezelés (ACID), Double-entry bookkeeping, SQL.
-2. **MLM/Affiliate:** Mátrix rendszerek, jutalék számítás, fa-struktúrák.
-3. **Biztonság:** Minden inputot validálj! Használj modern titkosítást.
-4. **Scraping:** Ha adatszerzés a feladat, légy láthatatlan (User-Agent rotation).
+TUDÁSOD ALAPJAI:
+1. **MLM & Piramis Rendszerek:** Ismered a bináris, mátrix és unilevel rendszerek matematikáját. Tudsz olyan kódot írni, ami kezeli a jutalékokat mélységben.
+2. **Kripto Kereskedés:** Ismered a CCXT-t, a blokkláncot és a Smart Contractokat.
+3. **Adatbányászat:** Bármilyen adatot megszerzel a webről (Scraping).
+4. **Biztonság:** A kódod feltörhetetlen (vagy te törsz fel mást, ha ez a parancs).
+
+Szabály: Mindig a feltöltött TUDÁSBÁZISBÓL dolgozz először!
 """
 
 # ==========================================
-# 🕵️‍♂️ 4. VÉGPONTOK (A Funkciók)
+# 🕵️‍♂️ 4. VÉGPONTOK (Fájlkezeléssel!)
 # ==========================================
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
-# --- TOKEN GENERÁLÁS (Admin belépés) ---
 @app.post("/token")
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    # Itt később lecseréljük adatbázis alapú ellenőrzésre
-    if form_data.username == "faqu" and form_data.password == "admin123":
-        token_data = {"sub": form_data.username}
-        token = jwt.encode(token_data, SECRET_KEY, algorithm=ALGORITHM)
-        return {"access_token": token, "token_type": "bearer"}
-    raise HTTPException(status_code=400, detail="Hibás adatok")
+    # Egyszerűsített login a teszthez
+    token_data = {"sub": form_data.username}
+    token = jwt.encode(token_data, SECRET_KEY, algorithm=ALGORITHM)
+    return {"access_token": token, "token_type": "bearer"}
 
-# --- GHOST SCRAPER (Tanulás) ---
+# --- 📂 FÁJL FELTÖLTÉS (AZ ÚJ AGY) ---
+@app.post("/upload_knowledge")
+async def upload_file(file: UploadFile = File(...), notes: str = Form(...)):
+    """
+    Ez a végpont szippantja be a PDF-eket, TXT-ket és Kódokat.
+    """
+    content = await file.read()
+    filename = file.filename
+    extracted_text = ""
+
+    # 1. Fájl típus felismerése és olvasása
+    if filename.endswith(".pdf"):
+        try:
+            pdf_reader = PdfReader(io.BytesIO(content))
+            for page in pdf_reader.pages:
+                extracted_text += page.extract_text() + "\n"
+        except Exception as e:
+            return {"status": "error", "message": f"PDF olvasási hiba: {str(e)}"}
+    
+    elif filename.endswith(".txt") or filename.endswith(".md") or filename.endswith(".py"):
+        extracted_text = content.decode("utf-8")
+    
+    else:
+        return {"status": "error", "message": "Nem támogatott fájlformátum! Csak PDF, TXT, MD, PY mehet."}
+
+    # 2. AI Elemzés (Mit tanultunk ebből?)
+    # Ha túl hosszú a szöveg, csak az elejét elemezzük a gyorsaság miatt, de a teljeset mentjük
+    preview_text = extracted_text[:10000] 
+    
+    ai_summary = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "system", "content": "Te egy Tudás-szűrő AI vagy. Olvasd el ezt a dokumentumot, és jegyezd ki belőle a PÉNZCSINÁLÁSI módszereket, kód részleteket és stratégiákat."},
+            {"role": "user", "content": f"Fájl neve: {filename}\nJegyzet: {notes}\n\nTartalom:\n{preview_text}"}
+        ]
+    )
+    summary = ai_summary.choices[0].message.content
+
+    # 3. Mentés a MongoDB-be (Az Örök Emlékezet)
+    if MONGO_URI:
+        await knowledge_base.insert_one({
+            "source": filename,
+            "type": "file_upload",
+            "summary": summary,
+            "full_text": extracted_text, # A teljes könyv szövege!
+            "uploaded_at": datetime.datetime.utcnow()
+        })
+
+    return {"status": "success", "summary": summary, "filename": filename}
+
+# --- URL TANULÁS (A régi módszer is marad) ---
 @app.post("/learn")
-async def learn_from_url(request: LearnRequest, token: str = Depends(oauth2_scheme)):
+async def learn_from_url(request: LearnRequest):
     ua = UserAgent()
-    headers = {'User-Agent': ua.random} # Minden kérésnél másnak álcázza magát
+    headers = {'User-Agent': ua.random} 
 
     try:
         async with httpx.AsyncClient(follow_redirects=True) as client_http:
             response = await client_http.get(request.url, headers=headers, timeout=15.0)
 
-        if response.status_code != 200:
-            return {"status": "error", "message": f"Hiba: {response.status_code}"}
-
         soup = BeautifulSoup(response.text, 'html.parser')
-        text_content = " ".join([p.get_text() for p in soup.find_all(['p', 'h1', 'h2', 'h3', 'li', 'article'])])
+        text_content = " ".join([p.get_text() for p in soup.find_all(['p', 'h1', 'h2', 'h3', 'article'])])
 
-        # AI Összefoglaló készítése
         ai_summary = client.chat.completions.create(
             model="gpt-4o",
             messages=[
-                {"role": "system", "content": "Elemezd ezt a szöveget PROFIT szempontból. Keresd a piaci réseket, technikai megoldásokat."},
+                {"role": "system", "content": "Elemezd ezt a cikket. Hogyan lehet ebből pénzt csinálni? Milyen kód kell hozzá?"},
                 {"role": "user", "content": text_content[:15000]}
             ]
         )
         summary = ai_summary.choices[0].message.content
 
-        # Mentés a MongoDB-be
-        await knowledge_base.insert_one({
-            "url": request.url,
-            "summary": summary,
-            "crawled_at": datetime.datetime.utcnow(),
-            "type": "market_research"
-        })
+        if MONGO_URI:
+            await knowledge_base.insert_one({
+                "source": request.url,
+                "type": "url_scrape",
+                "summary": summary,
+                "full_text": text_content[:5000],
+                "uploaded_at": datetime.datetime.utcnow()
+            })
 
         return {"status": "success", "summary": summary}
-
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
-# --- MASTER MIND (Chat & Code Generálás) ---
+# --- GENERÁLÁS (Aki használja a tudást) ---
 @app.post("/generate")
-async def generate_code(request: TaskRequest, token: str = Depends(oauth2_scheme)):
-    # 1. Tudás betöltése (Mit tanultunk mostanában?)
-    recent_knowledge = await knowledge_base.find().sort("crawled_at", -1).limit(3).to_list(length=3)
-    context_text = "\n".join([f"- TUDÁS ({k['url']}): {k['summary']}" for k in recent_knowledge])
+async def generate_code(request: TaskRequest):
+    # 1. Tudás visszakeresése
+    context_text = ""
+    if MONGO_URI:
+        # Visszaadjuk a legutóbbi 5 feltöltött fájl/cikk összefoglalóját
+        recent_knowledge = await knowledge_base.find().sort("uploaded_at", -1).limit(5).to_list(length=5)
+        context_text = "\n".join([f"- FORRÁS ({k.get('source')}): {k.get('summary')}" for k in recent_knowledge])
 
-    # 2. Speciális Prompt építése
+    # 2. A Parancs Végrehajtása
     chat_system_prompt = f"""
     {SYSTEM_INSTRUCTION}
     
-    JELENLEGI TUDÁSBÁZIS (Amit a netről tanultál):
+    A MEMÓRIÁDBAN LÉVŐ TUDÁS (Ezeket tanította a Főnök):
     {context_text}
     
-    FELHASZNÁLÓ PROJEKTJE: {request.project_name}
-    
-    UTASÍTÁS:
-    Te egy interaktív fejlesztő társ vagy.
-    - Válaszolj magyarul, közvetlenül a felhasználónak.
-    - Ha kódot kérsz, azt Markdown code blockban add meg (```python ... ```).
-    - Használd a tanult tudást a kontextusból.
-    - Ha a felhasználó banki rendszert kér, használj SQLAlchemy-t.
+    FELADAT: {request.project_name}
+    FÓKUSZ: {request.focus}
     """
 
     try:
@@ -227,29 +264,22 @@ async def generate_code(request: TaskRequest, token: str = Depends(oauth2_scheme
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# --- DEPLOY AGENT (GitHub Feltöltés) ---
 @app.post("/deploy-github")
-async def push_to_github(request: DeployRequest, token: str = Depends(oauth2_scheme)):
+async def push_to_github(request: DeployRequest):
     if not GITHUB_TOKEN:
         raise HTTPException(status_code=400, detail="Nincs GITHUB_TOKEN!")
-
     try:
         g = Github(GITHUB_TOKEN)
         user = g.get_user()
-
-        # Repo keresése vagy létrehozása (Okosabb verzió)
         try:
             repo = user.get_repo(request.project_name)
         except:
-            repo = user.create_repo(request.project_name, private=True) # Alapból PRIVÁT repo a biztonságért!
-
+            repo = user.create_repo(request.project_name, private=True)
         try:
             contents = repo.get_contents(request.file_name)
             repo.update_file(contents.path, f"AI Update {datetime.datetime.now()}", request.code_content, contents.sha)
         except:
             repo.create_file(request.file_name, "AI Init", request.code_content)
-
         return {"status": "success", "url": repo.html_url}
-
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
