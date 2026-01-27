@@ -1,0 +1,141 @@
+/* ContentSection.css */
+.content-container {
+    background-color: #050505;
+    padding: 80px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* --- AZ IDÉZET SZEKCIÓ --- */
+.quote-box {
+    max-width: 800px;
+    margin-bottom: 80px;
+    border-left: 4px solid #bf953f; /* Arany csík bal oldalon */
+    padding-left: 30px;
+    text-align: left;
+}
+
+.quote-text {
+    font-family: 'Cinzel', serif;
+    font-size: 2.5rem;
+    color: #fcf6ba;
+    margin: 0;
+    line-height: 1.4;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.quote-author {
+    font-family: 'Montserrat', sans-serif;
+    color: #888;
+    margin-top: 15px;
+    font-size: 1.2rem;
+    font-style: italic;
+}
+
+/* --- BEMUTATKOZÁS / KÁRTYÁK --- */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+    width: 100%;
+    max-width: 1200px;
+    margin-bottom: 80px;
+}
+
+.info-card {
+    background: linear-gradient(145deg, #0f1016, #090a0e);
+    padding: 40px;
+    border-radius: 15px;
+    border: 1px solid rgba(191, 149, 63, 0.1);
+    transition: transform 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.info-card:hover {
+    transform: translateY(-10px);
+    border-color: rgba(191, 149, 63, 0.4);
+}
+
+.card-icon {
+    font-size: 3rem;
+    color: #bf953f;
+    margin-bottom: 20px;
+}
+
+.card-title {
+    font-family: 'Cinzel', serif;
+    color: #fff;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+.card-desc {
+    font-family: 'Montserrat', sans-serif;
+    color: #aaa;
+    line-height: 1.6;
+}
+
+/* --- SOCIAL MEDIA GOMBOK --- */
+.social-section {
+    margin-top: 40px;
+}
+
+.social-title {
+    font-family: 'Cinzel', serif;
+    color: #fff;
+    font-size: 2rem;
+    margin-bottom: 30px;
+}
+
+.social-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.social-btn {
+    padding: 15px 40px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    text-decoration: none;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tiktok-btn {
+    background: #000;
+    color: #fff;
+    border: 2px solid #fe2c55; /* TikTok piros */
+    box-shadow: 0 0 15px rgba(254, 44, 85, 0.2);
+}
+
+.tiktok-btn:hover {
+    background: #fe2c55;
+    box-shadow: 0 0 30px rgba(254, 44, 85, 0.6);
+}
+
+.facebook-btn {
+    background: #000;
+    color: #fff;
+    border: 2px solid #1877f2; /* FB kék */
+    box-shadow: 0 0 15px rgba(24, 119, 242, 0.2);
+}
+
+.facebook-btn:hover {
+    background: #1877f2;
+    box-shadow: 0 0 30px rgba(24, 119, 242, 0.6);
+}
+
+/* Mobil nézet */
+@media (max-width: 768px) {
+    .quote-text { font-size: 1.8rem; }
+    .quote-box { border-left: none; border-top: 3px solid #bf953f; padding-left: 0; padding-top: 20px; }
+}
