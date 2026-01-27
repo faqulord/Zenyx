@@ -14,14 +14,15 @@ function App() {
 
       {currentPage === 'home' && (
         <>
+          {/* 1. Teljes képernyős Kozmosz + Gomb */}
           <HeroSection />
-          {/* Főoldalon: Csak a tartalom, bemutatkozás, idézet */}
+          
+          {/* 2. Ez van alatta (Attila bemutatkozása), ide görget a gomb */}
           <ContentSection />
         </>
       )}
 
       {currentPage === 'shop' && (
-        /* Webshop oldalon: Csak a termékek */
         <ShopPage />
       )}
 
