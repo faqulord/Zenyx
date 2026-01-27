@@ -1,9 +1,11 @@
-// ... importok ...
+import React from 'react';
+import './HeroSection.css';
 
 function HeroSection() {
   
-  // Ez a függvény kezeli a görgetést
+  // Ez a függvény visz le a tartalomhoz
   const scrollToContent = () => {
+    // Megkeressük a 'tudastar' ID-val rendelkező elemet (ez a ContentSection)
     const element = document.getElementById('tudastar');
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
@@ -19,7 +21,7 @@ function HeroSection() {
           Lépj be a tudatosság új dimenziójába.
         </p>
         
-        {/* Itt hívjuk meg a görgetést */}
+        {/* Itt a gomb, ami meghívja a görgetést */}
         <button className='hero-btn' onClick={scrollToContent}>
           BELÉPÉS A TUDÁSTÁRBA
         </button>
