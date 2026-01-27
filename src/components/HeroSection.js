@@ -3,9 +3,7 @@ import './HeroSection.css';
 
 function HeroSection() {
   
-  // Ez a függvény visz le a tartalomhoz
   const scrollToContent = () => {
-    // Megkeressük a 'tudastar' ID-val rendelkező elemet (ez a ContentSection)
     const element = document.getElementById('tudastar');
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
@@ -14,14 +12,16 @@ function HeroSection() {
 
   return (
     <div className='hero-container'>
+      {/* Sötétítő réteg CSS-ben van kezelve */}
+      
       <div className='hero-content'>
         <h1 className='hero-title'>AZ ŐSI TUDÁS ÉBREDÉSE</h1>
+        
         <p className='hero-subtitle'>
           Fedezd fel a szakrális geometria és a kozmikus rend rejtett összefüggéseit.
-          Lépj be a tudatosság új dimenziójába.
+          A valóság több, mint amit a szemed lát.
         </p>
         
-        {/* Itt a gomb, ami meghívja a görgetést */}
         <button className='hero-btn' onClick={scrollToContent}>
           BELÉPÉS A TUDÁSTÁRBA
         </button>
