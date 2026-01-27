@@ -1,25 +1,32 @@
-
-/* HeroSection.css - TELJES JAVÍTOTT KÓD */
+/* HeroSection.css - MOZGÓ HÁTTÉR ÉS MOBIL FIX */
 
 .hero-container {
-    height: 100vh; /* Teljes képernyő magasság */
+    height: 100vh; /* Teljes képernyő */
     width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     position: relative;
-    /* Itt a Kozmosz háttérkép linkje: */
+    overflow: hidden; /* Hogy ne jelenjen meg görgetősáv az animáció miatt */
+    
+    /* A háttérkép beállítása */
     background-image: url('https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=2094&auto=format&fit=crop');
+    background-size: 120% 120%; /* Nagyobb, hogy tudjon mozogni */
     background-position: center;
-    background-size: cover;
     background-repeat: no-repeat;
-    /* Fontos: a menü miatt nem csúszik el */
-    margin-top: 0; 
-    padding: 0 20px;
+    
+    /* ITT A VARÁZSLAT: A MOZGÁS */
+    animation: cosmic-drift 60s ease-in-out infinite alternate;
 }
 
-/* Sötétítő réteg a kép felett */
+/* Az animáció definíciója: Lassan úszik a kép */
+@keyframes cosmic-drift {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+}
+
+/* Sötétítő réteg */
 .hero-container::before {
     content: "";
     position: absolute;
@@ -27,82 +34,105 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(5,5,10,0.9) 100%);
+    background: radial-gradient(circle at center, rgba(10, 14, 34, 0.4) 0%, rgba(5, 5, 10, 0.95) 100%);
     z-index: 1;
 }
 
 .hero-content {
-    z-index: 2; /* Hogy a sötétítés felett legyen */
+    z-index: 2;
     text-align: center;
     max-width: 900px;
-    margin-top: 60px; /* Hogy a menü ne takarja ki a címet */
+    padding: 0 20px;
+    animation: fadeInUp 1.5s ease-out; /* A szöveg szépen beúszik */
+}
+
+/* Szöveg beúszás animáció */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .hero-title {
     color: #fff;
     font-family: 'Cinzel', serif;
-    font-size: 3.5rem; /* Nagyobb betűk */
+    font-size: 4rem; /* Asztali gépen hatalmas */
     font-weight: 700;
     margin-bottom: 20px;
-    letter-spacing: 4px;
-    /* Arany színátmenet */
-    background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7);
+    letter-spacing: 5px;
+    line-height: 1.1;
+    
+    /* Arany ragyogás */
+    background: linear-gradient(to bottom, #fcf6ba 0%, #bf953f 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    text-shadow: 0px 0px 30px rgba(191, 149, 63, 0.4);
+    filter: drop-shadow(0 0 20px rgba(191, 149, 63, 0.5));
 }
 
 .hero-subtitle {
     font-family: 'Montserrat', sans-serif;
     color: #e0e0e0;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     margin-bottom: 50px;
     font-weight: 300;
     line-height: 1.6;
     max-width: 700px;
     margin-left: auto;
     margin-right: auto;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
 }
 
-/* A GOMB STÍLUSA */
+/* A GOMB */
 .hero-btn {
-    padding: 15px 40px;
+    padding: 18px 45px;
     font-family: 'Montserrat', sans-serif;
     font-size: 1rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 2px;
-    background: transparent;
-    color: #fcf6ba;
-    border: 2px solid #bf953f;
-    border-radius: 50px; /* Kerekített */
+    letter-spacing: 3px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #bf953f;
+    border: 1px solid #bf953f;
+    border-radius: 0; /* Szögletesebb, elegánsabb */
     cursor: pointer;
-    transition: all 0.3s ease-out;
+    transition: all 0.4s ease;
     position: relative;
     overflow: hidden;
-    z-index: 10;
-    box-shadow: 0 0 15px rgba(191, 149, 63, 0.3);
+    backdrop-filter: blur(5px);
 }
 
 .hero-btn:hover {
     background: #bf953f;
     color: #000;
-    box-shadow: 0 0 30px rgba(191, 149, 63, 0.8);
-    transform: translateY(-3px);
+    box-shadow: 0 0 40px rgba(191, 149, 63, 0.6);
+    letter-spacing: 4px; /* Széthúzódik a szöveg ha ráviszed az egeret */
 }
 
-/* Mobil nézet javítása */
+/* --- MOBIL OPTIMALIZÁLÁS (FONTOS!) --- */
 @media screen and (max-width: 768px) {
-    .hero-title {
-        font-size: 2.2rem;
-        letter-spacing: 1px;
+    .hero-container {
+        height: 100vh; /* Mobilon is teljes képernyő */
+        background-size: cover; /* Mobilon ne nagyítson bele annyira */
+        background-position: center;
+        animation: none; /* Mobilon kikapcsoljuk a mozgást az akksi kímélése miatt, vagy hagyhatjuk */
     }
+
+    .hero-title {
+        font-size: 2.2rem; /* Kisebb betűk, hogy kiférjen */
+        letter-spacing: 2px;
+        margin-top: 60px; /* Hogy ne lógjon bele a menübe */
+    }
+
     .hero-subtitle {
         font-size: 1rem;
+        padding: 0 10px;
+        margin-bottom: 40px;
     }
+
     .hero-btn {
-        padding: 12px 30px;
+        padding: 15px 35px;
         font-size: 0.9rem;
+        width: 100%; /* Mobilon legyen széles a gomb */
+        max-width: 300px;
     }
 }
