@@ -1,22 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
+import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
 import ContentSection from './components/ContentSection';
-import ProductSection from './components/ProductSection';
+import ProductSection from './components/ProductSection'; // Ez maradhat "Kiemelt" résznek a főoldalon
+import ShopPage from './components/ShopPage';
 import Footer from './components/Footer';
 
 function App() {
+  // Ez figyeli, melyik oldalon vagyunk éppen (alapból: home)
+  const [currentPage, setCurrentPage] = useState('home');
+
   return (
     <div className="App">
-      {/* 1. A kozmikus főoldal */}
-      <HeroSection />
-      
-      {/* 2. Az idézet, bemutatkozás és social média gombok */}
-      <ContentSection />
-      
-      {/* 3. A termékek (Könyvek, eszközök) */}
-      <ProductSection />
-      
-      {/* 4. A lábléc (Copyright, linkek) */}
+      {/* A Navigációt mindig látjuk */}
+      <Navbar setPage={setCurrentPage} currentPage={currentPage} />
+
+      {/* HA a Kezdőlapon vagyunk: */}
+      {currentPage === 'home' && (
+        <>
+          <HeroSection />
+          <ContentSection />
+          {/* A főoldalon is hagyhatunk egy kis ízelítőt */}
+          <ProductSection /> 
+        </>
+      )}
+
+      {/* HA a Webshopon vagyunk: */}
+      {currentPage === 'shop' && (
+        <ShopPage />
+      )}
+
       <Footer />
     </div>
   );
