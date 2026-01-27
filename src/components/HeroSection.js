@@ -1,7 +1,15 @@
-import React from 'react';
-import './HeroSection.css';
+// ... importok ...
 
 function HeroSection() {
+  
+  // Ez a függvény kezeli a görgetést
+  const scrollToContent = () => {
+    const element = document.getElementById('tudastar');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className='hero-container'>
       <div className='hero-content'>
@@ -10,7 +18,9 @@ function HeroSection() {
           Fedezd fel a szakrális geometria és a kozmikus rend rejtett összefüggéseit.
           Lépj be a tudatosság új dimenziójába.
         </p>
-        <button className='hero-btn'>
+        
+        {/* Itt hívjuk meg a görgetést */}
+        <button className='hero-btn' onClick={scrollToContent}>
           BELÉPÉS A TUDÁSTÁRBA
         </button>
       </div>
