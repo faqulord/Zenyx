@@ -1,0 +1,113 @@
+/* ProductSection.css */
+.products-container {
+    background-color: #0a0e17; /* Kicsit világosabb fekete, hogy elüssön */
+    padding: 100px 20px;
+    text-align: center;
+}
+
+.section-title {
+    font-family: 'Cinzel', serif;
+    font-size: 2.5rem;
+    color: #bf953f;
+    margin-bottom: 60px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    position: relative;
+    display: inline-block;
+}
+
+.section-title::after {
+    content: '';
+    display: block;
+    width: 60%;
+    height: 2px;
+    background: #bf953f;
+    margin: 10px auto 0;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.product-card {
+    background: #050505;
+    border: 1px solid #333;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    position: relative;
+}
+
+.product-card:hover {
+    transform: translateY(-10px);
+    border-color: #bf953f;
+    box-shadow: 0 0 20px rgba(191, 149, 63, 0.2);
+}
+
+.product-image-container {
+    height: 250px;
+    overflow: hidden;
+    position: relative;
+}
+
+.product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.product-card:hover .product-image {
+    transform: scale(1.1); /* Ráközelít a képre ha ráviszed az egeret */
+}
+
+.product-info {
+    padding: 20px;
+    text-align: left;
+}
+
+.product-category {
+    font-family: 'Montserrat', sans-serif;
+    color: #888;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.product-title {
+    font-family: 'Cinzel', serif;
+    color: #fff;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.product-price {
+    font-family: 'Montserrat', sans-serif;
+    color: #bf953f;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.add-btn {
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    border: 1px solid #bf953f;
+    color: #bf953f;
+    font-family: 'Montserrat', sans-serif;
+    text-transform: uppercase;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.add-btn:hover {
+    background: #bf953f;
+    color: #000;
+}
