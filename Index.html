@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dózsa Pet Porta - Állateledel és Felszerelés</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #e67e22;
+            --secondary: #2c3e50;
+            --accent: #f1c40f;
+            --light: #fdfaf5;
+            --dark: #333;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--light); color: var(--dark); line-height: 1.6; }
+
+        /* Header */
+        header {
+            background: white;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .logo { font-weight: 700; font-size: 1.5rem; color: var(--primary); }
+        .nav-links { list-style: none; display: flex; }
+        .nav-links li { margin-left: 20px; }
+        .nav-links a { text-decoration: none; color: var(--secondary); font-weight: 600; transition: 0.3s; }
+        .nav-links a:hover { color: var(--primary); }
+
+        /* Hero Section */
+        .hero {
+            height: 80vh;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
+                        url('https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&q=80&w=1600'); /* Demo kép kutyussal */
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 0 20px;
+        }
+        .hero h1 { font-size: 3.5rem; margin-bottom: 10px; }
+        .hero p { font-size: 1.2rem; margin-bottom: 20px; max-width: 600px; }
+        .btn {
+            background: var(--primary);
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .btn:hover { background: #d35400; transform: scale(1.05); }
+
+        /* Features */
+        .section { padding: 80px 10%; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
+        .card { background: white; padding: 30px; border-radius: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .card i { font-size: 2.5rem; color: var(--primary); margin-bottom: 15px; }
+
+        /* Reviews */
+        .reviews { background: #f9f9f9; }
+        .review-card {
+            background: white;
+            padding: 20px;
+            border-left: 5px solid var(--primary);
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .stars { color: var(--accent); margin-bottom: 10px; }
+
+        /* Contact & Info */
+        .contact-info { background: var(--secondary); color: white; }
+        .info-box { margin-bottom: 20px; }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            background: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        footer { text-align: center; padding: 20px; background: #222; color: #777; font-size: 0.9rem; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">🐾 Dózsa Pet Porta</div>
+        <ul class="nav-links">
+            <li><a href="#kezdolap">Kezdőlap</a></li>
+            <li><a href="#szolgaltatasok">Kínálat</a></li>
+            <li><a href="#velemenyek">Vélemények</a></li>
+            <li><a href="#kapcsolat">Kapcsolat</a></li>
+        </ul>
+    </header>
+
+    <section class="hero" id="kezdolap">
+        <h1>Minőségi gondoskodás kedvencének</h1>
+        <p>Állateledel és felszerelés szaküzlet Debrecen szívében. Prémium tápok, kiegészítők és szakértő tanácsadás.</p>
+        <a href="tel:06303496531" class="btn">Hívás most: 06 30 349 6531</a>
+    </section>
+
+    <section class="section" id="szolgaltatasok">
+        <h2 style="text-align: center; margin-bottom: 40px;">Amit kínálunk</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>Minőségi Tápok</h3>
+                <p>Száraz és nedves eledelek, diétás és allergénmentes változatok minden korosztálynak.</p>
+            </div>
+            <div class="card">
+                <h3>Felszerelések</h3>
+                <p>Pórázok, nyakörvek, fekhelyek és játékok széles választéka várja a gazdikat.</p>
+            </div>
+            <div class="card">
+                <h3>Szakértő Kiszolgálás</h3>
+                <p>Több éves tapasztalattal segítünk kiválasztani a legmegfelelőbb terméket.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section reviews" id="velemenyek">
+        <h2 style="text-align: center; margin-bottom: 40px;">Vásárlóink mondták</h2>
+        <div class="review-card">
+            <div class="stars">★★★★★</div>
+            <p><strong>Arató Miklós:</strong> "Barátságos, udvarias kiszolgálás. Termékek sokasága. :)"</p>
+        </div>
+        <div class="review-card">
+            <div class="stars">★★★★★</div>
+            <p><strong>Szél Evelyn:</strong> "Nagyon barátságos és udvarias kiszolgálás. Minőségi, igényes áru és korrekt árak. 🐶🐾❤️"</p>
+        </div>
+    </section>
+
+    <section class="section contact-info" id="kapcsolat">
+        <div class="grid">
+            <div class="info-box">
+                <h2>Nyitvatartás</h2>
+                <p>Hétfő - Péntek: 9:00 - 18:00 (Hamarosan nyit!)</p>
+                <span class="status-badge">Jelenleg: Zárva</span>
+            </div>
+            <div class="info-box">
+                <h2>Elérhetőség</h2>
+                <p>📍 4027 Debrecen, Dózsa György u. 8.</p>
+                <p>📞 06 30 349 6531</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        &copy; 2026 Dózsa Pet Porta - Minden jog fenntartva.
+    </footer>
+
+</body>
+</html>
