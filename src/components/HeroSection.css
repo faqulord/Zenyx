@@ -1,29 +1,31 @@
-/* HeroSection.css - MOZGÓ HÁTTÉR ÉS MOBIL FIX */
+/* HeroSection.css - JAVÍTOTT MOZGÓ HÁTTÉR */
 
 .hero-container {
-    height: 100vh; /* Teljes képernyő */
+    height: 100vh;
     width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     position: relative;
-    overflow: hidden; /* Hogy ne jelenjen meg görgetősáv az animáció miatt */
+    overflow: hidden;
     
     /* A háttérkép beállítása */
     background-image: url('https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=2094&auto=format&fit=crop');
-    background-size: 120% 120%; /* Nagyobb, hogy tudjon mozogni */
+    
+    /* FONTOS: Nagyobbnak kell lennie, mint a képernyő, hogy mozoghasson! */
+    background-size: 150% 150%; 
     background-position: center;
     background-repeat: no-repeat;
     
-    /* ITT A VARÁZSLAT: A MOZGÁS */
-    animation: cosmic-drift 60s ease-in-out infinite alternate;
+    /* Az animáció: 45 másodperc alatt úszik egyik oldalról a másikra */
+    animation: cosmic-drift 45s ease-in-out infinite alternate;
 }
 
-/* Az animáció definíciója: Lassan úszik a kép */
+/* Itt mondjuk meg neki, honnan hova mozogjon */
 @keyframes cosmic-drift {
-    0% { background-position: 0% 50%; }
-    100% { background-position: 100% 50%; }
+    0% { background-position: 30% 50%; } /* Balról indul */
+    100% { background-position: 70% 50%; } /* Jobbra úszik */
 }
 
 /* Sötétítő réteg */
@@ -34,7 +36,8 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at center, rgba(10, 14, 34, 0.4) 0%, rgba(5, 5, 10, 0.95) 100%);
+    /* Kicsit erősebb sötétítés, hogy a szöveg jobban olvasható legyen */
+    background: radial-gradient(circle at center, rgba(10, 14, 34, 0.3) 0%, rgba(5, 5, 10, 0.9) 100%);
     z-index: 1;
 }
 
@@ -43,10 +46,9 @@
     text-align: center;
     max-width: 900px;
     padding: 0 20px;
-    animation: fadeInUp 1.5s ease-out; /* A szöveg szépen beúszik */
+    animation: fadeInUp 1.5s ease-out;
 }
 
-/* Szöveg beúszás animáció */
 @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(30px); }
     to { opacity: 1; transform: translateY(0); }
@@ -55,13 +57,12 @@
 .hero-title {
     color: #fff;
     font-family: 'Cinzel', serif;
-    font-size: 4rem; /* Asztali gépen hatalmas */
+    font-size: 4rem;
     font-weight: 700;
     margin-bottom: 20px;
     letter-spacing: 5px;
     line-height: 1.1;
     
-    /* Arany ragyogás */
     background: linear-gradient(to bottom, #fcf6ba 0%, #bf953f 100%);
     -webkit-background-clip: text;
     background-clip: text;
@@ -82,7 +83,6 @@
     text-shadow: 0 2px 4px rgba(0,0,0,0.8);
 }
 
-/* A GOMB */
 .hero-btn {
     padding: 18px 45px;
     font-family: 'Montserrat', sans-serif;
@@ -93,11 +93,8 @@
     background: rgba(0, 0, 0, 0.6);
     color: #bf953f;
     border: 1px solid #bf953f;
-    border-radius: 0; /* Szögletesebb, elegánsabb */
     cursor: pointer;
     transition: all 0.4s ease;
-    position: relative;
-    overflow: hidden;
     backdrop-filter: blur(5px);
 }
 
@@ -105,22 +102,20 @@
     background: #bf953f;
     color: #000;
     box-shadow: 0 0 40px rgba(191, 149, 63, 0.6);
-    letter-spacing: 4px; /* Széthúzódik a szöveg ha ráviszed az egeret */
+    letter-spacing: 4px;
 }
 
-/* --- MOBIL OPTIMALIZÁLÁS (FONTOS!) --- */
+/* Mobil optimalizálás */
 @media screen and (max-width: 768px) {
     .hero-container {
-        height: 100vh; /* Mobilon is teljes képernyő */
-        background-size: cover; /* Mobilon ne nagyítson bele annyira */
-        background-position: center;
-        animation: none; /* Mobilon kikapcsoljuk a mozgást az akksi kímélése miatt, vagy hagyhatjuk */
+        /* Mobilon kicsit kisebbre vesszük a nagyítást, de még mindig mozogjon */
+        background-size: 200% 200%; 
     }
 
     .hero-title {
-        font-size: 2.2rem; /* Kisebb betűk, hogy kiférjen */
+        font-size: 2.2rem;
         letter-spacing: 2px;
-        margin-top: 60px; /* Hogy ne lógjon bele a menübe */
+        margin-top: 60px;
     }
 
     .hero-subtitle {
@@ -132,7 +127,7 @@
     .hero-btn {
         padding: 15px 35px;
         font-size: 0.9rem;
-        width: 100%; /* Mobilon legyen széles a gomb */
+        width: 100%;
         max-width: 300px;
     }
 }
