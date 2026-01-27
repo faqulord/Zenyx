@@ -1,0 +1,32 @@
+.footer-container {
+    background-color: #000;
+    padding: 40px 20px;
+    text-align: center;
+    border-top: 1px solid #222;
+    color: #666;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+}
+
+.footer-logo {
+    font-family: 'Cinzel', serif;
+    color: #bf953f;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    display: inline-block;
+}
+
+.footer-links a {
+    color: #888;
+    text-decoration: none;
+    margin: 0 15px;
+    transition: color 0.3s;
+}
+
+.footer-links a:hover {
+    color: #bf953f;
+}
+
+.copyright {
+    margin-top: 20px;
+}
