@@ -3,22 +3,32 @@ import './ContentSection.css';
 
 function ContentSection() {
   return (
-    <div className='content-container'>
+    <div className='content-container' id='tudastar'> {/* Itt az ID a gombhoz! */}
       
-      {/* 1. AZ IDÉZET - KÖZPONTI ELEM */}
+      {/* 1. AZ IDÉZET */}
       <div className='quote-box'>
         <h2 className='quote-text'>"AZ INFORMÁCIÓ MAGA A HATALOM."</h2>
         <p className='quote-author'>- A tudás felszabadít</p>
       </div>
 
-      {/* 2. SZOLGÁLTATÁSOK / INFO KÁRTYÁK */}
+      {/* 2. RÓLAM / KÜLDETÉS (ÚJ RÉSZ ATTILÁNAK) */}
+      <div className='about-section'>
+        <h3 className='section-header'>KÜLDETÉSEM</h3>
+        <p className='about-text'>
+          Üdvözöllek! Attila vagyok. Éveket töltöttem azzal, hogy megértsem világunk eltitkolt működését és az elveszett ősi technológiákat. 
+          Célom, hogy visszahozzam a köztudatba azt a tudást, ami egykor mindenkié volt: a szakrális geometria erejét, 
+          a vízprogramozást és a tudatos teremtés eszközeit. Nem csak beszélek róla – elkészítem azokat az eszközöket, 
+          amelyek segítenek emelni a rezgésszintedet.
+        </p>
+      </div>
+
+      {/* 3. TUDÁS KÁRTYÁK */}
       <div className='info-grid'>
         <div className='info-card'>
           <div className='card-icon'>👁️</div>
           <h3 className='card-title'>TILTOTT RÉGÉSZET</h3>
           <p className='card-desc'>
             Fedezd fel a történelmünk eltitkolt részleteit. Tartaria elveszett birodalmától a Belső Föld elméletéig.
-            Ne elégedj meg a felszínnel.
           </p>
         </div>
 
@@ -27,21 +37,19 @@ function ContentSection() {
           <h3 className='card-title'>TUDATOSSÁG</h3>
           <p className='card-desc'>
             Emeld a rezgésszintedet. Tanulj a szakrális geometriáról, az 5. dimenzióról és a belső teremtő erődről.
-            A változás belül kezdődik.
           </p>
         </div>
 
         <div className='info-card'>
-          <div className='card-icon'>🛒</div>
-          <h3 className='card-title'>PRÉMIUM ESZKÖZÖK</h3>
+          <div className='card-icon'>⚛️</div>
+          <h3 className='card-title'>TENSOR TECHNOLÓGIA</h3>
           <p className='card-desc'>
-            Hamarosan elérhetőek a fizikai és szellemi jólétet támogató termékek. 
-            Csatlakozz a zárt közösséghez!
+            Slim Spurling nyomán: hogyan hatnak a rézgyűrűk a vízre és az emberi biológiai mezőre?
           </p>
         </div>
       </div>
 
-      {/* 3. SOCIAL MÉDIA SZEKCIÓ */}
+      {/* 4. SOCIAL MÉDIA */}
       <div className='social-section'>
         <h3 className='social-title'>CSATLAKOZZ A KÖZÖSSÉGHEZ</h3>
         <div className='social-buttons'>
