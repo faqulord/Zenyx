@@ -14,7 +14,7 @@ function Footer() {
       </div>
 
       <p className='copyright'>
-        © 2026 Minden jog fenntartva. | Fejlesztette: [A Te Neved/Céged]
+        © 2026 Minden jog fenntartva. | Fejlesztette: faqudeveloper
       </p>
     </div>
   );
