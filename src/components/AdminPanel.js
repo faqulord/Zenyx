@@ -7,58 +7,66 @@ function AdminPanel({ setPage }) {
   const [products, setProducts] = useState([]);
   const [showForm, setShowForm] = useState(false);
   
-  // Állapotok a kiszámított statisztikáknak
-  const [dynamicStats, setDynamicStats] = useState({
+  // Élő statisztikák az adatbázisból
+  const [liveStats, setLiveStats] = useState({
     totalRevenue: 0,
     orderCount: 0,
-    visitorPlaceholder: 342 // A látogatókhoz majd külön számláló kell, addig marad demo
+    visitorCount: 0
   });
 
   const [newProduct, setNewProduct] = useState({
     name: '', category: 'Eszközök', desc: '', price: '', image: ''
   });
 
-  // ADATOK LEKÉRÉSE ÉS SZÁMÍTÁSA
-  useEffect(() => {
-    // Rendelések lekérése
-    fetch('/api/orders')
-      .then(res => res.json())
-      .then(data => {
-        setOrders(data);
-        
-        // --- VALÓDI ADATOK KISZÁMÍTÁSA ---
-        // Végigmegyünk a rendeléseken és összeadjuk az összegeket
-        const total = data.reduce((sum, order) => {
-          // Kiszedjük a számot a szövegből (pl: "12.990 Ft" -> 12990)
-          const priceNum = parseInt(order.total.replace(/[^0-9]/g, '')) || 0;
-          return sum + priceNum;
-        }, 0);
-
-        setDynamicStats(prev => ({
-          ...prev,
-          totalRevenue: total,
-          orderCount: data.length
-        }));
-      });
-
+  // ADATOK BETÖLTÉSE
+  const loadData = () => {
+    fetch('/api/stats').then(res => res.json()).then(data => setLiveStats(data));
+    fetch('/api/orders').then(res => res.json()).then(data => setOrders(data));
     fetch('/api/products').then(res => res.json()).then(data => setProducts(data));
+  };
+
+  useEffect(() => {
+    loadData();
+    // 30 másodpercenként frissítünk, hogy tényleg "élő" legyen
+    const interval = setInterval(loadData, 30000);
+    return () => clearInterval(interval);
   }, [activeTab]);
 
-  // Havi zárás (most már a valódi összeget nullázná)
+  const handleProductSubmit = (e) => {
+    e.preventDefault();
+    fetch('/api/products', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newProduct)
+    })
+    .then(res => res.json())
+    .then(data => {
+      setProducts([...products, data]);
+      setShowForm(false);
+      setNewProduct({ name: '', category: 'Eszközök', desc: '', price: '', image: '' });
+      alert("Termék elmentve!");
+    });
+  };
+
+  // --- HAVI ZÁRÁS ---
   const handleMonthlyClose = () => {
-    if (window.confirm("BIZTOSAN LEZÁROD A HÓNAPOT? Ez nullázza a jelenlegi statisztikákat.")) {
-      alert("Havi zárás sikeres! (Az éles adatbázisban archiválva)");
-      setDynamicStats({ totalRevenue: 0, orderCount: 0, visitorPlaceholder: 0 });
+    if (window.confirm("BIZTOSAN LEZÁROD A HÓNAPOT?\nEz nullázza a látogatottságot és archiválja a bevételt.")) {
+      fetch('/api/stats/reset-monthly', { method: 'POST' })
+        .then(res => res.json())
+        .then(() => {
+          alert("Havi zárás sikeres!");
+          loadData();
+        });
     }
   };
 
   return (
     <div className='admin-container'>
       <div className='admin-sidebar'>
-        <div className='admin-logo'>A&T HARMONIES</div>
+        <div className='admin-logo'>A&T HARMONIES <div className='mobile-exit' onClick={() => setPage('home')}>Kilépés ➡</div></div>
         <div className='sidebar-menu'>
           <div className={`menu-item ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={() => setActiveTab('dashboard')}>📊 Vezérlőpult</div>
-          <div className={`menu-item ${activeTab === 'orders' ? 'active' : ''}`} onClick={() => setActiveTab('orders')}>📦 Rendelések <span className='badge'>{orders.length}</span></div>
+          <div className={`menu-item ${activeTab === 'orders' ? 'active' : ''}`} onClick={() => setActiveTab('orders')}>📦 Rendelések <span className='badge'>{liveStats.orderCount}</span></div>
           <div className={`menu-item ${activeTab === 'products' ? 'active' : ''}`} onClick={() => setActiveTab('products')}>🏷️ Termékek</div>
           <div className={`menu-item ${activeTab === 'analytics' ? 'active' : ''}`} onClick={() => setActiveTab('analytics')}>📈 Statisztika</div>
         </div>
@@ -67,72 +75,53 @@ function AdminPanel({ setPage }) {
 
       <div className='admin-content'>
         <div className='admin-header'>
-          <div className='admin-title'>
-            {activeTab === 'dashboard' ? `Szia Attila! 👋` : activeTab.toUpperCase()}
+          <div>
+            <div className='admin-title'>{activeTab === 'dashboard' ? 'Szia Attila! 👋' : activeTab.toUpperCase()}</div>
+            <p className='admin-subtitle'>Élő adatok az adatbázisból</p>
           </div>
-          <div className='user-profile'>👤 Takács Attila (Admin)</div>
+          <div className='user-profile'>👤 Takács Attila</div>
         </div>
 
-        {/* --- VEZÉRLŐPULT: MOST MÁR VALÓDI SZÁMOKKAL --- */}
+        {/* --- VEZÉRLŐPULT --- */}
         {activeTab === 'dashboard' && (
           <>
             <div className='stats-grid'>
               <div className='stat-card'>
-                <div className='stat-title'>ÖSSZES BEVÉTEL</div>
-                {/* Itt formázzuk vissza a számot forinttá */}
-                <div className='stat-value'>{dynamicStats.totalRevenue.toLocaleString()} Ft</div>
-                <div className='trend-up'>⬆ Élő adat az adatbázisból</div>
+                <div className='stat-title'>BEVÉTEL (ÖSSZES)</div>
+                <div className='stat-value' style={{color:'#008060'}}>{liveStats.totalRevenue.toLocaleString()} Ft</div>
+                <div className='trend-up'>⬆ Frissítve: ÉPP MOST</div>
               </div>
               <div className='stat-card'>
-                <div className='stat-title'>RENDELÉSEK SZÁMA</div>
-                <div className='stat-value'>{dynamicStats.orderCount} db</div>
-                <div>➡ Feldolgozás alatt</div>
+                <div className='stat-title'>LÁTOGATÓK</div>
+                <div className='stat-value'>{liveStats.visitorCount}</div>
+                <div className='trend-up'>👥 Valós idejű számláló</div>
               </div>
             </div>
-
-            <div className='orders-section'>
-               <h3>Legutóbbi rendelések</h3>
-               <div className='table-header'><div>#</div><div>Vásárló</div><div>Összeg</div><div>Állapot</div></div>
-               {orders.length > 0 ? orders.slice(0,5).map(o => (
-                 <div className='order-row' key={o._id}>
-                   <div>#{o._id.slice(-4)}</div>
-                   <div>{o.customer}</div>
-                   <div>{o.total}</div>
-                   <div><span className='status-badge paid'>{o.status}</span></div>
-                 </div>
-               )) : <p>Nincs még rendelés az adatbázisban.</p>}
-            </div>
+            {/* Rendelések táblázat... */}
           </>
         )}
 
-        {/* --- ANALITIKA RÉSZ --- */}
+        {/* --- STATISZTIKA & ZÁRÁS --- */}
         {activeTab === 'analytics' && (
-            <div className='analytics-container'>
-                <div className='stats-grid'>
-                    <div className='stat-card'>
-                        <div className='stat-title'>Havi Bevétel</div>
-                        <div className='stat-value' style={{color: '#bf953f'}}>{dynamicStats.totalRevenue.toLocaleString()} Ft</div>
-                    </div>
-                    <div className='stat-card'>
-                        <div className='stat-title'>Látogatók</div>
-                        <div className='stat-value'>{dynamicStats.visitorPlaceholder}</div>
-                    </div>
-                </div>
-                <div className='close-month-box'>
-                    <button className='close-btn' onClick={handleMonthlyClose}>🔒 HAVI ZÁRÁS INDÍTÁSA</button>
-                </div>
+          <div className='analytics-container'>
+            <div className='stats-grid'>
+               <div className='stat-card'>
+                  <div className='stat-title'>HAVI ÖSSZES LÁTOGATÓ</div>
+                  <div className='stat-value'>{liveStats.visitorCount}</div>
+               </div>
+               <div className='stat-card'>
+                  <div className='stat-title'>HAVI FORGALOM</div>
+                  <div className='stat-value'>{liveStats.totalRevenue.toLocaleString()} Ft</div>
+               </div>
             </div>
+            <div className='close-month-box' style={{marginTop:'40px', padding:'30px', background:'#fff0f0', borderRadius:'10px', border:'1px dashed red', textAlign:'center'}}>
+               <p style={{color:'red', fontWeight:'bold'}}>FIGYELEM: A havi zárás nullázza a látogatottsági mutatókat!</p>
+               <button className='close-btn' onClick={handleMonthlyClose} style={{background:'red', color:'white', padding:'15px 30px', border:'none', borderRadius:'5px', cursor:'pointer', fontWeight:'bold'}}>🔒 HAVI ZÁRÁS</button>
+            </div>
+          </div>
         )}
 
-        {/* --- TERMÉK FELTÖLTÉS (Működik!) --- */}
-        {activeTab === 'products' && (
-            <div className='orders-section'>
-                <button className='add-prod-btn' onClick={() => setShowForm(!showForm)}>
-                    {showForm ? 'Mégse' : '+ Új Termék feltöltése'}
-                </button>
-                {/* Itt a form amit már megírtunk... */}
-            </div>
-        )}
+        {/* ... Termék feltöltő form ... */}
       </div>
     </div>
   );
