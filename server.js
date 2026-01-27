@@ -8,14 +8,14 @@ app.use(express.json());
 app.use(cors());
 
 // --- MONGODB CSATLAKOZÁS ---
-// A Railway-en majd be kell állítanod a MONGO_URL környezeti változót!
-const mongoURI = process.env.MONGO_URL || "mongodb://localhost:27017/attila_shop";
+// Railway-en a MONGO_URL változót kell majd beállítanod!
+const mongoURI = process.env.MONGO_URL || "mongodb://localhost:27017/atharmonies";
 
-mongoose.connect(mongoURI)
-    .then(() => console.log("MongoDB csatlakoztatva!"))
-    .catch(err => console.error("Hiba az adatbázisnál:", err));
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log("✅ MongoDB csatlakoztatva!"))
+    .catch(err => console.error("❌ MongoDB hiba:", err));
 
-// --- TERMÉK MODELL ---
+// --- ADAT MODELL ---
 const ProductSchema = new mongoose.Schema({
     name: String,
     category: String,
@@ -25,7 +25,6 @@ const ProductSchema = new mongoose.Schema({
 });
 const Product = mongoose.model('Product', ProductSchema);
 
-// --- RENDELÉS MODELL ---
 const OrderSchema = new mongoose.Schema({
     customer: String,
     total: String,
@@ -34,32 +33,45 @@ const OrderSchema = new mongoose.Schema({
 });
 const Order = mongoose.model('Order', OrderSchema);
 
-// --- API VÉGPONTOK ---
+// --- API ÚTVONALAK ---
 
 // Termékek lekérése
 app.get('/api/products', async (req, res) => {
-    const products = await Product.find();
-    res.json(products);
+    try {
+        const products = await Product.find();
+        res.json(products);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
 });
 
-// Rendelések lekérése az Adminnak
+// Rendelések lekérése
 app.get('/api/orders', async (req, res) => {
-    const orders = await Order.find().sort({ date: -1 });
-    res.json(orders);
+    try {
+        const orders = await Order.find().sort({ date: -1 });
+        res.json(orders);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
 });
 
-// Új termék hozzáadása (Admin felületről)
+// Új termék mentése
 app.post('/api/products', async (req, res) => {
-    const newProduct = new Product(req.body);
-    await newProduct.save();
-    res.json(newProduct);
+    try {
+        const newProduct = new Product(req.body);
+        await newProduct.save();
+        res.status(201).json(newProduct);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
 });
 
-// Kiszolgáljuk a React buildelt fájljait (Railway-hez fontos)
+// --- REACT KISZOLGÁLÁSA ---
 app.use(express.static(path.join(__dirname, 'build')));
+
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Szerver fut a ${PORT} porton`));
+app.listen(PORT, () => console.log(`🚀 Szerver fut: ${PORT} porton`));
