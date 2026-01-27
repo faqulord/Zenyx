@@ -8,70 +8,91 @@ app.use(express.json());
 app.use(cors());
 
 // --- MONGODB CSATLAKOZÁS ---
-// Railway-en a MONGO_URL változót kell majd beállítanod!
 const mongoURI = process.env.MONGO_URL || "mongodb://localhost:27017/atharmonies";
 
 mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => console.log("✅ MongoDB csatlakoztatva!"))
+    .then(() => {
+        console.log("✅ MongoDB csatlakoztatva!");
+        initVisitorCounter(); // Inicializáljuk a számlálót
+    })
     .catch(err => console.error("❌ MongoDB hiba:", err));
 
-// --- ADAT MODELL ---
-const ProductSchema = new mongoose.Schema({
-    name: String,
-    category: String,
-    desc: String,
-    price: String,
-    image: String
-});
-const Product = mongoose.model('Product', ProductSchema);
+// --- ADAT MODELLEK ---
+const Product = mongoose.model('Product', new mongoose.Schema({
+    name: String, category: String, desc: String, price: String, image: String
+}));
 
-const OrderSchema = new mongoose.Schema({
-    customer: String,
-    total: String,
-    status: { type: String, default: 'Fizetve' },
-    date: { type: Date, default: Date.now }
-});
-const Order = mongoose.model('Order', OrderSchema);
+const Order = mongoose.model('Order', new mongoose.Schema({
+    customer: String, total: String, status: { type: String, default: 'Fizetve' }, date: { type: Date, default: Date.now }
+}));
+
+// Látogató számláló modell
+const Visitor = mongoose.model('Visitor', new mongoose.Schema({
+    count: { type: Number, default: 0 },
+    lastReset: { type: Date, default: Date.now }
+}));
+
+// Számláló inicializálása ha még nincs
+async function initVisitorCounter() {
+    const existing = await Visitor.findOne();
+    if (!existing) {
+        await new Visitor({ count: 0 }).save();
+    }
+}
 
 // --- API ÚTVONALAK ---
 
-// Termékek lekérése
-app.get('/api/products', async (req, res) => {
+// Látogatás rögzítése
+app.post('/api/track-visit', async (req, res) => {
     try {
-        const products = await Product.find();
-        res.json(products);
+        await Visitor.updateOne({}, { $inc: { count: 1 } });
+        res.sendStatus(200);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        res.status(500).json(err);
     }
 });
 
-// Rendelések lekérése
-app.get('/api/orders', async (req, res) => {
+// Összesített statisztikák lekérése az Adminnak
+app.get('/api/stats', async (req, res) => {
     try {
-        const orders = await Order.find().sort({ date: -1 });
-        res.json(orders);
+        const orders = await Order.find();
+        const visitorData = await Visitor.findOne();
+        
+        const totalRevenue = orders.reduce((sum, order) => {
+            const priceNum = parseInt(order.total.replace(/[^0-9]/g, '')) || 0;
+            return sum + priceNum;
+        }, 0);
+
+        res.json({
+            totalRevenue,
+            orderCount: orders.length,
+            visitorCount: visitorData ? visitorData.count : 0
+        });
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        res.status(500).json(err);
     }
 });
 
-// Új termék mentése
+// Havi zárás (számláló nullázása)
+app.post('/api/stats/reset-monthly', async (req, res) => {
+    try {
+        await Visitor.updateOne({}, { count: 0, lastReset: new Date() });
+        res.json({ message: "Sikeres havi zárás!" });
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
+
+app.get('/api/products', async (req, res) => { res.json(await Product.find()); });
+app.get('/api/orders', async (req, res) => { res.json(await Order.find().sort({ date: -1 })); });
 app.post('/api/products', async (req, res) => {
-    try {
-        const newProduct = new Product(req.body);
-        await newProduct.save();
-        res.status(201).json(newProduct);
-    } catch (err) {
-        res.status(400).json({ message: err.message });
-    }
+    const newProduct = new Product(req.body);
+    await newProduct.save();
+    res.status(201).json(newProduct);
 });
 
-// --- REACT KISZOLGÁLÁSA ---
 app.use(express.static(path.join(__dirname, 'build')));
-
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
+app.get('*', (req, res) => { res.sendFile(path.join(__dirname, 'build', 'index.html')); });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Szerver fut: ${PORT} porton`));
+app.listen(PORT, () => console.log(`🚀 Szerver fut: ${PORT}`));
