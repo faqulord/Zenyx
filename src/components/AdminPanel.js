@@ -5,76 +5,67 @@ function AdminPanel({ setPage }) {
   return (
     <div className='admin-container'>
       
-      {/* 1. OLDALSÁV - Mint a Shopifyban */}
+      {/* --- BAL OLDALI MENÜ --- */}
       <div className='admin-sidebar'>
-        <div className='admin-logo'>A&T ADMIN</div>
+        <div className='admin-logo'>A&T HARMONIES</div>
         
         <div className='sidebar-menu'>
           <div className='menu-item active'>📊 Vezérlőpult</div>
-          <div className='menu-item'>📦 Rendelések <span style={{marginLeft:'auto', background:'#008060', padding:'2px 6px', borderRadius:'10px', fontSize:'0.7rem', color:'white'}}>3</span></div>
+          <div className='menu-item'>📦 Rendelések <span className='badge'>3</span></div>
           <div className='menu-item'>🏷️ Termékek</div>
           <div className='menu-item'>👥 Vásárlók</div>
-          <div className='menu-item'>📈 Elemzések</div>
+          <div className='menu-item'>📈 Statisztikák</div>
           <div className='menu-item'>⚙️ Beállítások</div>
         </div>
 
+        {/* Gomb visszalépéshez a webshopba */}
         <button className='back-to-site' onClick={() => setPage('home')}>
           ⬅ Vissza a Shopba
         </button>
       </div>
 
-      {/* 2. FŐ TARTALOM */}
+      {/* --- FŐ TARTALOM (JOBB OLDAL) --- */}
       <div className='admin-content'>
         
         {/* Fejléc */}
         <div className='admin-header'>
-          <div className='header-text'>
-            <div className='admin-title'>Jó reggelt, Attila! 👋</div>
-            <p style={{color:'#6d7175', margin:'5px 0 0'}}>Itt vannak a mai nap legfontosabb adatai.</p>
+          <div>
+            <div className='admin-title'>Szia Attila! 👋</div>
+            <p className='admin-subtitle'>Itt látod a webáruházad mai teljesítményét.</p>
           </div>
           <div className='user-profile'>
-            👤 Takács Attila (Admin)
+            👤 Takács Attila (Tulajdonos)
           </div>
         </div>
 
-        {/* Statisztikák */}
+        {/* 1. Statisztikai Kártyák */}
         <div className='stats-grid'>
-          {/* Kártya 1: Bevétel */}
           <div className='stat-card'>
-            <div className='stat-title'>TELJES BEVÉTEL (MA)</div>
+            <div className='stat-title'>MAI BEVÉTEL</div>
             <div className='stat-value'>48.500 Ft</div>
-            <div className='stat-trend trend-up'>
-              ⬆ 15% a tegnapihoz képest
-            </div>
+            <div className='stat-trend trend-up'>⬆ 15% a tegnapihoz képest</div>
           </div>
 
-          {/* Kártya 2: Látogatók */}
           <div className='stat-card'>
             <div className='stat-title'>LÁTOGATÓK</div>
             <div className='stat-value'>342</div>
-            <div className='stat-trend trend-neutral'>
-              ➡ Stabil forgalom (TikTok)
-            </div>
+            <div className='stat-trend'>➡ Stabil forgalom (TikTok)</div>
           </div>
 
-          {/* Kártya 3: Konverzió */}
           <div className='stat-card'>
             <div className='stat-title'>KONVERZIÓS ARÁNY</div>
             <div className='stat-value'>2.4%</div>
-            <div className='stat-trend trend-up'>
-              ⬆ Átlag feletti
-            </div>
+            <div className='stat-trend trend-up'>⬆ Átlag feletti</div>
           </div>
         </div>
 
-        {/* Legutóbbi rendelések */}
+        {/* 2. Legutóbbi Rendelések Táblázat */}
         <div className='orders-section'>
           <div className='section-header-row'>
-            <h3 style={{margin:0}}>Legutóbbi rendelések</h3>
-            <span style={{color:'#008060', cursor:'pointer', fontWeight:'600', fontSize:'0.9rem'}}>Összes megtekintése</span>
+            <h3>Legutóbbi rendelések</h3>
+            <span className='view-all'>Összes megtekintése</span>
           </div>
 
-          {/* Táblázat Fejléc */}
           <div className='table-header'>
             <div>Rendelés #</div>
             <div>Vásárló</div>
@@ -83,33 +74,30 @@ function AdminPanel({ setPage }) {
             <div>Státusz</div>
           </div>
 
-          {/* Rendelés 1 */}
+          {/* Minta Adatok */}
           <div className='order-row'>
-            <div style={{fontWeight:'bold'}}>#1024</div>
+            <div className='order-id'>#1024</div>
             <div>Kovács Péter</div>
             <div>Ma, 10:23</div>
             <div>12.990 Ft</div>
-            <div><span className='status-badge status-paid'>Fizetve</span></div>
+            <div><span className='status-badge paid'>Fizetve</span></div>
           </div>
 
-          {/* Rendelés 2 */}
           <div className='order-row'>
-            <div style={{fontWeight:'bold'}}>#1023</div>
+            <div className='order-id'>#1023</div>
             <div>Nagy Anna</div>
             <div>Ma, 08:45</div>
             <div>24.990 Ft</div>
-            <div><span className='status-badge status-pending'>Feldolgozás</span></div>
+            <div><span className='status-badge pending'>Feldolgozás</span></div>
           </div>
 
-          {/* Rendelés 3 */}
           <div className='order-row'>
-            <div style={{fontWeight:'bold'}}>#1022</div>
+            <div className='order-id'>#1022</div>
             <div>Szabó Gábor</div>
             <div>Tegnap, 22:10</div>
             <div>8.500 Ft</div>
-            <div><span className='status-badge status-paid'>Fizetve</span></div>
+            <div><span className='status-badge paid'>Fizetve</span></div>
           </div>
-
         </div>
 
       </div>
