@@ -1,65 +1,121 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './ShopPage.css';
 
+// Képgaléria komponens (Swipe)
+const ProductGallery = ({ images }) => {
+  const [current, setCurrent] = useState(0);
+
+  const nextSlide = () => {
+    setCurrent(current === images.length - 1 ? 0 : current + 1);
+  };
+
+  const prevSlide = () => {
+    setCurrent(current === 0 ? images.length - 1 : current - 1);
+  };
+
+  if (!images || images.length === 0) return null;
+
+  return (
+    <div className='product-gallery-slider'>
+      {images.length > 1 && (
+        <>
+            <button className='gallery-btn left' onClick={prevSlide}>&#10094;</button>
+            <button className='gallery-btn right' onClick={nextSlide}>&#10095;</button>
+        </>
+      )}
+      <img src={images[current]} alt="Termék" className='gallery-main-img' />
+      <div className='gallery-dots'>
+        {images.map((_, idx) => (
+            <span key={idx} className={idx === current ? 'dot active' : 'dot'}></span>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 function ShopPage() {
-  // AZ ÖSSZES TERMÉK A KÉPEKRŐL
+  // A PONTOS TERMÉKLISTA A KÉPEK ALAPJÁN
   const manualProducts = [
     {
       id: 1,
-      name: "Szív Tér Harmonizáló Orgon",
+      name: "Viridis Flux – (Víz-Szív-Megújulás)",
       price: "14.990 Ft",
-      image: "https://atharmonies.com/cdn/shop/files/20260114_123047.jpg?v=1768392509&width=1600",
-      desc: "Rózsakvarccal és triskelion spirállal. A szív terére és az érzelmi egyensúlyra hangolva. Segít megnyitni a szívteret anélkül, hogy túlterhelne."
+      // Zöld spirálos kép
+      images: [
+          "https://atharmonies.com/cdn/shop/files/20260113_171738.jpg?v=1768389113&width=1600",
+          "https://atharmonies.com/cdn/shop/files/20260114_123047.jpg?v=1768392509&width=1600"
+      ],
+      desc: "Zöld lazurit és aventurin. A szív természetes regenerációjára hangolva. Arany színű triskelion szimbólummal."
     },
     {
       id: 2,
-      name: "Gaia Magja – Orgon Generátor",
+      name: "Gaia Magja – Föld Minőség",
       price: "16.500 Ft",
-      image: "https://atharmonies.com/cdn/shop/files/20260113_172032.jpg?v=1768387309&width=1600",
-      desc: "Lost Cubit tensor gyűrűvel és citrinnel. Földel, nyugtat, és stabilizálja a teret. Az alkímiai Föld szimbólum segít lehorgonyozni az energiákat."
+      // Barna/Arany háromszöges kép
+      images: [
+          "https://atharmonies.com/cdn/shop/files/20260113_172032.jpg?v=1768387309&width=1600",
+          "https://atharmonies.com/cdn/shop/files/20260114_123047.jpg?v=1768392509&width=1600"
+      ],
+      desc: "Lost Cubit tensor gyűrűvel és citrinnel. Földel, nyugtat, és stabilizálja a teret. Az alkímiai Föld szimbólummal."
     },
     {
       id: 3,
-      name: "Tritán – A Három Frekvencia Ősi Szövetsége",
+      name: "Víz Magja – Víz Minőség",
+      price: "14.990 Ft",
+      // Kék kép
+      images: [
+          "https://atharmonies.com/cdn/shop/files/20260113_171858_1.jpg?v=1768389544&width=1600",
+          "https://atharmonies.com/cdn/shop/files/20260114_123047.jpg?v=1768392509&width=1600"
+      ],
+      desc: "Az áramlás és tisztulás ereje. Kék színvilág, amely a víz elem nyugalmát és alkalmazkodó képességét hordozza."
+    },
+    {
+      id: 4,
+      name: "Levegő Magja – Levegő Minőség",
+      price: "14.990 Ft",
+      // Fehér/Átlátszó kép
+      images: [
+          "https://atharmonies.com/cdn/shop/files/20260114_122952.jpg?v=1768390629&width=1600",
+          "https://atharmonies.com/cdn/shop/files/20260114_123047.jpg?v=1768392509&width=1600"
+      ],
+      desc: "Tisztaság és szellemi fókusz. A levegő elem könnyedségét és a gondolatok tisztaságát segíti elő."
+    },
+    {
+      id: 5,
+      name: "111 Kapu – Tudatindító Kód",
+      price: "12.500 Ft",
+      // Fekete 111-es kép
+      images: [
+           "https://atharmonies.com/cdn/shop/files/20260113_171738.jpg?v=1768389113&width=1600" // Cseréld, ha van direkt link a feketéhez, most a csoportképet tettem 2.-nak
+      ],
+      desc: "A teremtés kapuja. A 111-es számmisztikai kód segít összehangolódni az új kezdetek energiájával."
+    },
+    {
+      id: 6,
+      name: "Tritán – A Három Frekvencia",
       price: "13.000 Ft",
-      image: "https://atharmonies.com/cdn/shop/files/20251028_104826.jpg?v=1762331002&width=1600", // A kézben tartott 3 gyűrűs kép
-      desc: "Három egymásba fonódó tensor gyűrű, amely egyesíti a szakrális frekvenciákat. Erősíti az aurát és harmonizálja a környezetet."
-    },
-    {
-        id: 4,
-        name: "Hegyi kristály rézspirálban",
-        price: "6.000 Ft",
-        image: "https://atharmonies.com/cdn/shop/files/20260114_123047.jpg?v=1768392509&width=1600", // Ideiglenes kép (a medálosat használd majd!)
-        desc: "Tiszta hegyikristály csúcs, kézzel tekert rézspirálban, bőr szíjon. A kristály tisztítja a gondolatokat, a réz pedig vezeti az energiát."
-    },
-    {
-        id: 5,
-        name: "Empowerment Cubit Réz Karperec",
-        price: "8.000 Ft",
-        image: "https://atharmonies.com/cdn/shop/files/20251007_154705.jpg?v=1761291463&width=1600",
-        desc: "A belső erő és önbizalom frekvenciája. Kézzel sodort és kovácsolt vörösréz, amely viselés közben energetizálja a testet."
-    },
-    {
-        id: 6,
-        name: "Vizes pohárba akasztható rézspirál",
-        price: "4.500 Ft", 
-        image: "https://atharmonies.com/cdn/shop/files/20260114_123047.jpg?v=1768392509&width=1600", // Használd a megfelelő képet
-        desc: "Strukturálja és energetizálja az ivóvizet. A spirál forma az élet áramlását és a teremtés örvényét szimbolizálja."
+      // A 3 karikás kép
+      images: [
+          "https://atharmonies.com/cdn/shop/files/20251028_104826.jpg?v=1762331002&width=1600",
+          "https://atharmonies.com/cdn/shop/files/20251007_154705.jpg?v=1761291463&width=1600"
+      ],
+      desc: "Három egymásba fonódó tensor gyűrű, amely egyesíti a szakrális frekvenciákat. Erősíti az aurát."
     }
   ];
 
   return (
     <div className='shop-container'>
       <div className='shop-intro'>
-        <h2>TERMÉKEK</h2>
-        <p>Kézzel készült eszközök a tudatosság szolgálatában.</p>
+        <h2>MŰHELY TERMÉKEK</h2>
+        <div style={{height:'3px', width:'50px', background:'#b87333', margin:'10px auto'}}></div>
+        <p>Kattints a képre a részletekért!</p>
       </div>
 
       <div className='shop-grid-simple'>
         {manualProducts.map(product => (
           <div className='product-card-simple' key={product.id}>
             <div className='img-box'>
-                <img src={product.image} alt={product.name} />
+                <ProductGallery images={product.images} />
             </div>
             <div className='info-box'>
                 <h3>{product.name}</h3>
