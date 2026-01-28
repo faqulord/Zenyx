@@ -1,4 +1,6 @@
-/* HeroSection.css - JAVÍTOTT MOZGÓ HÁTTÉR */
+/* HeroSection.css - A DIGITÁLIS MŰHELY */
+
+@import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Montserrat:wght@400;700&display=swap');
 
 .hero-container {
     height: 100vh;
@@ -8,126 +10,83 @@
     justify-content: center;
     align-items: center;
     position: relative;
-    overflow: hidden;
-    
-    /* A háttérkép beállítása */
-    background-image: url('https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=2094&auto=format&fit=crop');
-    
-    /* FONTOS: Nagyobbnak kell lennie, mint a képernyő, hogy mozoghasson! */
-    background-size: 150% 150%; 
+    /* Ideiglenes kép, ami hasonlít a műhelyedre (réz, szerszám, fa). 
+       Később ide rakhatod a saját fotód linkjét! */
+    background-image: url('https://images.unsplash.com/photo-1622630562624-9cbe498a448d?q=80&w=2070&auto=format&fit=crop');
+    background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    
-    /* Az animáció: 45 másodperc alatt úszik egyik oldalról a másikra */
-    animation: cosmic-drift 45s ease-in-out infinite alternate;
 }
 
-/* Itt mondjuk meg neki, honnan hova mozogjon */
-@keyframes cosmic-drift {
-    0% { background-position: 30% 50%; } /* Balról indul */
-    100% { background-position: 70% 50%; } /* Jobbra úszik */
-}
-
-/* Sötétítő réteg */
+/* Sötétítő "Olajos/Füstös" réteg */
 .hero-container::before {
     content: "";
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    /* Kicsit erősebb sötétítés, hogy a szöveg jobban olvasható legyen */
-    background: radial-gradient(circle at center, rgba(10, 14, 34, 0.3) 0%, rgba(5, 5, 10, 0.9) 100%);
+    top: 0; left: 0; width: 100%; height: 100%;
+    /* Sötétbarna és fekete átmenet, mintha egy félhomályos műhelyben lennénk */
+    background: linear-gradient(180deg, rgba(20, 10, 5, 0.7) 0%, rgba(0, 0, 0, 0.85) 100%);
     z-index: 1;
 }
 
 .hero-content {
     z-index: 2;
     text-align: center;
-    max-width: 900px;
+    max-width: 800px;
     padding: 0 20px;
-    animation: fadeInUp 1.5s ease-out;
-}
-
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
+    border: 1px solid rgba(191, 149, 63, 0.3); /* Halvány réz keret */
+    padding: 40px;
+    background: rgba(0, 0, 0, 0.6); /* Üveg hatás */
+    backdrop-filter: blur(5px);
 }
 
 .hero-title {
-    color: #fff;
-    font-family: 'Cinzel', serif;
-    font-size: 4rem;
+    color: #e0e0e0;
+    font-family: 'Courier Prime', monospace; /* Ipari, írógép stílus */
+    font-size: 3rem;
     font-weight: 700;
-    margin-bottom: 20px;
-    letter-spacing: 5px;
-    line-height: 1.1;
-    
-    background: linear-gradient(to bottom, #fcf6ba 0%, #bf953f 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    filter: drop-shadow(0 0 20px rgba(191, 149, 63, 0.5));
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-bottom: 3px solid #b87333; /* RÉZ SZÍNŰ VONAL */
+    display: inline-block;
+    padding-bottom: 10px;
 }
 
 .hero-subtitle {
     font-family: 'Montserrat', sans-serif;
-    color: #e0e0e0;
-    font-size: 1.3rem;
-    margin-bottom: 50px;
-    font-weight: 300;
+    color: #dcdcdc;
+    font-size: 1.1rem;
+    margin-top: 20px;
+    margin-bottom: 40px;
+    font-weight: 400;
     line-height: 1.6;
-    max-width: 700px;
-    margin-left: auto;
-    margin-right: auto;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    letter-spacing: 1px;
 }
 
 .hero-btn {
-    padding: 18px 45px;
-    font-family: 'Montserrat', sans-serif;
+    padding: 15px 40px;
+    font-family: 'Courier Prime', monospace;
     font-size: 1rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 3px;
-    background: rgba(0, 0, 0, 0.6);
-    color: #bf953f;
-    border: 1px solid #bf953f;
+    letter-spacing: 1px;
+    /* Réz gomb */
+    background: transparent; 
+    color: #b87333;
+    border: 2px solid #b87333;
     cursor: pointer;
-    transition: all 0.4s ease;
-    backdrop-filter: blur(5px);
+    transition: all 0.3s ease;
 }
 
 .hero-btn:hover {
-    background: #bf953f;
+    background: #b87333;
     color: #000;
-    box-shadow: 0 0 40px rgba(191, 149, 63, 0.6);
-    letter-spacing: 4px;
+    box-shadow: 0 0 15px rgba(184, 115, 51, 0.5); /* Izzó réz hatás */
 }
 
-/* Mobil optimalizálás */
+/* Mobil nézet */
 @media screen and (max-width: 768px) {
-    .hero-container {
-        /* Mobilon kicsit kisebbre vesszük a nagyítást, de még mindig mozogjon */
-        background-size: 200% 200%; 
-    }
-
-    .hero-title {
-        font-size: 2.2rem;
-        letter-spacing: 2px;
-        margin-top: 60px;
-    }
-
-    .hero-subtitle {
-        font-size: 1rem;
-        padding: 0 10px;
-        margin-bottom: 40px;
-    }
-
-    .hero-btn {
-        padding: 15px 35px;
-        font-size: 0.9rem;
-        width: 100%;
-        max-width: 300px;
-    }
+    .hero-title { font-size: 1.8rem; }
+    .hero-subtitle { font-size: 0.9rem; }
+    .hero-content { padding: 20px; border: none; background: transparent; backdrop-filter: none;}
 }
