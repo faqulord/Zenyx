@@ -18,25 +18,25 @@ function HeroSection() {
   return (
     <div className='hero-wrapper'>
       
+      {/* 1. VIDEÓ SÁV */}
       <div className='hero-video-container'>
-        {/* A videó: Ref-fel hivatkozunk rá, hogy tudjuk irányítani */}
         <video 
             ref={videoRef}
             className='hero-video' 
             autoPlay 
             loop 
-            muted={true} /* Fontos: Reactban így kell indulnia */
+            muted={true} 
             playsInline
         >
-            <source src="/hero_video.mp4" type="video/mp4" />
-            <source src="https://assets.mixkit.co/videos/preview/mixkit-craftsman-working-with-copper-wire-in-workshop-42686-large.mp4" type="video/mp4" />
+            {/* Itt a feltöltött fájlod neve a képről! */}
+            <source src="/9514134033bc1b315731183b4182a616.mp4" type="video/mp4" />
         </video>
         
         <div className='hero-overlay'>
             <h1 className='main-brand'>A&T HARMONIES</h1>
             <p className='brand-subtitle'>ONLINE MŰHELY</p>
             
-            {/* HANG BEKAPCSOLÓ GOMB - Csak akkor látszik, ha némítva van */}
+            {/* VILLOGÓ GOMB - Csak akkor látszik, ha némítva van */}
             {isMuted && (
                 <button className='unmute-btn' onClick={handleUnmute}>
                     🔊 HANG BEKAPCSOLÁSA
@@ -45,6 +45,7 @@ function HeroSection() {
         </div>
       </div>
 
+      {/* 2. KÜLDETÉSEM SZÖVEG */}
       <div className='mission-section'>
         <h2 className='mission-title'>KÜLDETÉSEM</h2>
         <div className='mission-text'>
