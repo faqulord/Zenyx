@@ -1,4 +1,4 @@
-/* HeroSection.css - JAVÍTOTT VERZIÓ */
+/* HeroSection.css - VÉGLEGES JAVÍTÁS */
 
 .hero-wrapper {
     background-color: #ffffff;
@@ -6,28 +6,32 @@
     padding-bottom: 20px;
 }
 
-/* --- A VIDEÓ DOBOZ (KICSI RUBLIKA) --- */
+/* --- VIDEÓ KERET ÉS DOBOZ --- */
 .video-slider-container {
-    display: flex; /* Egymás mellé rakja őket */
-    flex-wrap: nowrap; /* Nem engedi új sorba */
-    overflow-x: auto; /* Görgethető oldalra */
-    scroll-snap-type: x mandatory; /* Helyére ugrik */
-    width: 100%;
-    height: 350px; /* FIX MAGASSÁG! Ez a "kis rublika" méret */
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    width: 95%; /* Hagyunk kis helyet a keretnek */
+    margin: 10px auto; /* Középre igazítjuk */
+    height: 45vh; /* Mobilon ideális méret */
     background: #000;
     position: relative;
+    
+    /* A RÉZ KERET ITT VAN: */
+    border: 4px solid #b87333; 
+    border-radius: 12px; /* Lekerekített sarkok */
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2); /* Árnyék */
+    
     /* Görgetősáv eltüntetése */
     -ms-overflow-style: none;
     scrollbar-width: none; 
 }
 
-.video-slider-container::-webkit-scrollbar { 
-    display: none; 
-}
+.video-slider-container::-webkit-scrollbar { display: none; }
 
 .video-slide {
-    flex: 0 0 100%; /* Minden videó a teljes szélességet kapja */
-    min-width: 100%; /* Biztos ami biztos */
+    flex: 0 0 100%;
+    width: 100%;
     height: 100%;
     scroll-snap-align: center;
     position: relative;
@@ -37,62 +41,41 @@
 .hero-video {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Kitölti a dobozt */
-    opacity: 1; 
+    object-fit: cover;
 }
 
-/* VEZÉRLŐ GOMBOK */
+/* VEZÉRLŐ GOMBOK - MINDIG LÁTHATÓK */
 .video-controls {
     position: absolute;
-    bottom: 20px;
-    right: 20px; /* Jobb alulra teszem, hogy ne zavarjon */
+    bottom: 25px; /* Kicsit feljebb a kerettől */
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
-    gap: 10px;
-    z-index: 100;
+    gap: 15px;
+    z-index: 999; /* Legfelül legyen */
+    width: max-content;
 }
 
 .control-btn {
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(184, 115, 51, 0.95); /* Erős réz szín */
     color: white;
-    border: 1px solid #b87333;
-    padding: 8px 15px;
+    border: 2px solid #fff;
+    padding: 10px 20px;
     font-family: 'Montserrat', sans-serif;
-    font-size: 0.7rem;
-    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.85rem;
+    border-radius: 30px;
     cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
 }
 
-/* LOGÓ ÉS IDÉZET */
-.hero-branding-section {
-    text-align: center;
-    padding: 30px 20px;
-    background: #fff;
-    border-bottom: 1px solid #eee;
-}
-
-.hero-logo-img {
-    max-width: 150px;
-    height: auto;
-    margin-bottom: 15px;
-}
-
-.brand-quote {
-    font-family: 'Playfair Display', serif;
-    font-style: italic;
-    font-size: 1rem;
-    color: #555;
-    max-width: 700px;
-    margin: 0 auto;
-}
-
-/* ÚJ: Swipe jelzés */
 .swipe-hint {
     position: absolute;
     top: 50%;
-    right: 10px;
+    right: 15px;
     transform: translateY(-50%);
-    color: rgba(255,255,255,0.7);
-    font-size: 1.5rem;
+    color: rgba(255,255,255,0.8);
+    font-size: 2rem;
     pointer-events: none;
     z-index: 50;
     text-shadow: 0 0 5px black;
@@ -102,4 +85,85 @@
 @keyframes bounceRight {
     0%, 100% { transform: translate(0, -50%); }
     50% { transform: translate(10px, -50%); }
+}
+
+/* LOGÓ RÉSZ */
+.hero-branding-section {
+    text-align: center;
+    padding: 20px;
+    background: #fff;
+}
+
+.hero-logo-img {
+    max-width: 160px;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.brand-quote {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: #111; /* Sötét fekete, hogy olvasható legyen */
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* --- TERMÉK RÁCS (GRID) - EGYMÁS MELLETT! --- */
+.home-products-grid {
+    display: grid;
+    /* ITT A TITOK: 2 oszlop mobilon is! */
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 15px;
+    padding: 15px;
+    max-width: 1200px;
+    margin: 0 auto;
+    background: #fff;
+}
+
+.home-product-card {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.home-product-img {
+    width: 100%;
+    height: 150px; /* Fix magasság a képeknek */
+    object-fit: cover;
+}
+
+.home-product-info {
+    padding: 10px;
+    text-align: center;
+}
+
+.home-product-info h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+    color: #000;
+    height: 40px; /* Hogy egyforma magas legyen a cím */
+    overflow: hidden;
+}
+
+.home-price {
+    color: #b87333;
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+}
+
+.home-btn {
+    width: 100%;
+    padding: 8px;
+    background: #111;
+    color: #fff;
+    border: none;
+    font-size: 0.75rem;
+    cursor: pointer;
 }
