@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
+import HomeProducts from './components/HomeProducts'; // ÚJ IMPORT
 import ShopPage from './components/ShopPage';
 import OrgonInfo from './components/OrgonInfo';
 import AboutPage from './components/AboutPage';
@@ -22,16 +23,19 @@ function App() {
         <>
           <Navbar setPage={setCurrentPage} />
           
-          {/* FŐOLDAL: Videó + Logó + UTÁNA RÖGTÖN A TERMÉKEK */}
+          {/* FŐOLDAL: Videó + Logó + SPECIFIKUS TERMÉKEK (Magok) */}
           {currentPage === 'home' && (
             <>
                 <HeroSection /> 
-                <ShopPage />  {/* Itt jelennek meg a termékek a főoldalon! */}
+                <div style={{textAlign:'center', padding:'10px', fontWeight:'bold', color:'#b87333'}}>KIEMELT TERMÉKEK</div>
+                <HomeProducts />  
             </>
           )}
 
-          {/* EGYÉB OLDALAK */}
+          {/* WEBSHOP: Itt vannak a medálok, ékszerek, minden más */}
           {currentPage === 'shop' && <ShopPage />}
+          
+          {/* TÖBBI OLDAL */}
           {currentPage === 'orgon-info' && <OrgonInfo />}
           {currentPage === 'about' && <AboutPage />}
           {currentPage === 'aszf' && <AszfPage />}
