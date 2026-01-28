@@ -1,95 +1,108 @@
-/* HeroSection.css - TISZTA, FEHÉR, MOZGÓ */
+/* HeroSection.css - FEHÉR MŰHELY DESIGN */
 
-/* Alapbeállítás: Minden fehér! */
 .hero-wrapper {
     background-color: #ffffff;
     width: 100%;
-    overflow-x: hidden;
     padding-bottom: 50px;
+    overflow-x: hidden;
 }
 
 .hero-header {
     text-align: center;
-    padding: 40px 20px;
+    padding: 30px 20px 10px 20px;
     background: #fff;
 }
 
 .main-brand {
     font-family: 'Playfair Display', serif;
-    font-size: 2.8rem;
-    color: #111; /* Fekete betű */
+    font-size: 2.5rem;
+    color: #222; 
     margin: 0;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
 }
 
 .brand-subtitle {
     font-family: 'Montserrat', sans-serif;
-    font-size: 1rem;
+    font-size: 0.9rem;
     color: #666;
-    margin-top: 10px;
+    margin-top: 5px;
     text-transform: uppercase;
     letter-spacing: 3px;
 }
 
-/* --- MOZGÓ KÉPSOR (MARQUEE) --- */
-.marquee-container {
-    width: 100%;
-    overflow: hidden;
-    background: #fff;
-    padding: 20px 0;
-    border-top: 1px solid #eee;
-    border-bottom: 1px solid #eee;
-}
-
-.marquee-content {
+/* --- HÚZHATÓ GALÉRIA (SWIPE) --- */
+.swipe-gallery {
     display: flex;
-    gap: 20px;
-    /* Az animáció, ami balra viszi a képeket */
-    animation: scroll 20s linear infinite;
-    width: max-content; 
+    overflow-x: auto;
+    scroll-snap-type: x mandatory; /* Ez teszi "ugrálóvá" a képeket */
+    gap: 15px;
+    padding: 20px;
+    -webkit-overflow-scrolling: touch; /* Sima görgetés iOS-en */
 }
 
-.marquee-content img {
-    height: 250px; /* Mobilon kényelmes méret */
-    width: auto;
-    border-radius: 4px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+/* Eltüntetjük a görgetősávot */
+.swipe-gallery::-webkit-scrollbar { display: none; }
+.swipe-gallery { -ms-overflow-style: none; scrollbar-width: none; }
+
+.gallery-item {
+    flex: 0 0 85%; /* Mobilon a képernyő 85%-át tölti ki, hogy látszódjon a következő széle */
+    scroll-snap-align: center;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    background: #f5f5f5;
+    height: 300px; /* Fix magasság */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-@keyframes scroll {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); } /* A fele szélességig megy, majd újrakezdi */
+.gallery-media {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Kitölti a keretet */
 }
 
-/* --- KÜLDETÉSEM RÉSZ --- */
+/* --- KÜLDETÉS RÉSZ --- */
 .mission-section {
     max-width: 800px;
-    margin: 50px auto;
-    padding: 0 20px;
+    margin: 40px auto;
+    padding: 0 25px;
     text-align: center;
     background: #fff;
 }
 
 .mission-title {
     font-family: 'Playfair Display', serif;
-    font-size: 2rem;
-    color: #b87333; /* Réz szín a címnek */
-    margin-bottom: 30px;
+    font-size: 1.8rem;
+    color: #b87333; /* Réz szín */
+    margin-bottom: 25px;
     text-transform: uppercase;
+    position: relative;
+    display: inline-block;
+}
+
+.mission-title::after {
+    content: '';
+    display: block;
+    width: 50px;
+    height: 2px;
+    background: #b87333;
+    margin: 10px auto 0;
 }
 
 .mission-text p {
     font-family: 'Montserrat', sans-serif;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     color: #333;
     line-height: 1.8;
     margin-bottom: 20px;
-    text-align: justify; /* Hogy szépen kitöltse a teret */
+    text-align: justify; /* Szépen kitölti a teret */
 }
 
-/* MOBIL OPTIMALIZÁLÁS */
+/* MOBIL FIXEK */
 @media (max-width: 768px) {
     .main-brand { font-size: 2rem; }
-    .marquee-content img { height: 180px; } /* Kisebb képek mobilon */
+    .gallery-item { height: 250px; flex: 0 0 90%; }
     .mission-text p { text-align: left; font-size: 1rem; }
 }
