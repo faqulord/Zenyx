@@ -1,130 +1,100 @@
-/* HeroSection.css - TELJES KÓD */
+/* HeroSection.css - SWIPE GALÉRIA ÉS KI VAGYOK ÉN */
 
-/* Alap konténer */
 .hero-wrapper {
     background-color: #ffffff;
     width: 100%;
     padding-bottom: 50px;
-    overflow-x: hidden;
 }
 
-/* Videó doboz */
-.hero-video-container {
-    position: relative;
+/* --- LAPOZHATÓ VIDEÓK --- */
+.video-slider-container {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory; /* Ez miatt "akad" meg szépen a videónál */
     width: 100%;
-    height: 85vh; /* Mobilon majdnem a teljes képernyőt kitölti */
-    overflow: hidden;
-    background: #000; /* Fekete alap, ha lassan töltene be */
+    height: 55vh; /* KISEBB MÉRET! (Kb a képernyő fele) */
+    background: #000;
 }
 
-/* Maga a videó */
+/* Eltüntetjük a görgetősávot */
+.video-slider-container::-webkit-scrollbar { display: none; }
+
+.video-slide {
+    flex: 0 0 100%; /* Egy videó töltse ki a szélességet */
+    width: 100%;
+    height: 100%;
+    scroll-snap-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
 .hero-video {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Kitölti a teret anélkül, hogy torzulna */
-    opacity: 0.75; /* Picit sötétítünk rajta, hogy a fehér betűk olvashatóak legyenek */
+    object-fit: cover;
+    opacity: 0.9;
 }
 
-/* Szöveg a videó tetején */
-.hero-overlay {
+.swipe-hint {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    bottom: 45%; 
+    left: 0;
+    width: 100%;
     text-align: center;
-    width: 90%;
-    z-index: 10;
+    color: rgba(255,255,255,0.7);
+    font-size: 0.8rem;
+    pointer-events: none;
+    z-index: 20;
+    text-shadow: 1px 1px 2px black;
+}
+
+/* Statikus felirat a videó felett */
+.hero-overlay-static {
+    text-align: center;
+    padding: 20px;
+    background: #fff;
+    border-bottom: 1px solid #eee;
 }
 
 .main-brand {
     font-family: 'Playfair Display', serif;
-    font-size: 3rem;
-    color: #ffffff;
+    font-size: 2.2rem;
+    color: #111;
     margin: 0;
-    letter-spacing: 2px;
-    text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
 }
 
 .brand-subtitle {
     font-family: 'Montserrat', sans-serif;
-    font-size: 1rem;
-    color: #e0e0e0;
-    margin-top: 10px;
-    text-transform: uppercase;
-    letter-spacing: 4px;
-    text-shadow: 1px 1px 5px rgba(0,0,0,0.5);
-}
-
-/* HANG BEKAPCSOLÓ GOMB */
-.unmute-btn {
-    margin-top: 30px;
-    padding: 12px 30px;
-    background-color: rgba(184, 115, 51, 0.9); /* Réz szín */
-    color: white;
-    border: 1px solid white;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: bold;
     font-size: 0.9rem;
-    cursor: pointer;
-    border-radius: 50px;
-    animation: pulse 2s infinite; /* Lüktető animáció */
-    box-shadow: 0 0 20px rgba(0,0,0,0.4);
-    transition: 0.3s;
-}
-
-.unmute-btn:hover {
-    background-color: #ffffff;
     color: #b87333;
-    transform: scale(1.05);
+    letter-spacing: 3px;
 }
 
-/* Lüktető animáció definíciója */
-@keyframes pulse {
-    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(184, 115, 51, 0.7); }
-    70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(184, 115, 51, 0); }
-    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(184, 115, 51, 0); }
-}
-
-/* KÜLDETÉSEM RÉSZ */
+/* --- KI VAGYOK ÉN DESIGN --- */
 .mission-section {
-    max-width: 800px;
-    margin: 60px auto;
-    padding: 0 25px;
-    text-align: center;
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 20px;
+    text-align: left; /* Balra igazítva, ahogy egy cikkben */
     background: #fff;
 }
 
 .mission-title {
     font-family: 'Playfair Display', serif;
     font-size: 2rem;
-    color: #b87333; /* Réz szín */
-    margin-bottom: 30px;
+    color: #b87333;
+    margin-bottom: 20px;
+    text-align: center; /* A cím középen */
     text-transform: uppercase;
-    position: relative;
-    display: inline-block;
-}
-
-.mission-title::after {
-    content: '';
-    display: block;
-    width: 60px;
-    height: 3px;
-    background: #b87333;
-    margin: 10px auto 0;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
 }
 
 .mission-text p {
     font-family: 'Montserrat', sans-serif;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     color: #333;
-    line-height: 1.8;
-    margin-bottom: 25px;
-    text-align: justify; /* Sorkizárt szöveg */
-}
-
-/* MOBIL OPTIMALIZÁLÁS */
-@media (max-width: 768px) {
-    .hero-video-container { height: 80vh; }
-    .main-brand { font-size: 2.2rem; }
-    .mission-text p { text-align: left; font-size: 1rem; }
+    line-height: 1.8; /* Jól olvasható sorköz */
+    margin-bottom: 20px;
+    text-align: justify;
 }
