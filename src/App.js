@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
 import ShopPage from './components/ShopPage';
-import OrgonInfo from './components/OrgonInfo'; // ÚJ IMPORT
+import OrgonInfo from './components/OrgonInfo';
+import AboutPage from './components/AboutPage'; // Új import
 import AdminPanel from './components/AdminPanel';
 
 function App() {
@@ -18,24 +19,23 @@ function App() {
         <AdminPanel setPage={setCurrentPage} />
       ) : (
         <>
-          <Navbar setPage={setCurrentPage} currentPage={currentPage} />
+          <Navbar setPage={setCurrentPage} />
           
           {currentPage === 'home' && <HeroSection />}
           {currentPage === 'shop' && <ShopPage />}
-          {currentPage === 'orgon-info' && <OrgonInfo />} {/* ÚJ OLDAL */}
-          {/* A többi oldalra egyelőre placeholder */}
-          {(currentPage === 'about' || currentPage === 'contact') && (
-              <div style={{padding:'100px', textAlign:'center'}}><h2>Feltöltés alatt...</h2></div>
-          )}
+          {currentPage === 'orgon-info' && <OrgonInfo />}
+          {currentPage === 'about' && <AboutPage />} {/* Ki vagyok oldal */}
+          
+          {currentPage === 'contact' && <div style={{padding:'50px',textAlign:'center'}}><h2>Kapcsolat</h2><p>Hamarosan...</p></div>}
+          {currentPage === 'aszf' && <div style={{padding:'50px',textAlign:'center'}}><h2>ÁSZF</h2><p>Feltöltés alatt...</p></div>}
 
-          <div style={{textAlign:'center', padding:'40px', background:'#333', color:'#aaa', marginTop:'auto'}}>
-            <p>Kövess be Facebookon és TikTokon is!</p>
-            <p>A&T Harmonies 2026</p>
+          <div style={{textAlign:'center', padding:'20px', background:'#f4f4f4', color:'#777', fontSize:'0.8rem'}}>
+            A&T Harmonies 2026
           </div>
-
-          <button 
+          
+           <button 
             onClick={() => setCurrentPage('admin')}
-            style={{ position: 'fixed', bottom: '10px', right: '10px', opacity: 0.5, fontSize: '10px' }}
+            style={{ position: 'fixed', bottom: '10px', right: '10px', opacity: 0.3, fontSize: '10px' }}
           >
             Admin
           </button>
