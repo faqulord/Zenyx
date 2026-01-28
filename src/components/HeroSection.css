@@ -1,155 +1,32 @@
-/* HeroSection.css */
+/* HeroSection.css KIEGÉSZÍTÉS */
 
-.hero-wrapper {
-    background-color: #ffffff;
-    width: 100%;
-    padding-bottom: 50px;
-}
+/* ... A korábbi kódok maradnak ... */
 
-/* VIDEÓ GALÉRIA */
-.video-slider-container {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    width: 100%;
-    height: 60vh; /* Kicsit magasabb, hogy a gomb elférjen */
-    background: #000;
-    position: relative;
-}
-
-.video-slider-container::-webkit-scrollbar { display: none; }
-
-.video-slide {
-    flex: 0 0 100%;
-    width: 100%;
-    height: 100%;
-    scroll-snap-align: center;
-    position: relative;
-    overflow: hidden;
-}
-
-.hero-video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0.9;
-}
-
-/* ÚJ HANG GOMB STÍLUS */
-.unmute-overlay-btn {
+.video-controls {
     position: absolute;
-    bottom: 40px; /* Alulra tesszük, de a hint fölé */
+    bottom: 40px;
     left: 50%;
     transform: translateX(-50%);
+    display: flex;
+    gap: 15px; /* Távolság a gombok között */
     z-index: 100;
-    background: rgba(184, 115, 51, 0.9); /* Réz */
+}
+
+.control-btn {
+    background: rgba(184, 115, 51, 0.9);
     color: white;
     border: 2px solid white;
-    padding: 12px 30px;
+    padding: 10px 20px;
     font-family: 'Montserrat', sans-serif;
     font-weight: bold;
-    border-radius: 50px;
+    font-size: 0.8rem;
+    border-radius: 30px;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-    animation: pulse 2s infinite;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    transition: 0.3s;
 }
 
-.swipe-hint {
-    position: absolute;
-    bottom: 10px;
-    width: 100%;
-    text-align: center;
-    color: rgba(255,255,255,0.8);
-    font-size: 0.75rem;
-    pointer-events: none;
-    z-index: 90;
-    text-shadow: 1px 1px 2px black;
-}
-
-@keyframes pulse {
-    0% { transform: translateX(-50%) scale(1); }
-    50% { transform: translateX(-50%) scale(1.05); }
-    100% { transform: translateX(-50%) scale(1); }
-}
-
-/* LOGÓ ÉS SZLOGEN SÁV */
-.hero-branding-section {
-    text-align: center;
-    padding: 40px 20px;
-    background: linear-gradient(to bottom, #ffffff, #fdfbf7); /* Finom átmenet */
-    border-bottom: 1px solid #eee;
-}
-
-.hero-logo-img {
-    max-width: 180px; /* Logó mérete */
-    height: auto;
-    margin-bottom: 25px;
-    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); /* Kis árnyék a modern hatáshoz */
-}
-
-.brand-quote {
-    font-family: 'Playfair Display', serif;
-    font-style: italic;
-    font-size: 1.1rem;
-    color: #555;
-    max-width: 700px;
-    margin: 0 auto;
-    line-height: 1.6;
-    position: relative;
-    padding: 0 10px;
-}
-
-/* Díszes idézőjel effektus */
-.brand-quote::before {
-    content: "“";
-    font-size: 3rem;
+.control-btn:hover {
+    background: white;
     color: #b87333;
-    opacity: 0.3;
-    position: absolute;
-    top: -20px;
-    left: -10px;
-}
-
-/* KI VAGYOK ÉN */
-.mission-section {
-    max-width: 900px;
-    margin: 30px auto;
-    padding: 20px;
-    background: #fff;
-}
-
-.mission-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 2rem;
-    color: #b87333;
-    margin-bottom: 20px;
-    text-align: center;
-    text-transform: uppercase;
-    border-bottom: 2px solid #f0f0f0;
-    padding-bottom: 15px;
-}
-
-.mission-text p {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 1.05rem;
-    color: #333;
-    line-height: 1.8;
-    margin-bottom: 20px;
-    text-align: justify;
-}
-
-/* ANIMÁCIÓK (INNOVÁCIÓ) */
-.fade-in-up {
-    opacity: 0;
-    transform: translateY(20px);
-    animation: fadeInUpAnim 1s forwards;
-}
-
-.delay-1 { animation-delay: 0.3s; }
-
-@keyframes fadeInUpAnim {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
 }
