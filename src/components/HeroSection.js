@@ -1,28 +1,50 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import './HeroSection.css';
 
 function HeroSection() {
-  
+  const [isMuted, setIsMuted] = useState(true); // Alapból némítva indul
+  const videoRef = useRef(null);
+
+  // Hang bekapcsolása funkció
+  const handleUnmute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = false; // Némítás levétele
+      videoRef.current.volume = 1.0;  // Teljes hangerő
+      setIsMuted(false);              // Állapot frissítése
+      videoRef.current.play();        // Biztos ami biztos, elindítjuk
+    }
+  };
+
   return (
     <div className='hero-wrapper'>
       
-      {/* 1. VIDEÓ SÁV - A FŐ LÁTVÁNYELEM */}
       <div className='hero-video-container'>
-        <video className='hero-video' autoPlay loop muted playsInline>
-            {/* HA LETÖLTÖTTED A VIDEÓT, TEDD A public MAPPÁBA 'hero_video.mp4' NÉVEN! */}
+        {/* A videó: Ref-fel hivatkozunk rá, hogy tudjuk irányítani */}
+        <video 
+            ref={videoRef}
+            className='hero-video' 
+            autoPlay 
+            loop 
+            muted={true} /* Fontos: Reactban így kell indulnia */
+            playsInline
+        >
             <source src="/hero_video.mp4" type="video/mp4" />
-            {/* Tartalék online videó, amíg nincs meg a saját fájl */}
             <source src="https://assets.mixkit.co/videos/preview/mixkit-craftsman-working-with-copper-wire-in-workshop-42686-large.mp4" type="video/mp4" />
         </video>
         
         <div className='hero-overlay'>
             <h1 className='main-brand'>A&T HARMONIES</h1>
             <p className='brand-subtitle'>ONLINE MŰHELY</p>
-            <p className='brand-tagline'>"Az információ maga a hatalom – A tudás felszabadít"</p>
+            
+            {/* HANG BEKAPCSOLÓ GOMB - Csak akkor látszik, ha némítva van */}
+            {isMuted && (
+                <button className='unmute-btn' onClick={handleUnmute}>
+                    🔊 HANG BEKAPCSOLÁSA
+                </button>
+            )}
         </div>
       </div>
 
-      {/* 2. KÜLDETÉSEM (A KÉPRŐL MÁSOLVA) */}
       <div className='mission-section'>
         <h2 className='mission-title'>KÜLDETÉSEM</h2>
         <div className='mission-text'>
