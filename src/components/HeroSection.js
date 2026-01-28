@@ -1,11 +1,38 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './HeroSection.css';
 
-// KÜLÖN KOMPONENS EGYETLEN VIDEÓHOZ (Hogy saját gombjai legyenek)
+// KÜLÖN KOMPONENS - OKOS VIDEÓ
 const VideoSlide = ({ src }) => {
-  const [isPlaying, setIsPlaying] = useState(false); // Alapból áll
-  const [isMuted, setIsMuted] = useState(true);      // Alapból némítva
   const videoRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(true); // Alapból némítva (böngésző szabály)
+
+  useEffect(() => {
+    // Ez a "Figyelő" (Observer) nézi, hogy látszik-e a videó
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          // Ha látszik (több mint 60%-a), indítsa el
+          videoRef.current.play().then(() => {
+            setIsPlaying(true);
+          }).catch(e => console.log("Autoplay tiltva:", e));
+        } else {
+          // Ha nem látszik (elhúztuk), állítsa meg
+          videoRef.current.pause();
+          setIsPlaying(false);
+        }
+      },
+      { threshold: 0.6 } // Akkor vált, ha 60%-ban látszik
+    );
+
+    if (videoRef.current) {
+      observer.observe(videoRef.current);
+    }
+
+    return () => {
+      if (videoRef.current) observer.unobserve(videoRef.current);
+    };
+  }, []);
 
   const togglePlay = () => {
     if (videoRef.current) {
@@ -33,13 +60,12 @@ const VideoSlide = ({ src }) => {
         loop 
         muted={isMuted} 
         playsInline
-        // Ha rákattintasz a videóra, akkor is megáll/elindul
         onClick={togglePlay}
       >
         <source src={src} type="video/mp4" />
       </video>
 
-      {/* A GOMBOK MOST MÁR A VIDEÓN BELÜL VANNAK */}
+      {/* GOMBOK A VIDEÓN BELÜL */}
       <div className='slide-controls'>
         <button className='mini-btn' onClick={togglePlay}>
           {isPlaying ? '⏸' : '▶'}
@@ -54,8 +80,8 @@ const VideoSlide = ({ src }) => {
 
 function HeroSection() {
   const videos = [
-    "/f4f90c192194013e3eb5f3c706610a00.mp4", // 1. Kezes videó
-    "/9514134033bc1b315731183b4182a616.mp4", // 2. Orgonitok
+    "/f4f90c192194013e3eb5f3c706610a00.mp4", // 1.
+    "/9514134033bc1b315731183b4182a616.mp4", // 2.
     "/55b0f7affa28e85c72fc029862fdfa78.mp4", // 3.
     "/8e1e7f238199161e219718f94c97b58d.mp4"  // 4.
   ];
@@ -63,17 +89,14 @@ function HeroSection() {
   return (
     <div className='hero-wrapper'>
       
-      {/* KERETES VIDEÓ DOBOZ */}
       <div className='video-slider-container'>
         {videos.map((vid, index) => (
            <VideoSlide key={index} src={vid} />
         ))}
         
-        {/* LAPOZÁS JELZŐ NYÍL (Csak dísz) */}
         <div className='swipe-hint'>➔</div>
       </div>
 
-      {/* LOGÓ ÉS IDÉZET */}
       <div className='hero-branding-section'>
          <img 
             src="https://atharmonies.com/cdn/shop/files/monies_1.png?v=1761293221&width=1600" 
