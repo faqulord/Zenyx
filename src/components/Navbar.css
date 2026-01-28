@@ -1,56 +1,122 @@
+/* Navbar.css - TISZTA FEHÉR & OLDALSÓ MENÜ */
+
 .navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 80px;
-    background: rgba(5, 5, 5, 0.95);
-    backdrop-filter: blur(10px);
+    background: #ffffff;
+    height: 70px;
     display: flex;
-    justify-content: space-between; /* Ez tolja a két szélére a logót és a menüt */
+    justify-content: center;
     align-items: center;
-    padding: 0 40px; /* Oldalsó távolság */
-    z-index: 1000;
-    border-bottom: 1px solid rgba(191, 149, 63, 0.3);
-    box-sizing: border-box; /* Ez fontos, hogy ne lógjon ki! */
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 20px;
 }
 
 .nav-logo {
-    font-family: 'Cinzel', serif;
-    color: #bf953f;
+    font-family: 'Playfair Display', serif;
     font-size: 1.5rem;
+    color: #b87333; /* Réz szín */
+    cursor: pointer;
     font-weight: 700;
-    cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    white-space: nowrap; /* Hogy ne törjön be a szöveg */
-}
-
-.nav-links {
-    display: flex;
-    gap: 30px;
-}
-
-.nav-item {
-    font-family: 'Montserrat', sans-serif;
-    color: #fff;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-transform: uppercase;
     letter-spacing: 1px;
-    padding-bottom: 5px;
-    border-bottom: 2px solid transparent;
 }
 
-.nav-item:hover, .nav-item.active {
-    color: #bf953f;
-    border-bottom: 2px solid #bf953f;
+.menu-icon {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 
-@media (max-width: 768px) {
-    .navbar { padding: 0 15px; height: 70px; }
-    .nav-logo { font-size: 1rem; }
-    .nav-links { gap: 15px; }
-    .nav-item { font-size: 0.75rem; }
+.bar {
+    width: 25px;
+    height: 3px;
+    background-color: #333;
+    transition: 0.3s;
+}
+
+.cart-icon {
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* --- OLDALSÓ MENÜ (SIDEBAR) --- */
+.sidebar-menu {
+    position: fixed;
+    top: 0;
+    left: -300px; /* Alapból kint van balra */
+    width: 280px;
+    height: 100vh;
+    background: #ffffff;
+    z-index: 1000;
+    transition: 0.3s ease-in-out;
+    box-shadow: 2px 0 15px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-menu.active {
+    left: 0; /* Beúszik */
+}
+
+.sidebar-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
+    display: none;
+}
+.sidebar-overlay.active { display: block; }
+
+.sidebar-header {
+    padding: 20px;
+    background: #b87333;
+    color: white;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.2rem;
+}
+
+.close-btn { font-size: 2rem; cursor: pointer; }
+
+.sidebar-links {
+    list-style: none;
+    padding: 20px 0;
+}
+
+.sidebar-links li {
+    padding: 15px 25px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.1rem;
+    color: #333;
+    border-bottom: 1px solid #f5f5f5;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.sidebar-links li:hover {
+    background: #f9f9f9;
+    color: #b87333;
+    padding-left: 35px; /* Kis animáció */
+}
+
+.sidebar-footer {
+    margin-top: auto;
+    padding: 20px;
+    text-align: center;
+    color: #999;
+    font-size: 0.8rem;
 }
