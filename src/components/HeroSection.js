@@ -3,45 +3,26 @@ import './HeroSection.css';
 
 function HeroSection() {
   
-  // ITT VANNAK A MÉDIA ELEMEK (Videó + Képek)
-  const mediaItems = [
-    {
-        type: 'video',
-        src: 'https://assets.mixkit.co/videos/preview/mixkit-craftsman-working-with-copper-wire-in-workshop-42686-large.mp4', // Ideiglenes műhely videó
-        poster: 'https://atharmonies.com/cdn/shop/files/20260114_123047.jpg?v=1768392509&width=1600'
-    },
-    { type: 'image', src: "https://atharmonies.com/cdn/shop/files/20260114_123047.jpg?v=1768392509&width=1600" },
-    { type: 'image', src: "https://atharmonies.com/cdn/shop/files/20260113_172032.jpg?v=1768387309&width=1600" },
-    { type: 'image', src: "https://atharmonies.com/cdn/shop/files/20251007_154705.jpg?v=1761291463&width=1600" },
-    { type: 'image', src: "https://atharmonies.com/cdn/shop/files/20251028_104826.jpg?v=1762331002&width=1600" }
-  ];
-
   return (
     <div className='hero-wrapper'>
       
-      <div className='hero-header'>
-        <h1 className='main-brand'>A&T HARMONIES</h1>
-        <p className='brand-subtitle'>ONLINE MŰHELY</p>
+      {/* 1. VIDEÓ SÁV - A FŐ LÁTVÁNYELEM */}
+      <div className='hero-video-container'>
+        <video className='hero-video' autoPlay loop muted playsInline>
+            {/* HA LETÖLTÖTTED A VIDEÓT, TEDD A public MAPPÁBA 'hero_video.mp4' NÉVEN! */}
+            <source src="/hero_video.mp4" type="video/mp4" />
+            {/* Tartalék online videó, amíg nincs meg a saját fájl */}
+            <source src="https://assets.mixkit.co/videos/preview/mixkit-craftsman-working-with-copper-wire-in-workshop-42686-large.mp4" type="video/mp4" />
+        </video>
+        
+        <div className='hero-overlay'>
+            <h1 className='main-brand'>A&T HARMONIES</h1>
+            <p className='brand-subtitle'>ONLINE MŰHELY</p>
+            <p className='brand-tagline'>"Az információ maga a hatalom – A tudás felszabadít"</p>
+        </div>
       </div>
 
-      {/* HÚZHATÓ GALÉRIA (SCROLL SNAP) */}
-      <div className='swipe-gallery'>
-        {mediaItems.map((item, index) => (
-            <div className='gallery-item' key={index}>
-                {item.type === 'video' ? (
-                    <video controls poster={item.poster} className='gallery-media'>
-                        <source src={item.src} type="video/mp4" />
-                        A böngésződ nem támogatja a videót.
-                    </video>
-                ) : (
-                    <img src={item.src} alt="Műhely pillanatkép" className='gallery-media' />
-                )}
-            </div>
-        ))}
-      </div>
-      <p style={{textAlign:'center', fontSize:'0.8rem', color:'#999', marginTop:'5px'}}>⬌ Húzd el a galériát balra a többi képért!</p>
-
-      {/* KÜLDETÉS - ATTILA SZÖVEGE */}
+      {/* 2. KÜLDETÉSEM (A KÉPRŐL MÁSOLVA) */}
       <div className='mission-section'>
         <h2 className='mission-title'>KÜLDETÉSEM</h2>
         <div className='mission-text'>
