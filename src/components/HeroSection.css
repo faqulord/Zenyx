@@ -1,82 +1,95 @@
-/* HeroSection.css - VILÁGOS, TISZTA MŰHELY DESIGN */
+/* HeroSection.css - TISZTA, FEHÉR, MOZGÓ */
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600&display=swap');
-
-.hero-container {
-    height: 90vh; /* Kicsit kisebb, hogy látsszon alatta a termék */
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: relative;
+/* Alapbeállítás: Minden fehér! */
+.hero-wrapper {
     background-color: #ffffff;
-    color: #333;
-    text-align: center;
-    overflow: hidden;
-}
-
-/* Háttérkép: A műhelyed egyik képe, de nagyon világosra állítva */
-.hero-bg-image {
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
-    height: 100%;
-    /* Itt használom az egyik műhelyes képet háttérnek */
-    background-image: url('https://atharmonies.com/cdn/shop/files/20251007_154705.jpg?v=1761291463&width=1600');
-    background-size: cover;
-    background-position: center;
-    opacity: 0.15; /* Csak halványan látszik, hogy ne zavarja a szöveget */
-    z-index: 0;
+    overflow-x: hidden;
+    padding-bottom: 50px;
 }
 
-.hero-content {
-    z-index: 2;
+.hero-header {
+    text-align: center;
+    padding: 40px 20px;
+    background: #fff;
+}
+
+.main-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem;
+    color: #111; /* Fekete betű */
+    margin: 0;
+    letter-spacing: 2px;
+}
+
+.brand-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    color: #666;
+    margin-top: 10px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+}
+
+/* --- MOZGÓ KÉPSOR (MARQUEE) --- */
+.marquee-container {
+    width: 100%;
+    overflow: hidden;
+    background: #fff;
+    padding: 20px 0;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+
+.marquee-content {
+    display: flex;
+    gap: 20px;
+    /* Az animáció, ami balra viszi a képeket */
+    animation: scroll 20s linear infinite;
+    width: max-content; 
+}
+
+.marquee-content img {
+    height: 250px; /* Mobilon kényelmes méret */
+    width: auto;
+    border-radius: 4px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+@keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); } /* A fele szélességig megy, majd újrakezdi */
+}
+
+/* --- KÜLDETÉSEM RÉSZ --- */
+.mission-section {
     max-width: 800px;
-    padding: 40px;
-    background: rgba(255, 255, 255, 0.85); /* Fehér lap a szöveg alatt */
-    border: 1px solid #e0e0e0;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    margin: 50px auto;
+    padding: 0 20px;
+    text-align: center;
+    background: #fff;
 }
 
-.hero-title {
-    font-family: 'Playfair Display', serif; /* Elegáns, klasszikus betűtípus */
-    font-size: 3.5rem;
-    color: #2c3e50;
-    margin-bottom: 15px;
-    font-weight: 700;
-    letter-spacing: 1px;
+.mission-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: #b87333; /* Réz szín a címnek */
+    margin-bottom: 30px;
+    text-transform: uppercase;
 }
 
-.hero-subtitle {
+.mission-text p {
     font-family: 'Montserrat', sans-serif;
     font-size: 1.1rem;
-    color: #555;
-    line-height: 1.6;
-    margin-bottom: 30px;
+    color: #333;
+    line-height: 1.8;
+    margin-bottom: 20px;
+    text-align: justify; /* Hogy szépen kitöltse a teret */
 }
 
-.hero-btn {
-    padding: 15px 40px;
-    background-color: #b87333; /* Réz szín */
-    color: white;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 600;
-    text-transform: uppercase;
-    border: none;
-    cursor: pointer;
-    transition: 0.3s;
-    letter-spacing: 1px;
-}
-
-.hero-btn:hover {
-    background-color: #a05d22;
-    transform: translateY(-2px);
-}
-
-/* Mobil nézet */
-@media screen and (max-width: 768px) {
-    .hero-title { font-size: 2.2rem; }
-    .hero-content { width: 90%; padding: 20px; }
+/* MOBIL OPTIMALIZÁLÁS */
+@media (max-width: 768px) {
+    .main-brand { font-size: 2rem; }
+    .marquee-content img { height: 180px; } /* Kisebb képek mobilon */
+    .mission-text p { text-align: left; font-size: 1rem; }
 }
