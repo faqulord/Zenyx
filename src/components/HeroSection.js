@@ -1,39 +1,64 @@
 import React, { useState, useRef } from 'react';
 import './HeroSection.css';
 
-function HeroSection() {
-  const [isMuted, setIsMuted] = useState(true); 
-  const [isPlaying, setIsPlaying] = useState(true);
-  
-  // Refek a videókhoz, hogy irányítani tudjuk őket
-  const videoRefs = useRef([]);
+// KÜLÖN KOMPONENS EGYETLEN VIDEÓHOZ (Hogy saját gombjai legyenek)
+const VideoSlide = ({ src }) => {
+  const [isPlaying, setIsPlaying] = useState(false); // Alapból áll
+  const [isMuted, setIsMuted] = useState(true);      // Alapból némítva
+  const videoRef = useRef(null);
 
+  const togglePlay = () => {
+    if (videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
+  const toggleMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !isMuted;
+      setIsMuted(!isMuted);
+    }
+  };
+
+  return (
+    <div className='video-slide'>
+      <video 
+        ref={videoRef}
+        className='hero-video' 
+        loop 
+        muted={isMuted} 
+        playsInline
+        // Ha rákattintasz a videóra, akkor is megáll/elindul
+        onClick={togglePlay}
+      >
+        <source src={src} type="video/mp4" />
+      </video>
+
+      {/* A GOMBOK MOST MÁR A VIDEÓN BELÜL VANNAK */}
+      <div className='slide-controls'>
+        <button className='mini-btn' onClick={togglePlay}>
+          {isPlaying ? '⏸' : '▶'}
+        </button>
+        <button className='mini-btn' onClick={toggleMute}>
+          {isMuted ? '🔇' : '🔊'}
+        </button>
+      </div>
+    </div>
+  );
+};
+
+function HeroSection() {
   const videos = [
     "/f4f90c192194013e3eb5f3c706610a00.mp4", // 1. Kezes videó
     "/9514134033bc1b315731183b4182a616.mp4", // 2. Orgonitok
-    "/55b0f7affa28e85c72fc029862fdfa78.mp4",
-    "/8e1e7f238199161e219718f94c97b58d.mp4"
+    "/55b0f7affa28e85c72fc029862fdfa78.mp4", // 3.
+    "/8e1e7f238199161e219718f94c97b58d.mp4"  // 4.
   ];
-
-  // Hang váltása MINDEN videón egyszerre
-  const toggleMute = () => {
-    const newState = !isMuted;
-    setIsMuted(newState);
-    videoRefs.current.forEach(video => {
-        if(video) video.muted = newState;
-    });
-  };
-
-  // Lejátszás/Szünet MINDEN videón egyszerre
-  const togglePlay = () => {
-    const newState = !isPlaying;
-    setIsPlaying(newState);
-    videoRefs.current.forEach(video => {
-        if(video) {
-            newState ? video.play() : video.pause();
-        }
-    });
-  };
 
   return (
     <div className='hero-wrapper'>
@@ -41,32 +66,11 @@ function HeroSection() {
       {/* KERETES VIDEÓ DOBOZ */}
       <div className='video-slider-container'>
         {videos.map((vid, index) => (
-            <div className='video-slide' key={index}>
-                <video 
-                    ref={el => videoRefs.current[index] = el}
-                    className='hero-video' 
-                    autoPlay 
-                    loop 
-                    muted={isMuted} // Itt kapja meg a közös némítást
-                    playsInline
-                >
-                    <source src={vid} type="video/mp4" />
-                </video>
-            </div>
+           <VideoSlide key={index} src={vid} />
         ))}
         
-        {/* LAPOZÁS JELZŐ NYÍL */}
+        {/* LAPOZÁS JELZŐ NYÍL (Csak dísz) */}
         <div className='swipe-hint'>➔</div>
-      </div>
-
-      {/* VEZÉRLŐ GOMBOK - KÖZÉPEN, JÓL LÁTHATÓAN */}
-      <div className='video-controls'>
-         <button className='control-btn' onClick={togglePlay}>
-            {isPlaying ? '⏸ STOP' : '▶ START'}
-         </button>
-         <button className='control-btn' onClick={toggleMute}>
-            {isMuted ? '🔇 HANG BE' : '🔊 HANG KI'}
-         </button>
       </div>
 
       {/* LOGÓ ÉS IDÉZET */}
