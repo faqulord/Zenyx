@@ -1,32 +1,105 @@
-/* HeroSection.css KIEGÉSZÍTÉS */
+/* HeroSection.css - JAVÍTOTT VERZIÓ */
 
-/* ... A korábbi kódok maradnak ... */
+.hero-wrapper {
+    background-color: #ffffff;
+    width: 100%;
+    padding-bottom: 20px;
+}
 
+/* --- A VIDEÓ DOBOZ (KICSI RUBLIKA) --- */
+.video-slider-container {
+    display: flex; /* Egymás mellé rakja őket */
+    flex-wrap: nowrap; /* Nem engedi új sorba */
+    overflow-x: auto; /* Görgethető oldalra */
+    scroll-snap-type: x mandatory; /* Helyére ugrik */
+    width: 100%;
+    height: 350px; /* FIX MAGASSÁG! Ez a "kis rublika" méret */
+    background: #000;
+    position: relative;
+    /* Görgetősáv eltüntetése */
+    -ms-overflow-style: none;
+    scrollbar-width: none; 
+}
+
+.video-slider-container::-webkit-scrollbar { 
+    display: none; 
+}
+
+.video-slide {
+    flex: 0 0 100%; /* Minden videó a teljes szélességet kapja */
+    min-width: 100%; /* Biztos ami biztos */
+    height: 100%;
+    scroll-snap-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Kitölti a dobozt */
+    opacity: 1; 
+}
+
+/* VEZÉRLŐ GOMBOK */
 .video-controls {
     position: absolute;
-    bottom: 40px;
-    left: 50%;
-    transform: translateX(-50%);
+    bottom: 20px;
+    right: 20px; /* Jobb alulra teszem, hogy ne zavarjon */
     display: flex;
-    gap: 15px; /* Távolság a gombok között */
+    gap: 10px;
     z-index: 100;
 }
 
 .control-btn {
-    background: rgba(184, 115, 51, 0.9);
+    background: rgba(0, 0, 0, 0.6);
     color: white;
-    border: 2px solid white;
-    padding: 10px 20px;
+    border: 1px solid #b87333;
+    padding: 8px 15px;
     font-family: 'Montserrat', sans-serif;
-    font-weight: bold;
-    font-size: 0.8rem;
-    border-radius: 30px;
+    font-size: 0.7rem;
+    border-radius: 20px;
     cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-    transition: 0.3s;
 }
 
-.control-btn:hover {
-    background: white;
-    color: #b87333;
+/* LOGÓ ÉS IDÉZET */
+.hero-branding-section {
+    text-align: center;
+    padding: 30px 20px;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+}
+
+.hero-logo-img {
+    max-width: 150px;
+    height: auto;
+    margin-bottom: 15px;
+}
+
+.brand-quote {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: #555;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* ÚJ: Swipe jelzés */
+.swipe-hint {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    color: rgba(255,255,255,0.7);
+    font-size: 1.5rem;
+    pointer-events: none;
+    z-index: 50;
+    text-shadow: 0 0 5px black;
+    animation: bounceRight 1.5s infinite;
+}
+
+@keyframes bounceRight {
+    0%, 100% { transform: translate(0, -50%); }
+    50% { transform: translate(10px, -50%); }
 }
