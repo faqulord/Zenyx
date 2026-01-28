@@ -4,15 +4,8 @@ import './ShopPage.css';
 const ProductGallery = ({ images }) => {
   const [current, setCurrent] = useState(0);
 
-  const nextSlide = (e) => {
-    e.stopPropagation(); // Hogy ne kattintson a termékre lapozáskor
-    setCurrent(current === images.length - 1 ? 0 : current + 1);
-  };
-
-  const prevSlide = (e) => {
-    e.stopPropagation();
-    setCurrent(current === 0 ? images.length - 1 : current - 1);
-  };
+  const nextSlide = (e) => { e.stopPropagation(); setCurrent(current === images.length - 1 ? 0 : current + 1); };
+  const prevSlide = (e) => { e.stopPropagation(); setCurrent(current === 0 ? images.length - 1 : current - 1); };
 
   if (!images || images.length === 0) return null;
 
@@ -26,74 +19,95 @@ const ProductGallery = ({ images }) => {
       )}
       <img src={images[current]} alt="Termék" className='gallery-main-img' />
       <div className='gallery-dots'>
-        {images.map((_, idx) => (
-            <span key={idx} className={idx === current ? 'dot active' : 'dot'}></span>
-        ))}
+        {images.map((_, idx) => (<span key={idx} className={idx === current ? 'dot active' : 'dot'}></span>))}
       </div>
     </div>
   );
 };
 
 function ShopPage() {
+  // A WEBSHOP TELJES KÍNÁLATA (A KÉPEK ALAPJÁN)
   const manualProducts = [
+    // --- ÉKSZEREK ---
     {
-      id: 1,
-      name: "Viridis Flux – (Víz-Szív-Megújulás)",
-      price: "14.990 Ft",
-      images: [
-          "https://atharmonies.com/cdn/shop/files/20260113_171738.jpg?v=1768389113&width=1600",
-          "https://atharmonies.com/cdn/shop/files/20260114_123047.jpg?v=1768392509&width=1600"
-      ],
-      desc: "Zöld lazurit és aventurin. A szív természetes regenerációjára hangolva."
-    },
-    {
-      id: 2,
-      name: "Gaia Magja – Föld Minőség",
-      price: "16.500 Ft",
-      images: [
-          "https://atharmonies.com/cdn/shop/files/20260113_172032.jpg?v=1768387309&width=1600",
-          "https://atharmonies.com/cdn/shop/files/20260114_123047.jpg?v=1768392509&width=1600"
-      ],
-      desc: "Lost Cubit tensor gyűrűvel és citrinnel. Földel, nyugtat, és stabilizálja a teret."
-    },
-    {
-      id: 3,
-      name: "Víz Magja – Víz Minőség",
-      price: "14.990 Ft",
-      images: [
-          "https://atharmonies.com/cdn/shop/files/20260113_171858_1.jpg?v=1768389544&width=1600",
-          "https://atharmonies.com/cdn/shop/files/20260114_123047.jpg?v=1768392509&width=1600"
-      ],
-      desc: "Az áramlás és tisztulás ereje. Kék színvilág."
-    },
-    {
-      id: 4,
-      name: "Levegő Magja – Levegő Minőség",
-      price: "14.990 Ft",
-      images: [
-          "https://atharmonies.com/cdn/shop/files/20260114_122952.jpg?v=1768390629&width=1600",
-          "https://atharmonies.com/cdn/shop/files/20260114_123047.jpg?v=1768392509&width=1600"
-      ],
-      desc: "Tisztaság és szellemi fókusz. A levegő elem könnyedségét segíti."
-    },
-    {
-      id: 5,
-      name: "111 Kapu – Tudatindító Kód",
-      price: "12.500 Ft",
-      images: [
-           "https://atharmonies.com/cdn/shop/files/20260113_171738.jpg?v=1768389113&width=1600" 
-      ],
-      desc: "A teremtés kapuja. A 111-es számmisztikai kód."
-    },
-    {
-      id: 6,
-      name: "Tritán – A Három Frekvencia",
+      id: 101,
+      name: "Tritán – A Három Frekvencia Ősi Szövetsége",
       price: "13.000 Ft",
       images: [
-          "https://atharmonies.com/cdn/shop/files/20251028_104826.jpg?v=1762331002&width=1600",
+          "https://atharmonies.com/cdn/shop/files/20251028_104826.jpg?v=1762331002&width=1600"
+      ],
+      desc: "Három egymásba fonódó tensor gyűrű, amely egyesíti a szakrális frekvenciákat. Erősíti az aurát és harmonizálja a környezetet."
+    },
+    {
+      id: 102,
+      name: "Empowerment Cubit Réz Karperec",
+      price: "8.000 Ft",
+      images: [
           "https://atharmonies.com/cdn/shop/files/20251007_154705.jpg?v=1761291463&width=1600"
       ],
-      desc: "Három egymásba fonódó tensor gyűrű."
+      desc: "A belső erő, stabilitás, önbizalom és életenergia felébresztéséhez kapcsolódik. Kézzel kovácsolva."
+    },
+    {
+      id: 103,
+      name: "Hegyi kristály rézspirálban",
+      price: "6.000 Ft",
+      images: [
+          "KÉP_LINK_IDE_MEDÁLHOZ" // Ide tedd a medálos képet!
+      ],
+      desc: "Tiszta hegyikristály csúcs, kézzel tekert rézspirálban, bőr szíjon. A kristály tisztítja a gondolatokat, a réz pedig vezeti az energiát."
+    },
+    {
+      id: 104,
+      name: "Vizes pohárba akasztható rézspirál",
+      price: "Kérj árat",
+      images: [
+          "KÉP_LINK_IDE_SPIRÁLHOZ" // A poharas kép
+      ],
+      desc: "Ez a kézzel készített réz gyűrű az ősi egyiptomi szakrális mértékrend energiáját követi. Spirál formája az élet áramlását szimbolizálja. Nem csupán ékszer – energetikai erőtér."
+    },
+    {
+      id: 105,
+      name: "Szent Arány – Tensor Gyűrű",
+      price: "Kérj árat",
+      images: ["KÉP_LINK_IDE"],
+      desc: "Kézzel font tensor gyűrű a szakrális geometria alapján."
+    },
+    {
+        id: 106,
+        name: "Életfonat – Kézzel sodort réz karperec",
+        price: "Kérj árat",
+        images: ["KÉP_LINK_IDE"],
+        desc: "Kézzel sodort, egyedi mintázatú réz karperec."
+    },
+    
+    // --- POHÁRALÁTÉTEK ---
+    {
+        id: 201,
+        name: "Vízstrukturáló poháralátét – Ametiszt",
+        price: "Kérj árat",
+        images: ["KÉP_LINK_IDE"], 
+        desc: "Ametiszt, Lost Cubit és a víz szent szimbóluma. Harmonizálja az italt."
+    },
+    {
+        id: 202,
+        name: "Vízstrukturáló poháralátét – Kék Kvarc",
+        price: "Kérj árat",
+        images: ["KÉP_LINK_IDE"],
+        desc: "Kék kvarckristály, Lost Cubit tensor és Triskelioni víz szimbólum."
+    },
+    {
+        id: 203,
+        name: "Élet fája – Energetikai poháralátét",
+        price: "Kérj árat",
+        images: ["KÉP_LINK_IDE"],
+        desc: "Élet fája motívum, Lazurit, Citrin és Tensor gyűrűk harmóniája."
+    },
+    {
+        id: 204,
+        name: "Zöld Lazurit Triskelion Alátét",
+        price: "Kérj árat",
+        images: ["KÉP_LINK_IDE"],
+        desc: "Tensor vízstrukturáló poháralátét, 6 cm."
     }
   ];
 
@@ -104,15 +118,17 @@ function ShopPage() {
   return (
     <div className='shop-container'>
       <div className='shop-intro'>
-        <h2>MŰHELY TERMÉKEK</h2>
+        <h2>TERMÉKEK</h2>
         <div style={{height:'3px', width:'50px', background:'#b87333', margin:'10px auto'}}></div>
+        <p>Egyedi, kézzel készült energetikai eszközök.</p>
       </div>
 
       <div className='shop-grid-simple'>
         {manualProducts.map(product => (
           <div className='product-card-simple' key={product.id}>
             <div className='img-box'>
-                <ProductGallery images={product.images} />
+                {/* Ha nincs kép, egy alap képet mutat, hogy ne legyen üres */}
+                <ProductGallery images={product.images[0] === "KÉP_LINK_IDE" ? ["https://via.placeholder.com/300?text=Feltöltés+Alatt"] : product.images} />
             </div>
             <div className='info-box'>
                 <h3>{product.name}</h3>
