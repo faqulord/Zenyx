@@ -1,187 +1,78 @@
-/* ContentSection.css - TELJES KÓD */
+/* ContentSection.css - A FEKETE DOBOZOK JAVÍTÁSA */
 
 .content-container {
-    background-color: #050505;
-    padding: 80px 20px;
+    padding: 60px 20px;
+    /* Világos háttér, nem fekete! */
+    background-color: #f9f9f9; 
     display: flex;
     flex-direction: column;
     align-items: center;
-    text-align: center;
-    scroll-margin-top: 80px; /* Hogy a fix menü ne takarja ki, ha idegördül */
-}
-
-/* --- 1. AZ IDÉZET SZEKCIÓ --- */
-.quote-box {
-    max-width: 800px;
-    margin-bottom: 80px;
-    border-left: 4px solid #bf953f; /* Arany csík bal oldalon */
-    padding-left: 30px;
-    text-align: left;
-}
-
-.quote-text {
-    font-family: 'Cinzel', serif;
-    font-size: 2.5rem;
-    color: #fcf6ba;
-    margin: 0;
-    line-height: 1.4;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-}
-
-.quote-author {
-    font-family: 'Montserrat', sans-serif;
-    color: #888;
-    margin-top: 15px;
-    font-size: 1.2rem;
-    font-style: italic;
-}
-
-/* --- 2. RÓLAM / KÜLDETÉS (ÚJ RÉSZ) --- */
-.about-section {
-    max-width: 900px;
-    margin-bottom: 80px;
-    text-align: center;
-    background: linear-gradient(145deg, rgba(20, 20, 20, 0.8), rgba(10, 10, 10, 0.9));
-    padding: 50px;
-    border-radius: 20px;
-    border: 1px solid rgba(191, 149, 63, 0.2);
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-}
-
-.section-header {
-    font-family: 'Cinzel', serif;
-    color: #bf953f;
-    font-size: 2.2rem;
-    margin-bottom: 25px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-}
-
-.about-text {
-    font-family: 'Montserrat', sans-serif;
-    color: #e0e0e0;
-    font-size: 1.1rem;
-    line-height: 1.8;
-    font-weight: 300;
-}
-
-/* --- 3. INFORMÁCIÓS KÁRTYÁK --- */
-.info-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 40px;
-    width: 100%;
-    max-width: 1200px;
-    margin-bottom: 80px;
 }
 
 .info-card {
-    background: linear-gradient(145deg, #0f1016, #090a0e);
-    padding: 40px;
-    border-radius: 15px;
-    border: 1px solid rgba(191, 149, 63, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    /* Fehér kártyák fekete helyett */
+    background: #ffffff;
+    border: 1px solid #e0e0e0; /* Finom keret */
+    padding: 30px;
+    border-radius: 8px;
+    max-width: 800px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: 0.3s;
 }
 
 .info-card:hover {
-    transform: translateY(-10px);
-    border-color: rgba(191, 149, 63, 0.4);
-    box-shadow: 0 15px 40px rgba(191, 149, 63, 0.1);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    border-color: #b87333; /* Hoverre réz keret */
 }
 
 .card-icon {
     font-size: 3rem;
-    color: #bf953f;
     margin-bottom: 20px;
+    display: block;
+    color: #b87333; /* Réz színű ikon */
 }
 
 .card-title {
-    font-family: 'Cinzel', serif;
-    color: #fff;
-    font-size: 1.5rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
     margin-bottom: 15px;
-}
-
-.card-desc {
-    font-family: 'Montserrat', sans-serif;
-    color: #aaa;
-    line-height: 1.6;
-}
-
-/* --- 4. SOCIAL MEDIA GOMBOK --- */
-.social-section {
-    margin-top: 20px;
-    padding-bottom: 40px;
-}
-
-.social-title {
-    font-family: 'Cinzel', serif;
-    color: #fff;
-    font-size: 2rem;
-    margin-bottom: 30px;
-}
-
-.social-buttons {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.social-btn {
-    padding: 15px 40px;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 700;
-    text-decoration: none;
-    border-radius: 50px;
-    transition: all 0.3s ease;
+    color: #1a1a1a; /* Sötét szöveg */
     text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+}
+
+.card-text {
+    font-family: 'Montserrat', sans-serif;
     font-size: 1rem;
+    line-height: 1.6;
+    color: #555; /* Szürke szöveg */
 }
 
-.tiktok-btn {
-    background: #000;
-    color: #fff;
-    border: 2px solid #fe2c55; /* TikTok piros */
-    box-shadow: 0 0 15px rgba(254, 44, 85, 0.2);
+/* IDÉZET RÉSZ */
+.quote-section {
+    padding: 40px;
+    background: #fff;
+    text-align: center;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
 }
 
-.tiktok-btn:hover {
-    background: #fe2c55;
-    box-shadow: 0 0 30px rgba(254, 44, 85, 0.6);
+.quote-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-style: italic;
+    color: #333;
+    max-width: 700px;
+    margin: 0 auto;
 }
 
-.facebook-btn {
-    background: #000;
-    color: #fff;
-    border: 2px solid #1877f2; /* FB kék */
-    box-shadow: 0 0 15px rgba(24, 119, 242, 0.2);
-}
-
-.facebook-btn:hover {
-    background: #1877f2;
-    box-shadow: 0 0 30px rgba(24, 119, 242, 0.6);
-}
-
-/* --- MOBIL NÉZET --- */
-@media (max-width: 768px) {
-    .content-container { padding: 60px 15px; }
-    
-    .quote-text { font-size: 1.6rem; }
-    .quote-box { 
-        border-left: none; 
-        border-top: 3px solid #bf953f; 
-        padding-left: 0; 
-        padding-top: 20px; 
-    }
-    
-    .about-section { padding: 30px 20px; }
-    .section-header { font-size: 1.8rem; }
-    
-    .social-btn { width: 100%; justify-content: center; }
+.quote-author {
+    margin-top: 15px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 2px;
 }
