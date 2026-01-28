@@ -3,27 +3,26 @@ import './HeroSection.css';
 
 function HeroSection() {
   
-  const scrollToContent = () => {
-    const element = document.getElementById('tudastar');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+  const scrollToShop = () => {
+    // Ha van ShopPage ID-d, oda görget, de most sima gombként működik
+    window.scrollTo({ top: 800, behavior: 'smooth' });
   };
 
   return (
     <div className='hero-container'>
-      {/* Sötétítő réteg CSS-ben van kezelve */}
-      
       <div className='hero-content'>
-        <h1 className='hero-title'>AZ ŐSI TUDÁS ÉBREDÉSE</h1>
+        <h1 className='hero-title'>A&T HARMONIES</h1>
         
         <p className='hero-subtitle'>
-          Fedezd fel a szakrális geometria és a kozmikus rend rejtett összefüggéseit.
-          A valóság több, mint amit a szemed lát.
+          Réz. Kristály. Tudatosság.<br/>
+          Kézzel kovácsolt energetikai eszközök, közvetlenül a műhelyből.<br/>
+          <span style={{fontSize: '0.8rem', color: '#aaa', marginTop: '10px', display: 'block'}}>
+            "Nem gyógyászati eszköz, hanem társ a harmonikusabb környezetért."
+          </span>
         </p>
-        
-        <button className='hero-btn' onClick={scrollToContent}>
-          BELÉPÉS A TUDÁSTÁRBA
+
+        <button className='hero-btn' onClick={scrollToShop}>
+          BELÉPÉS A MŰHELYBE
         </button>
       </div>
     </div>
