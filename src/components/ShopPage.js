@@ -4,8 +4,15 @@ import './ShopPage.css';
 const ProductGallery = ({ images }) => {
   const [current, setCurrent] = useState(0);
 
-  const nextSlide = (e) => { e.stopPropagation(); setCurrent(current === images.length - 1 ? 0 : current + 1); };
-  const prevSlide = (e) => { e.stopPropagation(); setCurrent(current === 0 ? images.length - 1 : current - 1); };
+  const nextSlide = (e) => { 
+    e.stopPropagation(); 
+    setCurrent(current === images.length - 1 ? 0 : current + 1); 
+  };
+  
+  const prevSlide = (e) => { 
+    e.stopPropagation(); 
+    setCurrent(current === 0 ? images.length - 1 : current - 1); 
+  };
 
   if (!images || images.length === 0) return null;
 
@@ -17,18 +24,21 @@ const ProductGallery = ({ images }) => {
             <button className='gallery-btn right' onClick={nextSlide}>&#10095;</button>
         </>
       )}
-      <img src={images[current]} alt="Termék" className='gallery-main-img' />
+      {/* Ha véletlenül nincs kép, egy placeholder jelenik meg, hogy ne omoljon össze */}
+      <img src={images[current] || "https://via.placeholder.com/300"} alt="Termék" className='gallery-main-img' />
+      
       <div className='gallery-dots'>
-        {images.map((_, idx) => (<span key={idx} className={idx === current ? 'dot active' : 'dot'}></span>))}
+        {images.map((_, idx) => (
+            <span key={idx} className={idx === current ? 'dot active' : 'dot'}></span>
+        ))}
       </div>
     </div>
   );
 };
 
 function ShopPage() {
-  // A WEBSHOP TELJES KÍNÁLATA (A KÉPEK ALAPJÁN)
+  // A TERMÉKEK LISTÁJA
   const manualProducts = [
-    // --- ÉKSZEREK ---
     {
       id: 101,
       name: "Tritán – A Három Frekvencia Ősi Szövetsége",
@@ -52,62 +62,54 @@ function ShopPage() {
       name: "Hegyi kristály rézspirálban",
       price: "6.000 Ft",
       images: [
-          "KÉP_LINK_IDE_MEDÁLHOZ" // Ide tedd a medálos képet!
+          "https://atharmonies.com/cdn/shop/files/20260113_172032.jpg?v=1768387309&width=1600"
       ],
-      desc: "Tiszta hegyikristály csúcs, kézzel tekert rézspirálban, bőr szíjon. A kristály tisztítja a gondolatokat, a réz pedig vezeti az energiát."
+      desc: "Tiszta hegyikristály csúcs, kézzel tekert rézspirálban, bőr szíjon. A kristály tisztítja a gondolatokat."
     },
     {
       id: 104,
       name: "Vizes pohárba akasztható rézspirál",
       price: "Kérj árat",
       images: [
-          "KÉP_LINK_IDE_SPIRÁLHOZ" // A poharas kép
+          "https://atharmonies.com/cdn/shop/files/20260114_123047.jpg?v=1768392509&width=1600"
       ],
-      desc: "Ez a kézzel készített réz gyűrű az ősi egyiptomi szakrális mértékrend energiáját követi. Spirál formája az élet áramlását szimbolizálja. Nem csupán ékszer – energetikai erőtér."
+      desc: "Ez a kézzel készített réz gyűrű az ősi egyiptomi szakrális mértékrend energiáját követi. Spirál formája az élet áramlását szimbolizálja."
     },
     {
       id: 105,
       name: "Szent Arány – Tensor Gyűrű",
       price: "Kérj árat",
-      images: ["KÉP_LINK_IDE"],
+      images: [
+          "https://atharmonies.com/cdn/shop/files/20260113_171738.jpg?v=1768389113&width=1600"
+      ],
       desc: "Kézzel font tensor gyűrű a szakrális geometria alapján."
     },
     {
         id: 106,
         name: "Életfonat – Kézzel sodort réz karperec",
         price: "Kérj árat",
-        images: ["KÉP_LINK_IDE"],
+        images: [
+            "https://atharmonies.com/cdn/shop/files/20251028_104826.jpg?v=1762331002&width=1600"
+        ],
         desc: "Kézzel sodort, egyedi mintázatú réz karperec."
     },
-    
-    // --- POHÁRALÁTÉTEK ---
     {
         id: 201,
         name: "Vízstrukturáló poháralátét – Ametiszt",
         price: "Kérj árat",
-        images: ["KÉP_LINK_IDE"], 
+        images: [
+            "https://atharmonies.com/cdn/shop/files/20260113_171858_1.jpg?v=1768389544&width=1600"
+        ], 
         desc: "Ametiszt, Lost Cubit és a víz szent szimbóluma. Harmonizálja az italt."
     },
     {
         id: 202,
         name: "Vízstrukturáló poháralátét – Kék Kvarc",
         price: "Kérj árat",
-        images: ["KÉP_LINK_IDE"],
+        images: [
+            "https://atharmonies.com/cdn/shop/files/20260113_172032.jpg?v=1768387309&width=1600"
+        ],
         desc: "Kék kvarckristály, Lost Cubit tensor és Triskelioni víz szimbólum."
-    },
-    {
-        id: 203,
-        name: "Élet fája – Energetikai poháralátét",
-        price: "Kérj árat",
-        images: ["KÉP_LINK_IDE"],
-        desc: "Élet fája motívum, Lazurit, Citrin és Tensor gyűrűk harmóniája."
-    },
-    {
-        id: 204,
-        name: "Zöld Lazurit Triskelion Alátét",
-        price: "Kérj árat",
-        images: ["KÉP_LINK_IDE"],
-        desc: "Tensor vízstrukturáló poháralátét, 6 cm."
     }
   ];
 
@@ -127,8 +129,7 @@ function ShopPage() {
         {manualProducts.map(product => (
           <div className='product-card-simple' key={product.id}>
             <div className='img-box'>
-                {/* Ha nincs kép, egy alap képet mutat, hogy ne legyen üres */}
-                <ProductGallery images={product.images[0] === "KÉP_LINK_IDE" ? ["https://via.placeholder.com/300?text=Feltöltés+Alatt"] : product.images} />
+                <ProductGallery images={product.images} />
             </div>
             <div className='info-box'>
                 <h3>{product.name}</h3>
