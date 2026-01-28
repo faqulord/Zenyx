@@ -4,7 +4,7 @@ import HeroSection from './components/HeroSection';
 import ShopPage from './components/ShopPage';
 import OrgonInfo from './components/OrgonInfo';
 import AboutPage from './components/AboutPage';
-import AszfPage from './components/AszfPage'; // ÚJ IMPORT
+import AszfPage from './components/AszfPage';
 import AdminPanel from './components/AdminPanel';
 
 function App() {
@@ -22,11 +22,19 @@ function App() {
         <>
           <Navbar setPage={setCurrentPage} />
           
-          {currentPage === 'home' && <HeroSection />}
+          {/* FŐOLDAL: Videó + Logó + UTÁNA RÖGTÖN A TERMÉKEK */}
+          {currentPage === 'home' && (
+            <>
+                <HeroSection /> 
+                <ShopPage />  {/* Itt jelennek meg a termékek a főoldalon! */}
+            </>
+          )}
+
+          {/* EGYÉB OLDALAK */}
           {currentPage === 'shop' && <ShopPage />}
           {currentPage === 'orgon-info' && <OrgonInfo />}
           {currentPage === 'about' && <AboutPage />}
-          {currentPage === 'aszf' && <AszfPage />} {/* ITT JELENIK MEG AZ ÁSZF */}
+          {currentPage === 'aszf' && <AszfPage />}
           
           {currentPage === 'contact' && <div style={{padding:'50px',textAlign:'center'}}><h2>Kapcsolat</h2><p>Hamarosan...</p></div>}
 
