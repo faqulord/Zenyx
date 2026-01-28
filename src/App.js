@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
-import ContentSection from './components/ContentSection';
 import ShopPage from './components/ShopPage';
-import Footer from './components/Footer';
+import OrgonInfo from './components/OrgonInfo'; // ÚJ IMPORT
 import AdminPanel from './components/AdminPanel';
 
 function App() {
@@ -11,14 +10,6 @@ function App() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    
-    // --- LÁTOGATÓ KÖVETÉSE ---
-    // Csak akkor küldünk jelet, ha ebben a munkamenetben még nem tettük
-    if (!sessionStorage.getItem('visited')) {
-      fetch('/api/track-visit', { method: 'POST' })
-        .then(() => sessionStorage.setItem('visited', 'true'))
-        .catch(err => console.error("Tracking error:", err));
-    }
   }, [currentPage]);
 
   return (
@@ -28,19 +19,25 @@ function App() {
       ) : (
         <>
           <Navbar setPage={setCurrentPage} currentPage={currentPage} />
-          {currentPage === 'home' && (
-            <>
-              <HeroSection />
-              <ContentSection />
-            </>
-          )}
+          
+          {currentPage === 'home' && <HeroSection />}
           {currentPage === 'shop' && <ShopPage />}
-          <Footer />
+          {currentPage === 'orgon-info' && <OrgonInfo />} {/* ÚJ OLDAL */}
+          {/* A többi oldalra egyelőre placeholder */}
+          {(currentPage === 'about' || currentPage === 'contact') && (
+              <div style={{padding:'100px', textAlign:'center'}}><h2>Feltöltés alatt...</h2></div>
+          )}
+
+          <div style={{textAlign:'center', padding:'40px', background:'#333', color:'#aaa', marginTop:'auto'}}>
+            <p>Kövess be Facebookon és TikTokon is!</p>
+            <p>A&T Harmonies 2026</p>
+          </div>
+
           <button 
             onClick={() => setCurrentPage('admin')}
-            style={{ position: 'fixed', bottom: '10px', right: '10px', padding: '8px 15px', background: 'rgba(0,0,0,0.8)', color: '#bf953f', border: '1px solid #bf953f', borderRadius: '5px', fontSize: '12px', cursor: 'pointer', zIndex: 9999, fontWeight: 'bold', textTransform: 'uppercase' }}
+            style={{ position: 'fixed', bottom: '10px', right: '10px', opacity: 0.5, fontSize: '10px' }}
           >
-            Admin Demo
+            Admin
           </button>
         </>
       )}
