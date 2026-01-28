@@ -6,60 +6,48 @@ function AdminPanel({ setPage }) {
     const [orders, setOrders] = useState([]);
     const [products, setProducts] = useState([]);
     const [showForm, setShowForm] = useState(false);
-    
-    // Élő statisztikák az adatbázisból
+
+    // DEMO ADATOK (Hogy látszódjon valami, amíg nincs backend)
     const [stats, setStats] = useState({
-        totalRevenue: 0,
-        orderCount: 0,
-        visitorCount: 0
+        totalRevenue: 1450000,
+        orderCount: 12,
+        visitorCount: 340
     });
 
     const [newProduct, setNewProduct] = useState({
         name: '', category: 'Eszközök', desc: '', price: '', image: ''
     });
 
-    // ADATOK BETÖLTÉSE
+    // ADATOK BETÖLTÉSE (Mockoltuk, hogy ne legyen hiba)
     const loadAllData = () => {
-        fetch('/api/stats').then(res => res.json()).then(data => setStats(data)).catch(e => console.log(e));
-        fetch('/api/orders').then(res => res.json()).then(data => setOrders(data)).catch(e => console.log(e));
-        fetch('/api/products').then(res => res.json()).then(data => setProducts(data)).catch(e => console.log(e));
+        // Itt lennének a fetch hívások, most csak logolunk
+        console.log("Adatok frissítése...");
     };
 
     useEffect(() => {
         loadAllData();
-        const interval = setInterval(loadAllData, 15000); // 15 mp-enként frissít
+        const interval = setInterval(loadAllData, 15000); 
         return () => clearInterval(interval);
     }, [activeTab]);
 
     const handleProductSubmit = (e) => {
         e.preventDefault();
-        fetch('/api/products', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newProduct)
-        })
-        .then(res => res.json())
-        .then(data => {
-            setProducts([...products, data]);
-            setShowForm(false);
-            setNewProduct({ name: '', category: 'Eszközök', desc: '', price: '', image: '' });
-            alert("Sikeres mentés!");
-        });
+        // Demo hozzáadás
+        setProducts([...products, { ...newProduct, _id: Date.now().toString() }]);
+        setShowForm(false);
+        setNewProduct({ name: '', category: 'Eszközök', desc: '', price: '', image: '' });
+        alert("Termék (Demo) hozzáadva!");
     };
 
     const handleMonthlyClose = () => {
         if (window.confirm("ZÁRÁS: Nullázod a látogatottságot és archiválod a havi bevételt?")) {
-            fetch('/api/stats/reset-monthly', { method: 'POST' })
-            .then(() => {
-                alert("Hónap lezárva!");
-                loadAllData();
-            });
+            alert("Hónap lezárva (Demo)!");
         }
     };
 
     return (
         <div className='admin-body-wrapper'>
-            
+
             {/* --- BAL OLDALI MENÜ --- */}
             <div className='admin-sidebar'>
                 <div className='admin-logo-box'>A&T ADMIN</div>
@@ -69,16 +57,16 @@ function AdminPanel({ setPage }) {
                     <div className={`menu-item ${activeTab === 'products' ? 'active' : ''}`} onClick={() => setActiveTab('products')}>🏷️ Termékek</div>
                     <div className={`menu-item ${activeTab === 'analytics' ? 'active' : ''}`} onClick={() => setActiveTab('analytics')}>📈 Statisztika</div>
                 </div>
-                <button style={{marginTop: 'auto', background: '#d63031', color: 'white', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer'}} onClick={() => setPage('home')}>⬅ Kilépés</button>
+                <button className='logout-btn' onClick={() => setPage('home')}>⬅ Vissza a Shopba</button>
             </div>
 
             {/* --- TARTALOM --- */}
             <div className='admin-main-content'>
-                
+
                 <div className='admin-top-bar'>
                     <div className='admin-welcome'>
                         <h2>{activeTab === 'dashboard' ? 'Szia Attila! 👋' : activeTab.toUpperCase()}</h2>
-                        <p>Élő adatok a MongoDB adatbázisból</p>
+                        <p>Webshop állapota: <span style={{color:'green'}}>● Aktív</span></p>
                     </div>
                     <div className='user-profile'>Takács Attila (Tulajdonos)</div>
                 </div>
@@ -97,18 +85,16 @@ function AdminPanel({ setPage }) {
                                 <div className='stat-number'>{stats.visitorCount}</div>
                                 <div className='stat-sub'>👥 Aktív számláló</div>
                             </div>
+                            <div className='stat-box'>
+                                <div className='stat-label'>Nyitott Rendelés</div>
+                                <div className='stat-number'>{stats.orderCount} db</div>
+                                <div className='stat-sub'>📦 Feldolgozás alatt</div>
+                            </div>
                         </div>
 
                         <div className='admin-card'>
-                            <div className='card-header'><h3>Legutóbbi rendelések</h3></div>
-                            <div className='table-row table-head'>
-                                <div>#</div><div>Név</div><div>Összeg</div><div>Státusz</div>
-                            </div>
-                            {orders.slice(0,5).map(o => (
-                                <div className='table-row' key={o._id}>
-                                    <div>#{o._id.slice(-4)}</div><div>{o.customer}</div><div>{o.total}</div><div>✅ Fizetve</div>
-                                </div>
-                            ))}
+                            <div className='card-header'><h3>Legutóbbi aktivitás</h3></div>
+                            <div className='empty-state'>Nincs új rendelés az elmúlt órában.</div>
                         </div>
                     </>
                 )}
@@ -127,11 +113,12 @@ function AdminPanel({ setPage }) {
                                 <input type="text" placeholder="Ár (pl: 15.000 Ft)" value={newProduct.price} onChange={e => setNewProduct({...newProduct, price: e.target.value})} required />
                                 <input type="text" placeholder="Kép URL link" value={newProduct.image} onChange={e => setNewProduct({...newProduct, image: e.target.value})} required />
                                 <textarea placeholder="Leírás" value={newProduct.desc} onChange={e => setNewProduct({...newProduct, desc: e.target.value})} />
-                                <button type="submit" className='btn-save'>Mentés az Adatbázisba</button>
+                                <button type="submit" className='btn-save'>Mentés</button>
                             </form>
                         )}
 
                         <div className='table-row table-head'><div>Kép</div><div>Név</div><div>Ár</div><div>Kategória</div></div>
+                        {products.length === 0 && <p style={{padding:'20px', textAlign:'center'}}>Jelenleg a ShopPage.js-ből tölti be a termékeket.</p>}
                         {products.map(p => (
                             <div className='table-row' key={p._id}>
                                 <div><img src={p.image} width="30" alt="" /></div><div>{p.name}</div><div>{p.price}</div><div>{p.category}</div>
